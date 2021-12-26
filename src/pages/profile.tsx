@@ -11,7 +11,7 @@ const ProfilePage: NextPage = () => {
 		return (
 			<div>
 				<Head>
-					<title>Redux Toolkit</title>
+					<title>My Profile</title>
 					<link rel="icon" href="/favicon.ico" />
 				</Head>
       Welcome {user.name}! <a href="/api/auth/logout">Logout</a>
