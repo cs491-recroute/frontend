@@ -15,7 +15,6 @@ const IndexPage: NextPage = () => {
 	return <div className={styles.container}>				
 		<Head>
 			<title>Recroute</title>
-			<link rel="icon" href="/favicon.ico" />
 		</Head>
 		<div className={styles.header}>
 			<div className={styles.logo}>

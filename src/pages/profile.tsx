@@ -22,7 +22,6 @@ const ProfilePage: NextPage = () => {
 			<div className={styles.container}>
 				<Head>
 					<title>My Profile</title>
-					<link rel="icon" href="/favicon.ico" />
 				</Head>
 				<div className={styles.header}>
 					<div className={styles.user}>
