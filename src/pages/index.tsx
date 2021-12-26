@@ -1,19 +1,25 @@
-import type { NextPage } from 'next';
-import Head from 'next/head';
+import type { NextPage, GetServerSideProps } from 'next';
 import React from 'react';
-
-import styles from '../styles/Home.module.css';
+import { getSession } from '@auth0/nextjs-auth0';
 
 const IndexPage: NextPage = () => {
-	return (
-		<div className={styles.container}>
-			<Head>
-				<title>Redux Toolkit</title>
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
-			<a href="/api/auth/login">Login</a>
-		</div>
-	);
+	return <a href="/api/auth/login?returnTo=/profile">Login</a>;
 };
 
 export default IndexPage;
+
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+	const session = getSession(req, res);
+
+	if (session) {		
+		return {
+			redirect: {
+				permanent: false,
+				destination: '/profile'
+			}
+		};
+	}
+	return {
+		props: {}
+	};
+};
