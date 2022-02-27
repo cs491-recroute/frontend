@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import { useUserInfo } from '../../utils/hooks';
 import styles from './Header.module.scss';
 import Image from 'next/image';
 import { EuiContextMenu, EuiPopover, EuiText, useGeneratedHtmlId } from '@elastic/eui';
+import Link from 'next/link';
+import { useUser } from '@auth0/nextjs-auth0';
 
 const Header = () => {
-	const { user } = useUserInfo();
+	const { user } = useUser();
 	const router = useRouter();
 	const [isUserMenuOpen, toggleUserMenu] = useState(false);
 
@@ -22,8 +23,12 @@ const Header = () => {
 
 	const avatar = (<img onClick={onAvatarClick} className={styles.avatar} src={user.picture || ''} height={30} width={30}/>);
 	return <div id='mainHeader' className={styles.container}>
-		<Image src='/assets/white_logo.svg' height={40} width={40}/>
-		<EuiText className={styles.companyText}>Recroute</EuiText>
+		<Link href='/'>
+			<a className={styles.homeLink}>
+				<Image src='/assets/white_logo.svg' height={40} width={40}/>
+				<EuiText className={styles.companyText}>Recroute</EuiText>
+			</a>
+		</Link>
 		<div style={{ flex: 1 }}/>
 		<EuiPopover
 			id={contextMenuPopoverId}
