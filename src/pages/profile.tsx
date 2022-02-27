@@ -5,9 +5,6 @@ import Head from 'next/head';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
 import styles from '../styles/Profile.module.scss';
-import { EuiButton } from '@elastic/eui';
-import { useRouter } from 'next/router';
-
 
 const ProfilePage: NextPage = () => {
 	const { user } = useUser();
