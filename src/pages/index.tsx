@@ -1,16 +1,18 @@
 import type { NextPage, GetServerSideProps } from 'next';
 import React from 'react';
 import { getSession } from '@auth0/nextjs-auth0';
-import styles from '../styles/Home.module.css';
+import styles from '../styles/Home.module.scss';
 import Head from 'next/head';
 import Image from 'next/image';
 import { EuiButton } from '@elastic/eui';
 import { useRouter } from 'next/router';
 
+const mainPage = '/flows';
+
 const IndexPage: NextPage = () => {
 	const router = useRouter();
 	const handleLogin = () => {
-		router.push('/api/auth/login?returnTo=/profile');
+		router.push(`/api/auth/login?returnTo=${mainPage}`);
 	};
 	return <div className={styles.container}>				
 		<Head>
@@ -52,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
 		return {
 			redirect: {
 				permanent: false,
-				destination: '/profile'
+				destination: mainPage
 			}
 		};
 	}

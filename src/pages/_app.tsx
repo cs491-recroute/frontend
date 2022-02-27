@@ -1,13 +1,14 @@
-import '../styles/globals.css';
+import '../styles/globals.scss';
 import React from 'react';
 import '@elastic/eui/dist/eui_theme_light.css';
 import { Provider } from 'react-redux';
 import type { AppProps } from 'next/app';
 
-import store from '../app/store';
+import store from '../redux/store';
 import { UserProvider } from '@auth0/nextjs-auth0';
 import { EuiProvider } from '@elastic/eui';
 import Head from 'next/head';
+import Header from '../components/Header';
 
 export default function MyApp({ Component, pageProps }: AppProps) {
 	return (
@@ -20,7 +21,10 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 						<link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png"/>
 						<link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png"/>
 					</Head>
-					<Component {...pageProps} />
+					<Header/>
+					<div id='mainContainer'>
+						<Component {...pageProps} />
+					</div>
 				</EuiProvider>
 			</Provider>
 		</UserProvider>

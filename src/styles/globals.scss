@@ -14,3 +14,15 @@ a {
 * {
   box-sizing: border-box;
 }
+
+#mainHeader {
+  height: 60px;
+}
+
+#mainHeader + #mainContainer {
+  height: calc(100vh - 60px);
+}
+
+#mainContainer {
+  height: 100vh;
+}
