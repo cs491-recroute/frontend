@@ -5,7 +5,7 @@ for i in "${!services[@]}"; do
   running=`lsof -i -P -n | grep $((${startPort} + ${i})).*LISTEN | wc -l`
   if [[ "${running}" = "1" ]]; then
     export ${services[$i]}_RUNNING=1
-    echo running
+    echo ${services[$i]} is running
   fi
-  yarn next
 done
+yarn next

@@ -6,13 +6,13 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { EuiButton } from '@elastic/eui';
 import { useRouter } from 'next/router';
+import { MAIN_PAGE } from '../constants';
 
-const mainPage = '/flows';
 
 const IndexPage: NextPage = () => {
 	const router = useRouter();
 	const handleLogin = () => {
-		router.push(`/api/auth/login?returnTo=${mainPage}`);
+		router.push(`/api/auth/login?returnTo=${MAIN_PAGE}`);
 	};
 	return <div className={styles.container}>				
 		<Head>
@@ -54,7 +54,7 @@ export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
 		return {
 			redirect: {
 				permanent: false,
-				destination: mainPage
+				destination: MAIN_PAGE
 			}
 		};
 	}

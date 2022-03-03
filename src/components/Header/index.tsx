@@ -21,6 +21,7 @@ const Header = () => {
 		return null;
 	}
 
+	// eslint-disable-next-line @next/next/no-img-element
 	const avatar = (<img onClick={onAvatarClick} className={styles.avatar} src={user.picture || ''} height={30} width={30}/>);
 	return <div id='mainHeader' className={styles.container}>
 		<Link href='/'>
