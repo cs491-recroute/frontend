@@ -2,8 +2,8 @@ startPort=3500
 services=('USER' 'FLOW')
 
 for i in "${!services[@]}"; do
-  running=`lsof -i -P -n | grep $((${startPort} + ${i})).*LISTEN | wc -l`
-  if [[ "${running}" = "1" ]]; then
+  running=`lsof -i :$((${startPort} + ${i})) | wc -l`
+  if [[ "${running}" = "2" ]]; then
     export ${services[$i]}_RUNNING=1
     echo ${services[$i]} is running
   fi
