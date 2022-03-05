@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "dev": "bash ./checkRunningServices",
+    "dev": "yarn install && bash ./checkRunningServices",
     "deploy": "bash ./deploy",
     "build": "next build",
     "start": "next start",
