@@ -1,12 +1,12 @@
 import React, { Fragment, useCallback } from 'react';
-import { NextPage } from 'next';
+import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FlowBuilder.module.scss';
 import { AxiosResponse } from 'axios';
 import { Flow } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
-import { getSession, Session, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
-import { getUserID, translate } from '../../utils';
+import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
 import { EuiCollapsibleNav, EuiIcon, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
@@ -65,11 +65,9 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 
 export const getServerSideProps = withPageAuthRequired({
 	getServerSideProps: async (context) => {
-		const { user } = getSession(context.req, context.res) as Session;
 		const { flowID } = context.query;
-
 		try {
-			const { data: flow }: AxiosResponse<Flow> = await gatewayManager.useService(SERVICES.FLOW).get(`/flow/${flowID}?userID=${getUserID(user)}`);
+			const { data: flow }: AxiosResponse<Flow> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/flow/${flowID}`);
 			return { props: { flow } as FlowBuilderProps};
 		} catch (error) {
 			return {
