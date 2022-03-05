@@ -3,7 +3,7 @@ services=('USER' 'FLOW')
 
 for i in "${!services[@]}"; do
   running=`lsof -i :$((${startPort} + ${i})) | wc -l`
-  if [ "${running}" = "2" ]; then
+  if [ ${running} = 2 ]; then
     export ${services[$i]}_RUNNING=1
     echo ${services[$i]} is running
   fi
