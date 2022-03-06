@@ -1,0 +1,17 @@
+.container{
+    height: 150px;
+    width: 420px;
+    .card {
+        border-top-width: 10px;
+        border-top-style: solid;
+        &.form {
+            border-top-color: blue;
+        }
+        &.test {
+            border-top-color: green;
+        }
+        &.interview {
+            border-top-color: red;
+        }
+    }
+}

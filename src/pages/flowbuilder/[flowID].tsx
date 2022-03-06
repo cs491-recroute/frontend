@@ -7,11 +7,12 @@ import { gatewayManager } from '../../utils/gatewayManager';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
-import { MAIN_PAGE } from '../../constants';
+import { MAIN_PAGE, STAGE_TYPE } from '../../constants';
 import { EuiCollapsibleNav, EuiIcon, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { isFlowBuilderLeftPanelOpen, toggleFlowBuilderLeftPanel } from '../../redux/slices/uiSlice';
 import FormPicker from '../../components/FormPicker';
+import StageCard from '../../components/StageCard';
 
 type FlowBuilderProps = {
 	flow: Flow;
@@ -59,6 +60,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			) : (
 				<>STAGES</>
 			)}
+			<StageCard name="Form" description='Applicants need to fill that form.' type={STAGE_TYPE.FORM} />
 		</div>
 	</Fragment>);
 };
