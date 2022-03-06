@@ -7,7 +7,7 @@ import styles from './StageCard.module.scss';
 type StageCardProps = {
     type: STAGE_TYPE;
     name: string;
-    description: string;
+	onClick: (event: React.MouseEvent<HTMLElement>) => void;
 }
 
 const stageIcons : {[key in STAGE_TYPE]: string} = {
@@ -16,10 +16,10 @@ const stageIcons : {[key in STAGE_TYPE]: string} = {
 	[STAGE_TYPE.INTERVIEW]: 'indexEdit'
 };
 
-const StageCard = ({type, name}: StageCardProps) => {
+const StageCard = ({type, name, ...rest}: StageCardProps) => {
 
 	return (
-		<div className={styles.container}>
+		<div {...rest} className={styles.container}>
 			<EuiCard
 				className={classNames(styles.card, styles[type])}
 				icon={<EuiIcon size="xl" type={stageIcons[type]} />}

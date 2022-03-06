@@ -10,7 +10,7 @@ import { translate } from '../../utils';
 import { MAIN_PAGE, STAGE_TYPE } from '../../constants';
 import { EuiCollapsibleNav, EuiIcon, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { isFlowBuilderLeftPanelOpen, toggleFlowBuilderLeftPanel } from '../../redux/slices/uiSlice';
+import { isFlowBuilderLeftPanelOpen, toggleFlowBuilderLeftPanel, isFlowBuilderRightPanelOpen, toggleFlowBuilderRightPanel } from '../../redux/slices/uiSlice';
 import FormPicker from '../../components/FormPicker';
 import StageCard from '../../components/StageCard';
 
@@ -22,10 +22,15 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 	const { name, stages = [] } = flow;
 	const dispatch = useAppDispatch();
 	const isLeftPanelOpen = useAppSelector(isFlowBuilderLeftPanelOpen);
+	const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
 
 	const toggleLeftPanel = useCallback(status => () => {
 		if (status !== isLeftPanelOpen) dispatch(toggleFlowBuilderLeftPanel(status));
 	}, [isLeftPanelOpen]);
+
+	const toggleRightPanel = useCallback(status => () => {
+		if (status !== isRightPanelOpen) dispatch(toggleFlowBuilderRightPanel(status));
+	}, [isRightPanelOpen]);
 
 	return (<Fragment>
 		<EuiCollapsibleNav
@@ -38,6 +43,21 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 		>
 			<EuiText className={styles.title}>
 				{translate('Form Templates')}
+			</EuiText>
+			<hr/>
+			<FormPicker/>
+		</EuiCollapsibleNav>
+		<EuiCollapsibleNav
+			className={styles.rightPanel}
+			style={{ top: 120 }}
+			isOpen={isRightPanelOpen}
+			onClose={toggleRightPanel(false)}
+			closeButtonPosition="inside"
+			ownFocus={false}
+			side='right'
+		>
+			<EuiText className={styles.title}>
+				{translate('Settings')}
 			</EuiText>
 			<hr/>
 			<FormPicker/>
@@ -60,7 +80,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			) : (
 				<>STAGES</>
 			)}
-			<StageCard name="Form" description='Applicants need to fill that form.' type={STAGE_TYPE.FORM} />
+			<StageCard onClick={toggleRightPanel(true)} name="Form"  type={STAGE_TYPE.FORM} />
 		</div>
 	</Fragment>);
 };
