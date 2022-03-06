@@ -8,11 +8,12 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { MAIN_PAGE, STAGE_TYPE } from '../../constants';
-import { EuiCollapsibleNav, EuiIcon, EuiText } from '@elastic/eui';
+import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { isFlowBuilderLeftPanelOpen, toggleFlowBuilderLeftPanel, isFlowBuilderRightPanelOpen, toggleFlowBuilderRightPanel } from '../../redux/slices/uiSlice';
 import FormPicker from '../../components/FormPicker';
 import StageCard from '../../components/StageCard';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 type FlowBuilderProps = {
 	flow: Flow;
@@ -35,7 +36,6 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 	return (<Fragment>
 		<EuiCollapsibleNav
 			className={styles.leftPanel}
-			style={{ top: 120 }}
 			isOpen={isLeftPanelOpen}
 			onClose={toggleLeftPanel(false)}
 			closeButtonPosition="inside"
@@ -45,7 +45,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 				{translate('Form Templates')}
 			</EuiText>
 			<hr/>
-			<FormPicker/>
+			<FormPicker returnBack />
 		</EuiCollapsibleNav>
 		<EuiCollapsibleNav
 			className={styles.rightPanel}
@@ -64,19 +64,20 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 		</EuiCollapsibleNav>
 		<div className={styles.header}>
 			{name}
-			<EuiIcon type="gear" size="l" className={styles.settingsIcon}/>
+			<SettingsIcon className={styles.settingsIcon}/>
 		</div>
 		<div className={styles.content}>
 
+			<div 
+				className={styles.addFormButton}
+				onClick={toggleLeftPanel(true)}
+			>
+				<EuiText className={styles.text}>
+					{translate('Add Start Form')}
+				</EuiText>
+			</div>
 			{stages.length === 0 ? (
-				<div 
-					className={styles.addFormButton}
-					onClick={toggleLeftPanel(true)}
-				>
-					<EuiText className={styles.text}>
-						{translate('Add Start Form')}
-					</EuiText>
-				</div>
+				<>nostage</>
 			) : (
 				<>STAGES</>
 			)}

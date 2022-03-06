@@ -20,6 +20,7 @@
   height: calc(100% - 60px);
 
   .addFormButton {
+    background-color: white;
     min-width: 320px;
     width: 15%;
     padding: 16px;
@@ -38,6 +39,8 @@
 }
 
 .leftPanel {
+  top: 120px;
+  height: calc(100% - 120px);
   padding: 4px 0;
   .title {
     margin-left: 14px;
