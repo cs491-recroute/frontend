@@ -10,3 +10,7 @@ export type Flow = {
 export type Stage = {
   name: string;
 } & Basic;
+
+export type Form = {
+  name: string;
+} & Basic;
