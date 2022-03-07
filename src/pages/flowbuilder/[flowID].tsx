@@ -10,10 +10,15 @@ import { translate } from '../../utils';
 import { MAIN_PAGE, STAGE_TYPE } from '../../constants';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { isFlowBuilderLeftPanelOpen, toggleFlowBuilderLeftPanel, isFlowBuilderRightPanelOpen, toggleFlowBuilderRightPanel } from '../../redux/slices/uiSlice';
 import FormPicker from '../../components/FormPicker';
 import StageCard from '../../components/StageCard';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { 
+	isLeftPanelOpen as isFlowBuilderLeftPanelOpen, 
+	isRightPanelOpen as isFlowBuilderRightPanelOpen,
+	toggleLeftPanel as toggleFlowBuilderLeftPanel,
+	toggleRightPanel as toggleFlowBuilderRightPanel
+} from '../../redux/slices/flowBuilderSlice';
 
 type FlowBuilderProps = {
 	flow: Flow;

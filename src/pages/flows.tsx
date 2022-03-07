@@ -3,7 +3,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
-import { fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowSlice';
+import { fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
 import { EuiButton, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import styles from '../styles/Flows.module.scss';

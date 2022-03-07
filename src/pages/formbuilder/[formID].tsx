@@ -10,7 +10,10 @@ import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
 import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { toggleFormBuilderLeftPanel, isFormBuilderLeftPanelOpen } from '../../redux/slices/uiSlice';
+import { 
+	isLeftPanelOpen as isFormBuilderLeftPanelOpen,
+	toggleLeftPanel as toggleFormBuilderLeftPanel,
+} from '../../redux/slices/formBuilderSlice';
 
 type FormBuilderProps = {
 	form: Form;

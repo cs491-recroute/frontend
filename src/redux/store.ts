@@ -1,13 +1,15 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
+import flowBuilderSlice from './slices/flowBuilderSlice';
 
-import flowSlice from './slices/flowSlice';
-import uiSlice from './slices/uiSlice';
+import flowsSlice from './slices/flowsSlice';
+import formBuilderSlice from './slices/formBuilderSlice';
 
 export function makeStore() {
 	return configureStore({
 		reducer: { 
-			flow: flowSlice,
-			ui: uiSlice
+			formBuilder: formBuilderSlice,
+			flowBuilder: flowBuilderSlice,
+			flows: flowsSlice
 		},
 	});
 }
