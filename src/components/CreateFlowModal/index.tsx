@@ -1,0 +1,79 @@
+import { EuiButton, EuiDatePicker, EuiDatePickerRange, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
+import moment from 'moment';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { translate } from '../../utils';
+
+export type CreateFlowRef = { close: () => void, open: () => void };
+
+const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
+	const minDate = moment().add(1, 'd');
+	const [startDate, setStartDate] = useState(minDate);
+	const [endDate, setEndDate] = useState(moment().add(1, 'month'));
+	const [name, setName] = useState('');
+	const isInvalid = startDate > endDate || startDate <= moment();
+
+	const [isOpen, setOpen] = useState(false);
+
+	const close = () => setOpen(false);
+	const open = () => setOpen(true);
+
+	useImperativeHandle(ref, () => ({ close, open }));
+
+	const createFlow = () => {
+		// TODO: Create flow with below properties and redirect to flow page if successful
+		// TODO: Make duration optional (user can activate, deactivate flow manually)
+		console.log({name, startDate: startDate.format(), endDate: endDate.format()});
+	};
+
+	return isOpen ? <EuiModal onClose={close}>
+		<EuiModalHeader>
+			<EuiModalHeaderTitle>{translate('Create New Flow')}</EuiModalHeaderTitle>
+		</EuiModalHeader>
+
+		<EuiModalBody>
+			<EuiFormRow label={translate('Flow Name')}>
+				<EuiFieldText onChange={({ target: { value }}) => setName(value)}/>
+			</EuiFormRow>
+			<EuiFormRow label={translate('Duration')}>
+				<EuiDatePickerRange
+					startDateControl={
+						<EuiDatePicker
+							selected={startDate}
+							onChange={date => { if (date) setStartDate(date);}}
+							startDate={startDate}
+							endDate={endDate}
+							minDate={minDate}
+							maxDate={endDate}
+							isInvalid={isInvalid}
+							aria-label="Start date"
+							showTimeSelect
+							timeFormat='HH:mm'
+						/>
+					}
+					endDateControl={
+						<EuiDatePicker
+							selected={endDate}
+							onChange={date => { if (date) setEndDate(date);}}
+							startDate={startDate}
+							endDate={endDate}
+							minDate={startDate}
+							isInvalid={isInvalid}
+							aria-label="End date"
+							showTimeSelect
+							timeFormat='HH:mm'
+						/>
+					}
+				/>
+			</EuiFormRow>
+		</EuiModalBody>
+
+		<EuiModalFooter>
+			<EuiButton onClick={createFlow} fill>
+        Create
+			</EuiButton>
+		</EuiModalFooter>
+	</EuiModal> : null;
+});
+CreateFlowModal.displayName = 'CreateFlowModal';
+
+export default CreateFlowModal;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
@@ -7,9 +7,11 @@ import { fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSl
 import Link from 'next/link';
 import { EuiButton, EuiHorizontalRule, EuiText } from '@elastic/eui';
 import styles from '../styles/Flows.module.scss';
+import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
 
 
 const FlowsPage: NextPage = () => {
+	const createFlowRef = useRef<CreateFlowRef>(null);
 	const { user } = useUser();
 	const dispatch = useAppDispatch();
 	const flows = useAppSelector(getFlows);
@@ -24,7 +26,7 @@ const FlowsPage: NextPage = () => {
 	return (
 		<div className={styles.mainDiv}>
 			<div className={styles.leftPanel}>
-				<EuiButton className={styles.createButton}>
+				<EuiButton className={styles.createButton} onClick={createFlowRef.current?.open}>
 					<EuiText className={styles.text}>CREATE FLOW</EuiText>
 				</EuiButton>
 				<EuiHorizontalRule className={styles.rule}></EuiHorizontalRule>
@@ -45,6 +47,7 @@ const FlowsPage: NextPage = () => {
 					</div>
 				)) : <div>Fetching</div>}
 			</div>
+			<CreateFlowModal ref={createFlowRef} />
 		</div>
 	);
 };
