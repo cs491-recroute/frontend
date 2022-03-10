@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, useEffect } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FlowBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -15,8 +15,10 @@ import StageCard from '../../components/StageCard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { 
 	addStageAsync,
+	getCurrentFlow,
 	isLeftPanelOpen as isFlowBuilderLeftPanelOpen, 
 	isRightPanelOpen as isFlowBuilderRightPanelOpen,
+	setCurrentFlow,
 	toggleLeftPanel as toggleFlowBuilderLeftPanel,
 	toggleRightPanel as toggleFlowBuilderRightPanel
 } from '../../redux/slices/flowBuilderSlice';
@@ -26,8 +28,11 @@ type FlowBuilderProps = {
 }
 
 const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps) => {
-	const { name, stages = [] } = flow;
 	const dispatch = useAppDispatch();
+	useEffect(() => {
+		dispatch(setCurrentFlow(flow));
+	}, []);
+	const { name, stages = [] } = useAppSelector(getCurrentFlow);
 	const isLeftPanelOpen = useAppSelector(isFlowBuilderLeftPanelOpen);
 	const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
 
@@ -73,28 +78,27 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 				{translate('Settings')}
 			</EuiText>
 			<hr/>
-			<FormPicker/>
 		</EuiCollapsibleNav>
 		<div className={styles.header}>
 			{name}
 			<SettingsIcon className={styles.settingsIcon}/>
 		</div>
 		<div className={styles.content}>
-
-			<div 
-				className={styles.addFormButton}
-				onClick={toggleLeftPanel(true)}
-			>
-				<EuiText className={styles.text}>
-					{translate('Add Start Form')}
-				</EuiText>
-			</div>
+			{stages.map(stage => (
+				<StageCard type={stage.type} name={stage.stageProps.name} key={stage._id}/>
+			))}
 			{stages.length === 0 ? (
-				<>nostage</>
+				<div 
+					className={styles.addFormButton}
+					onClick={toggleLeftPanel(true)}
+				>
+					<EuiText className={styles.text}>
+						{translate('Add Start Form')}
+					</EuiText>
+				</div>
 			) : (
 				<>STAGES</>
 			)}
-			<StageCard onClick={toggleRightPanel(true)} name="Form"  type={STAGE_TYPE.FORM} />
 		</div>
 	</Fragment>);
 };
