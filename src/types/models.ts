@@ -4,6 +4,9 @@ type Basic = {
 
 export type Flow = {
   name: string;
+  startDate?: Date;
+  endDate?: Date;
+  active: boolean;
   stages: Stage[];
 } & Basic;
 

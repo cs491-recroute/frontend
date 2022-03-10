@@ -1,11 +1,15 @@
-import { EuiButton, EuiDatePicker, EuiDatePickerRange, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
+import { EuiButton, EuiDatePicker, EuiDatePickerRange, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiSwitch } from '@elastic/eui';
 import moment from 'moment';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createFlowAsync } from '../../redux/slices/flowsSlice';
 import { translate } from '../../utils';
 
 export type CreateFlowRef = { close: () => void, open: () => void };
 
 const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
+	const dispatch = useDispatch();
+	const [specifyDuration, setSpecifyDuration] = useState(false);
 	const minDate = moment().add(1, 'd');
 	const [startDate, setStartDate] = useState(minDate);
 	const [endDate, setEndDate] = useState(moment().add(1, 'month'));
@@ -20,22 +24,35 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
 	useImperativeHandle(ref, () => ({ close, open }));
 
 	const createFlow = () => {
-		// TODO: Create flow with below properties and redirect to flow page if successful
-		// TODO: Make duration optional (user can activate, deactivate flow manually)
-		console.log({name, startDate: startDate.format(), endDate: endDate.format()});
+		dispatch(createFlowAsync({
+			name,
+			...(specifyDuration && {
+				startDate: startDate.format(), 
+				endDate: endDate.format()
+			})
+		}));
+		setOpen(false);
 	};
 
-	return isOpen ? <EuiModal onClose={close}>
+	return isOpen ? <EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
 		<EuiModalHeader>
 			<EuiModalHeaderTitle>{translate('Create New Flow')}</EuiModalHeaderTitle>
 		</EuiModalHeader>
 
 		<EuiModalBody>
-			<EuiFormRow label={translate('Flow Name')}>
-				<EuiFieldText onChange={({ target: { value }}) => setName(value)}/>
+			<EuiFormRow label={translate('Flow Name')} fullWidth>
+				<EuiFieldText onChange={({ target: { value }}) => setName(value)} className='name' fullWidth/>
 			</EuiFormRow>
-			<EuiFormRow label={translate('Duration')}>
+			<EuiFormRow label={translate('Specify Duration')} >
+				<EuiSwitch
+					label=''
+					checked={specifyDuration} 
+					onChange={({ target: { checked }}) => setSpecifyDuration(checked)}
+				/>
+			</EuiFormRow>
+			{specifyDuration && <EuiFormRow label={translate('Duration')} fullWidth>
 				<EuiDatePickerRange
+					fullWidth
 					startDateControl={
 						<EuiDatePicker
 							selected={startDate}
@@ -64,7 +81,7 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
 						/>
 					}
 				/>
-			</EuiFormRow>
+			</EuiFormRow>}
 		</EuiModalBody>
 
 		<EuiModalFooter>
