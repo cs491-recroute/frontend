@@ -1,3 +1,5 @@
+import { STAGE_TYPE } from '../constants';
+
 type Basic = {
   _id: string;
 }
@@ -11,7 +13,11 @@ export type Flow = {
 } & Basic;
 
 export type Stage = {
-  name: string;
+  type: STAGE_TYPE;
+  stageID: string;
+  startDate?: Date;
+  endDate?: Date;
+  stageProps: Record<string, any>;
 } & Basic;
 
 export type Form = {

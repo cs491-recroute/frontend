@@ -1,19 +1,37 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { STAGE_TYPE } from '../../constants';
+import { Flow } from '../../types/models';
 import type { AppState } from '../store';
 
 export interface FlowBuilderState {
 	ui: {
 		leftPanelOpen: boolean;
 		rightPanelOpen: boolean;
-	}
+	},
+	currentFlow: Flow
 }
 
 const initialState: FlowBuilderState = {
 	ui: {
 		leftPanelOpen: false,
 		rightPanelOpen: false
-	}
+	},
+	currentFlow: { _id: '', name: '', stages: [], active: false }
 };
+
+export const addStageAsync = createAsyncThunk(
+	'flow/addStage',
+	async (stageData: { type: STAGE_TYPE; stageID: string; }, { getState }) => {
+		const { flowBuilder: { currentFlow: { _id: flowID, startDate, endDate } = {} } } = getState() as AppState;
+		const { data: { stage } } = await axios.post(`/api/flows/${flowID}/stage`, {
+			...stageData,
+			...(startDate && endDate && { startDate, endDate })
+		});
+		return stage;
+	}
+);
+
 
 export const flowBuilderSlice = createSlice({
 	name: 'flowBuilder',
@@ -24,13 +42,23 @@ export const flowBuilderSlice = createSlice({
 		},
 		toggleRightPanel: (state, action) => {
 			state.ui.rightPanelOpen = action.payload;
-		}
+		},
+		setCurrentFlow: (state, action) => {
+			state.currentFlow = action.payload;
+		},
 	},
+	extraReducers: builder => {
+		builder
+			.addCase(addStageAsync.fulfilled, (state, action) => {
+				state.currentFlow.stages.push(action.payload);
+			});
+	}
 });
 
-export const { toggleLeftPanel, toggleRightPanel } = flowBuilderSlice.actions;
+export const { toggleLeftPanel, toggleRightPanel, setCurrentFlow } = flowBuilderSlice.actions;
 
 export const isLeftPanelOpen = (state: AppState) => state.flowBuilder.ui.leftPanelOpen;
 export const isRightPanelOpen = (state: AppState) => state.flowBuilder.ui.rightPanelOpen;
+export const getCurrentFlow = (state: AppState) => state.flowBuilder.currentFlow;
 
 export default flowBuilderSlice.reducer;

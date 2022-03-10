@@ -14,6 +14,7 @@ import FormPicker from '../../components/FormPicker';
 import StageCard from '../../components/StageCard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { 
+	addStageAsync,
 	isLeftPanelOpen as isFlowBuilderLeftPanelOpen, 
 	isRightPanelOpen as isFlowBuilderRightPanelOpen,
 	toggleLeftPanel as toggleFlowBuilderLeftPanel,
@@ -38,6 +39,13 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 		if (status !== isRightPanelOpen) dispatch(toggleFlowBuilderRightPanel(status));
 	}, [isRightPanelOpen]);
 
+	const handleFormSelect = useCallback(formID => {
+		dispatch(addStageAsync({ 
+			type: STAGE_TYPE.FORM, 
+			stageID: formID 
+		}));
+	}, []);
+
 	return (<Fragment>
 		<EuiCollapsibleNav
 			className={styles.leftPanel}
@@ -50,7 +58,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 				{translate('Form Templates')}
 			</EuiText>
 			<hr/>
-			<FormPicker returnBack />
+			<FormPicker returnBack onSelect={handleFormSelect}/>
 		</EuiCollapsibleNav>
 		<EuiCollapsibleNav
 			className={styles.rightPanel}

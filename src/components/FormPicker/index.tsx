@@ -11,9 +11,10 @@ type FormOption = EuiSelectableOption<{ name: string; formID: string; }>;
 
 type FormPickerOptions = {
 	returnBack?: boolean;
+	onSelect: (formID: string) => void;
 }
 
-const FormPicker = ({ returnBack = false }: FormPickerOptions) => {
+const FormPicker = ({ returnBack = false, onSelect }: FormPickerOptions) => {
 	const [templates, setTemplates] = useState([] as Form[]);
 	const [loading, setLoading] = useState(true);
 	const router = useRouter();
@@ -25,9 +26,8 @@ const FormPicker = ({ returnBack = false }: FormPickerOptions) => {
 	}, []);
 
 	const handleTemplateSelect = useCallback((options: FormOption[]) => {
-		const selectedForm = options.find(option => option.checked === 'on');
-		// TODO: Create stage with form
-		console.log('create stage with template form', selectedForm?.formID);
+		const { formID = '' } = options.find(option => option.checked === 'on') as FormOption;
+		onSelect(formID);
 	}, []);
 
 	const goToFlowBuilder = useCallback(formID => {
