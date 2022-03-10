@@ -8,7 +8,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
-import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiText } from '@elastic/eui';
+import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiFormRow, EuiForm } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { 
 	isLeftPanelOpen as isFormBuilderLeftPanelOpen,
@@ -31,8 +31,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 	const toggleLeftPanel = useCallback(status => () => {
 		if (status !== isLeftPanelOpen) dispatch(toggleFormBuilderLeftPanel(status));
 	}, [isLeftPanelOpen]);
-
-
+	
 	return (<Fragment>
 		<div className={styles.header}>
 			{name}
@@ -65,18 +64,24 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 						{list}
 					</Fragment>
 				)}
-
 			</EuiSelectable>	
 		</EuiCollapsibleNav>
 		<div className={styles.content}>
-			<div 
-				className={styles.createFormButton}
-				onClick={toggleLeftPanel(true)}
-			>
-				<EuiText className={styles.text}>
-					{translate('Create New Form')}
-				</EuiText>
-			</div>	
+			<div>
+				<EuiCard 
+					className={styles.card}
+					title='Form'
+				>
+					<EuiForm>
+						<EuiFormRow label="Text field" helpText="I am some friendly help text.">
+							<EuiFieldText name="first" />
+						</EuiFormRow>
+					</EuiForm>
+					<EuiButton className={styles.returnToFlow} onClick={toggleLeftPanel(true)}>
+						Return to Flow
+					</EuiButton>
+				</EuiCard>
+			</div>
 		</div>
 	</Fragment>);
 };

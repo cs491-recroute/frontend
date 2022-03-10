@@ -10,20 +10,34 @@
     .settingsIcon {
       margin-left: 10px;
     }
-  }
+}
+.card{
+    height: 180px;
+    width: 380px;
+    display: flex;
+    justify-content: center;
+    align-items: left;
+    font-size: 20px;
+    font-weight: bold;
 
-  .container {
+	.returnToFlow{
+		padding: 14px;
+		margin: 14px;
+  	}
+}
+
+.container {
     padding: 14px;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     
     .list {
-      flex-grow: 1;
+      	flex-grow: 1;
     }
-  }
+}
   
-  .content {
+.content {
     padding: 30px 0;
     display: flex;
     flex-direction: column;
@@ -31,45 +45,45 @@
     height: calc(100% - 60px);
   
     .addFormButton {
-      min-width: 320px;
-      width: 15%;
-      padding: 16px;
-      border: 1px dashed black;
-      border-radius: 6px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      
-      .text {      
-        font-size: 20px;
-        font-weight: bold;
-      }
-    }
-  }
+		min-width: 320px;
+		width: 15%;
+		padding: 16px;
+		border: 1px dashed black;
+		border-radius: 6px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		cursor: pointer;
+		
+		.text {      
+			font-size: 20px;
+			font-weight: bold;
+		}
+	}
+}
   
-  .leftPanel {
+.leftPanel {
     padding: 4px 0;
     .title {
-      margin-left: 14px;
-      font-size: 20px;
-      font-weight: 600;
+		margin-left: 14px;
+		font-size: 20px;
+		font-weight: 600;
     }
   
     hr {
-      margin: 14px;
+      	margin: 14px;
     }
-  }
+}
   
-  .rightPanel {
-    padding: 4px 0;
-    .title {
-      margin-left: 14px;
-      font-size: 20px;
-      font-weight: 600;
-    }
-  
-    hr {
-      margin: 14px;
-    }
-  }
+.rightPanel {
+	padding: 4px 0;
+	.title {
+		margin-left: 14px;
+		font-size: 20px;
+		font-weight: 600;
+	}
+
+	hr {
+		margin: 14px;
+	}
+}
