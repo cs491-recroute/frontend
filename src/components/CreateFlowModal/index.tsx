@@ -1,14 +1,14 @@
 import { EuiButton, EuiDatePicker, EuiDatePickerRange, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiSwitch } from '@elastic/eui';
 import moment from 'moment';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { createFlowAsync } from '../../redux/slices/flowsSlice';
 import { translate } from '../../utils';
+import { useAppDispatch } from '../../utils/hooks';
 
 export type CreateFlowRef = { close: () => void, open: () => void };
 
 const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 	const [specifyDuration, setSpecifyDuration] = useState(false);
 	const minDate = moment().add(1, 'd');
 	const [startDate, setStartDate] = useState(minDate);
