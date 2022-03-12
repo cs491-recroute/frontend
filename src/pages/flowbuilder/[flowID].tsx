@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FlowBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -23,16 +23,10 @@ import {
 import { STAGE_TYPE } from '../../types/enums';
 import Main from '../../components/FlowBuilder/Main';
 import Header from '../../components/FlowBuilder/Header';
+import { wrapper } from '../../redux/store';
 
-type FlowBuilderProps = {
-	flow: Flow;
-}
-
-const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps) => {
+const FlowBuilderPage: NextPage = () => {
 	const dispatch = useAppDispatch();
-	useEffect(() => {
-		dispatch(setCurrentFlow(flow));
-	}, []);
 	const { stages, conditions } = useAppSelector(getCurrentFlow);
 	const isLeftPanelOpen = useAppSelector(isFlowBuilderLeftPanelOpen);
 	const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
@@ -90,11 +84,12 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 };
 
 export const getServerSideProps = withPageAuthRequired({
-	getServerSideProps: async (context) => {
+	getServerSideProps: wrapper.getServerSideProps(({ dispatch }) => async (context) => {
 		const { flowID } = context.query;
 		try {
 			const { data: flow }: AxiosResponse<Flow> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/flow/${flowID}`);
-			return { props: { flow } as FlowBuilderProps};
+			dispatch(setCurrentFlow(flow));
+			return { props: {}};
 		} catch (error) {
 			return {
 				redirect: {
@@ -103,7 +98,7 @@ export const getServerSideProps = withPageAuthRequired({
 				}
 			};
 		}
-	}
+	})
 });
 
 export default FlowBuilderPage;
