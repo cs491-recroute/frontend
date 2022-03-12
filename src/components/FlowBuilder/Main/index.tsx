@@ -49,9 +49,9 @@ const Main = ({ stages, conditions, className }: MainProps) => {
 					<div className={styles.dummyArrow}/>
 					<div className={styles.newStage}>
 						{/* TODO: Implement onclick functions for below elements */}
-						<div>Form</div>
-						<div>Test</div>
-						<div>Interview</div>
+						<div onClick={() => dispatch(toggleLeftPanel(true))}>{translate('Form')}</div>
+						<div>{translate('Test')}</div>
+						<div>{translate('Interview')}</div>
 					</div>
 				</>
 			)}

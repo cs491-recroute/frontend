@@ -36,11 +36,23 @@
     height: 60px;
     width: 420px;
     background-color: white;
-    padding: 10px;
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: space-around;
     border-style: dashed;
     border-radius: 10px;
+
+    & > div {
+      padding: 10px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      &:not(:last-child) {
+        border-right-style: dashed;
+      }
+    }
   }
 }
