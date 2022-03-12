@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useMemo } from 'react';
+import React, { Fragment, useCallback, useEffect } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FlowBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -11,7 +11,6 @@ import { MAIN_PAGE } from '../../constants';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import FormPicker from '../../components/FormPicker';
-import StageCard from '../../components/StageCard';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { 
 	addStageAsync,
@@ -23,7 +22,7 @@ import {
 	toggleRightPanel as toggleFlowBuilderRightPanel
 } from '../../redux/slices/flowBuilderSlice';
 import { STAGE_TYPE } from '../../types/enums';
-import Condition from '../../components/Condition';
+import Main from '../../components/FlowBuilder/Main';
 
 type FlowBuilderProps = {
 	flow: Flow;
@@ -52,21 +51,6 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			stageID: formID 
 		}));
 	}, []);
-
-	const stagesAndConditions = useMemo(() => stages.reduce((acc: JSX.Element[], stage, index, stageArray) => {
-		const stageElement = <StageCard 
-			type={stage.type} 
-			name={stage.stageProps.name} 
-			key={stage._id}
-			id={stage._id}
-		/>;
-		const condition = conditions.find(condition => condition.from === stageArray[index]._id && condition.to === stageArray[index + 1]._id);
-		const conditionElement = <Condition {...condition} />;
-		if (index + 1 === stageArray.length) {
-			return [...acc, stageElement];
-		}
-		return [...acc, stageElement, conditionElement];
-	}, []), [stages, conditions]);
 
 	return (<Fragment>
 		<EuiCollapsibleNav
@@ -100,21 +84,11 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			{name}
 			<SettingsIcon className={styles.settingsIcon}/>
 		</div>
-		<div className={styles.content}>
-			{stagesAndConditions}
-			{stages.length === 0 ? (
-				<div 
-					className={styles.addFormButton}
-					onClick={toggleLeftPanel(true)}
-				>
-					<EuiText className={styles.text}>
-						{translate('Add Start Form')}
-					</EuiText>
-				</div>
-			) : (
-				<>STAGES</>
-			)}
-		</div>
+		<Main 
+			conditions={conditions} 
+			stages={stages}
+			className={styles.content}
+		/>
 	</Fragment>);
 };
 

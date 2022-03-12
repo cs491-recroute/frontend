@@ -1,9 +1,9 @@
 import { EuiCard, EuiIcon } from '@elastic/eui';
 import classNames from 'classnames';
 import React from 'react';
-import { toggleRightPanel } from '../../redux/slices/flowBuilderSlice';
-import { STAGE_TYPE } from '../../types/enums';
-import { useAppDispatch } from '../../utils/hooks';
+import { toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
+import { STAGE_TYPE } from '../../../types/enums';
+import { useAppDispatch } from '../../../utils/hooks';
 import styles from './StageCard.module.scss';
 
 type StageCardProps = {
