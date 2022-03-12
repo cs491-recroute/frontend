@@ -42,7 +42,8 @@ const FormPicker = ({ returnBack = false, onSelect }: FormPickerOptions) => {
 		});
 	}, []);
 
-	const handlePreviewForm = useCallback(formID => () => {
+	const handlePreviewForm = useCallback(formID => (event: React.MouseEvent<SVGSVGElement>) => {
+		event.stopPropagation();
 		goToFlowBuilder(formID);
 	}, []);
 
