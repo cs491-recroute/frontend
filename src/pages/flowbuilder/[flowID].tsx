@@ -11,7 +11,6 @@ import { MAIN_PAGE } from '../../constants';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import FormPicker from '../../components/FormPicker';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { 
 	addStageAsync,
 	getCurrentFlow,
@@ -23,6 +22,7 @@ import {
 } from '../../redux/slices/flowBuilderSlice';
 import { STAGE_TYPE } from '../../types/enums';
 import Main from '../../components/FlowBuilder/Main';
+import Header from '../../components/FlowBuilder/Header';
 
 type FlowBuilderProps = {
 	flow: Flow;
@@ -33,7 +33,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 	useEffect(() => {
 		dispatch(setCurrentFlow(flow));
 	}, []);
-	const { name, stages, conditions } = useAppSelector(getCurrentFlow);
+	const { stages, conditions } = useAppSelector(getCurrentFlow);
 	const isLeftPanelOpen = useAppSelector(isFlowBuilderLeftPanelOpen);
 	const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
 
@@ -80,10 +80,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			</EuiText>
 			<hr/>
 		</EuiCollapsibleNav>
-		<div className={styles.header}>
-			{name}
-			<SettingsIcon className={styles.settingsIcon}/>
-		</div>
+		<Header/>
 		<Main 
 			conditions={conditions} 
 			stages={stages}
