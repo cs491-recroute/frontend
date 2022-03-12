@@ -51,6 +51,7 @@ export const flowBuilderSlice = createSlice({
 		builder
 			.addCase(addStageAsync.fulfilled, (state, action) => {
 				state.currentFlow.stages.push(action.payload);
+				state.ui.leftPanelOpen = false;
 			});
 	}
 });
