@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useEffect } from 'react';
+import React, { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FlowBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -7,7 +7,7 @@ import { gatewayManager } from '../../utils/gatewayManager';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
-import { MAIN_PAGE, STAGE_TYPE } from '../../constants';
+import { MAIN_PAGE } from '../../constants';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import FormPicker from '../../components/FormPicker';
@@ -22,6 +22,8 @@ import {
 	toggleLeftPanel as toggleFlowBuilderLeftPanel,
 	toggleRightPanel as toggleFlowBuilderRightPanel
 } from '../../redux/slices/flowBuilderSlice';
+import { STAGE_TYPE } from '../../types/enums';
+import Condition from '../../components/Condition';
 
 type FlowBuilderProps = {
 	flow: Flow;
@@ -32,7 +34,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 	useEffect(() => {
 		dispatch(setCurrentFlow(flow));
 	}, []);
-	const { name, stages = [] } = useAppSelector(getCurrentFlow);
+	const { name, stages, conditions } = useAppSelector(getCurrentFlow);
 	const isLeftPanelOpen = useAppSelector(isFlowBuilderLeftPanelOpen);
 	const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
 
@@ -50,6 +52,21 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			stageID: formID 
 		}));
 	}, []);
+
+	const stagesAndConditions = useMemo(() => stages.reduce((acc: JSX.Element[], stage, index, stageArray) => {
+		const stageElement = <StageCard 
+			type={stage.type} 
+			name={stage.stageProps.name} 
+			key={stage._id}
+			id={stage._id}
+		/>;
+		const condition = conditions.find(condition => condition.from === stageArray[index]._id && condition.to === stageArray[index + 1]._id);
+		const conditionElement = <Condition {...condition} />;
+		if (index + 1 === stageArray.length) {
+			return [...acc, stageElement];
+		}
+		return [...acc, stageElement, conditionElement];
+	}, []), [stages, conditions]);
 
 	return (<Fragment>
 		<EuiCollapsibleNav
@@ -84,9 +101,7 @@ const FlowBuilderPage: NextPage<FlowBuilderProps> = ({ flow }: FlowBuilderProps)
 			<SettingsIcon className={styles.settingsIcon}/>
 		</div>
 		<div className={styles.content}>
-			{stages.map(stage => (
-				<StageCard type={stage.type} name={stage.stageProps.name} key={stage._id}/>
-			))}
+			{stagesAndConditions}
 			{stages.length === 0 ? (
 				<div 
 					className={styles.addFormButton}

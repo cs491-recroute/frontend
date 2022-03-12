@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { STAGE_TYPE } from '../../constants';
+import { STAGE_TYPE } from '../../types/enums';
 import { Flow } from '../../types/models';
 import type { AppState } from '../store';
 
@@ -17,7 +17,7 @@ const initialState: FlowBuilderState = {
 		leftPanelOpen: false,
 		rightPanelOpen: false
 	},
-	currentFlow: { _id: '', name: '', stages: [], active: false }
+	currentFlow: { _id: '', name: '', stages: [], active: false, conditions: [] }
 };
 
 export const addStageAsync = createAsyncThunk(

@@ -1,7 +1,15 @@
-import { STAGE_TYPE } from '../constants';
+import { OPERATIONS, STAGE_TYPE } from './enums';
 
 type Basic = {
   _id: string;
+}
+
+export type Condition = {
+  from: string;
+  to: string;
+  field?: string;
+  operation: OPERATIONS;
+  value: string;
 }
 
 export type Flow = {
@@ -10,6 +18,7 @@ export type Flow = {
   endDate?: Date;
   active: boolean;
   stages: Stage[];
+  conditions: Condition[];
 } & Basic;
 
 export type Stage = {
