@@ -1,16 +1,16 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { AxiosResponse } from 'axios';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import styles from '../../styles/FlowBuilder.module.scss';
-import { Flow } from '../../types/models';
+import { Flow, Form, Test } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import FormPicker from '../../components/FormPicker';
+import Picker from '../../components/Picker';
 import {
     addStageAsync,
     getCurrentFlow,
@@ -24,6 +24,7 @@ import { STAGE_TYPE } from '../../types/enums';
 import Main from '../../components/FlowBuilder/Main';
 import Header from '../../components/FlowBuilder/Header';
 import { wrapper } from '../../redux/store';
+import capitalize from 'lodash.capitalize';
 
 const FlowBuilderPage: NextPage = () => {
     const dispatch = useAppDispatch();
@@ -55,17 +56,17 @@ const FlowBuilderPage: NextPage = () => {
                 closeButtonPosition="inside"
                 ownFocus={false}
             >
-                <EuiText className={styles.title}>
-                    {translate('Form Templates')}
-                </EuiText>
-                <hr />
-                {leftPanelStatus === STAGE_TYPE.FORM && (
-                    <FormPicker
+                {leftPanelStatus && <>                
+                    <EuiText className={styles.title}>
+                        {translate(`${capitalize(leftPanelStatus)} Templates`)}
+                    </EuiText>
+                    <hr />
+                    <Picker
                         returnBack
                         onSelect={handleFormSelect}
+                        itemType={leftPanelStatus as Exclude<STAGE_TYPE, STAGE_TYPE.INTERVIEW>}
                     />)
-                }
-                {leftPanelStatus === STAGE_TYPE.TEST && <div>test</div>}
+                </>}
             </EuiCollapsibleNav>
             <EuiCollapsibleNav
                 className={styles.rightPanel}

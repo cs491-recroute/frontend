@@ -32,3 +32,7 @@ export type Stage = {
 export type Form = {
   name: string;
 } & Basic;
+
+export type Test = {
+  name: string;
+} & Basic;
