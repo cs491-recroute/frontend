@@ -7,24 +7,24 @@ import { NextPage } from 'next';
 import styles from '../styles/Profile.module.scss';
 
 const ProfilePage: NextPage = () => {
-	const { user } = useUser();
-	if (user) {
-		return (
-			<div className={styles.container}>
-				<Head>
-					<title>My Profile</title>
-				</Head>
-				<div className={styles.header}>
-					<div className={styles.user}>
-						<img src={user.picture || ''} className={styles.avatar}/>
-						{user.name}
-					</div>
-					<div className={styles.title}>My Profile</div>
-				</div>
-			</div>
-		);
-	}
-	return null;
+    const { user } = useUser();
+    if (user) {
+        return (
+            <div className={styles.container}>
+                <Head>
+                    <title>My Profile</title>
+                </Head>
+                <div className={styles.header}>
+                    <div className={styles.user}>
+                        <img src={user.picture || ''} className={styles.avatar}/>
+                        {user.name}
+                    </div>
+                    <div className={styles.title}>My Profile</div>
+                </div>
+            </div>
+        );
+    }
+    return null;
 };
 
 export default ProfilePage;

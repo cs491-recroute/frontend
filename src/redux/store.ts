@@ -6,24 +6,24 @@ import flowsSlice from './slices/flowsSlice';
 import formBuilderSlice from './slices/formBuilderSlice';
 
 const combinedReducer = combineReducers({
-	formBuilder: formBuilderSlice,
-	flowBuilder: flowBuilderSlice,
-	flows: flowsSlice
+    formBuilder: formBuilderSlice,
+    flowBuilder: flowBuilderSlice,
+    flows: flowsSlice
 });
 
 const reducer = (state: ReturnType<typeof combinedReducer> | undefined, action: AnyAction) => {
-	if (action.type === HYDRATE) {
-		return {
-			...state,
-			...action.payload
-		};
-	} else {
-		return combinedReducer(state, action);
-	}
+    if (action.type === HYDRATE) {
+        return {
+            ...state,
+            ...action.payload
+        };
+    } else {
+        return combinedReducer(state, action);
+    }
 };
 
 export function makeStore() {
-	return configureStore({ reducer });
+    return configureStore({ reducer });
 }
 
 type Store = ReturnType<typeof makeStore>;

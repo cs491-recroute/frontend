@@ -5,12 +5,12 @@ import { SERVICES } from '../../../constants/services';
 import { Form } from '../../../types/models';
 
 const getFormTemplates: NextApiHandler = async (request, response) => {
-	try {
-		const { data: formTemplates } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/templates/form');
-		response.json(formTemplates as Form[]);
-	} catch (error) {
-		response.json([] as Form[]);
-	}
+    try {
+        const { data: formTemplates } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/templates/form');
+        response.json(formTemplates as Form[]);
+    } catch (error) {
+        response.json([] as Form[]);
+    }
 };
 
 export default withApiAuthRequired(getFormTemplates);

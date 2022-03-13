@@ -9,23 +9,23 @@ export interface FormBuilderState {
 }
 
 const initialState: FormBuilderState = {
-	ui: {
-		leftPanelOpen: false,
-		rightPanelOpen: false
-	}
+    ui: {
+        leftPanelOpen: false,
+        rightPanelOpen: false
+    }
 };
 
 export const formBuilderSlice = createSlice({
-	name: 'formBuilder',
-	initialState,
-	reducers: {
-		toggleLeftPanel: (state, action) => {
-			state.ui.leftPanelOpen = action.payload;
-		},
-		toggleRightPanel: (state, action) => {
-			state.ui.rightPanelOpen = action.payload;
-		}
-	},
+    name: 'formBuilder',
+    initialState,
+    reducers: {
+        toggleLeftPanel: (state, action) => {
+            state.ui.leftPanelOpen = action.payload;
+        },
+        toggleRightPanel: (state, action) => {
+            state.ui.rightPanelOpen = action.payload;
+        }
+    }
 });
 
 export const { toggleLeftPanel, toggleRightPanel } = formBuilderSlice.actions;

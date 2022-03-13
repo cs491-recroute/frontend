@@ -13,29 +13,29 @@ type StageCardProps = {
 }
 
 const stageIcons : {[key in STAGE_TYPE]: string} = {
-	[STAGE_TYPE.FORM]: 'indexEdit',
-	[STAGE_TYPE.TEST]: 'indexEdit',
-	[STAGE_TYPE.INTERVIEW]: 'indexEdit'
+    [STAGE_TYPE.FORM]: 'indexEdit',
+    [STAGE_TYPE.TEST]: 'indexEdit',
+    [STAGE_TYPE.INTERVIEW]: 'indexEdit'
 };
 
 const StageCard = ({ type, name, id }: StageCardProps) => {
-	const dispatch = useAppDispatch();
-	const onClick = () => dispatch(toggleRightPanel(true));
+    const dispatch = useAppDispatch();
+    const onClick = () => dispatch(toggleRightPanel(true));
 	
-	console.log(id);
-	// TODO: @goktug id refers to stage id.
+    console.log(id);
+    // TODO: @goktug id refers to stage id.
 
-	return (
-		<div onClick={onClick} className={styles.container}>
-			<EuiCard
-				layout='horizontal'
-				className={classNames(styles.card, styles[type.toLowerCase()])}
-				icon={<EuiIcon size="xl" type={stageIcons[type]} />}
-				title={<div>{name}</div>}
-				description=''
-			/>
-		</div>
-	);
+    return (
+        <div onClick={onClick} className={styles.container}>
+            <EuiCard
+                layout='horizontal'
+                className={classNames(styles.card, styles[type.toLowerCase()])}
+                icon={<EuiIcon size="xl" type={stageIcons[type]} />}
+                title={<div>{name}</div>}
+                description=''
+            />
+        </div>
+    );
 };
 
 export default StageCard;
