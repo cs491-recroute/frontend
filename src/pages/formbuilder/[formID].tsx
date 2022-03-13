@@ -14,6 +14,7 @@ import {
     isLeftPanelOpen as isFormBuilderLeftPanelOpen,
     toggleLeftPanel as toggleFormBuilderLeftPanel
 } from '../../redux/slices/formBuilderSlice';
+import { useRouter } from 'next/router';
 
 type FormBuilderProps = {
     form: Form;
@@ -30,6 +31,7 @@ const Options : FormOption[] = [
 ];
 
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
+    const { query: { returnTo }, push } = useRouter();
     const [options, setOptions] = useState(Options);
 
     const { name } = form;
@@ -67,9 +69,14 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
                 <EuiForm>
                     {options.map(createFormElement)}
                 </EuiForm>
-                <EuiButton className={styles.returnToFlow} onClick={toggleLeftPanel(true)}>
-    Return to Flow
-                </EuiButton>
+                {returnTo && 
+                    <EuiButton 
+                        className={styles.returnToFlow} 
+                        onClick={() => push(returnTo.toString())}
+                    >
+                        Return to Flow
+                    </EuiButton>
+                }
             </EuiCard>
         );
     }

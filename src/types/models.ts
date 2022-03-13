@@ -10,7 +10,7 @@ export type Condition = {
   field?: string;
   operation: OPERATIONS;
   value: string;
-}
+} & Basic;
 
 export type Flow = {
   name: string;

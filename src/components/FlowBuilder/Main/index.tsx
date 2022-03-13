@@ -26,7 +26,7 @@ const Main = ({ stages, conditions, className }: MainProps) => {
             id={stage._id}
         />;
         const condition = conditions.find(e => e.from === stageArray[index]._id && e.to === stageArray[index + 1]._id);
-        const conditionElement = <ConditionElement {...condition} />;
+        const conditionElement = <ConditionElement key={condition?._id || index} {...condition} />;
         if (index + 1 === stageArray.length) {
             return [...acc, stageElement];
         }
