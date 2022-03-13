@@ -41,7 +41,7 @@ const Header = () => {
         setName(flow.name);
         setIsActive(flow.active);
         setIsInvalid(startDate > endDate || startDate <= moment());
-    }, [flow]);
+    }, [flow, endDate, startDate]);
 
     return (<Fragment>
         <div className={styles.header}>

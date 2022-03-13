@@ -28,31 +28,31 @@ const FormPicker = ({ returnBack = false, onSelect }: FormPickerOptions) => {
     const handleTemplateSelect = useCallback((options: FormOption[]) => {
         const { formID = '' } = options.find(option => option.checked === 'on') as FormOption;
         onSelect(formID);
-    }, []);
+    }, [onSelect]);
 
     const goToFlowBuilder = useCallback(formID => {
         const url = `/formbuilder/${formID}`;
         const query = `${returnBack ? `?returnTo=${router.asPath}` : ''}`;
         router.push(url + query, url);
-    }, [router]);
+    }, [router, returnBack]);
 
     const handleCreateForm = useCallback(() => {
         axios.post('/api/templates/createForm').then(({ data: formID }) => {
             goToFlowBuilder(formID);
         });
-    }, []);
+    }, [goToFlowBuilder]);
 
     const handlePreviewForm = useCallback(formID => (event: React.MouseEvent<SVGSVGElement>) => {
         event.stopPropagation();
         goToFlowBuilder(formID);
-    }, []);
+    }, [goToFlowBuilder]);
 
     const options = useMemo(() => templates.map<FormOption>(({ _id, name }) => ({
         label: _id,
         name,
         formID: _id,
         append: <VisibilityIcon onClick={handlePreviewForm(_id)}/>
-    })), [templates]);
+    })), [templates, handlePreviewForm]);
 
     return <div className={styles.container}>
         <EuiSelectable
