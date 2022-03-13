@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -23,15 +23,25 @@ const Header = () => {
 
 	const [isOpen, setOpen] = useState(false);
 	const flow = useAppSelector(getCurrentFlow);
-	const [specifyDuration, setSpecifyDuration] = useState(flow.startDate !== null);
+	const [specifyDuration, setSpecifyDuration] = useState(flow.startDate != null);
 	const minDate = moment().add(1, 'd');
 	const [startDate, setStartDate] = useState(moment(flow.startDate));
 	const [endDate, setEndDate] = useState(moment(flow.endDate));
 	const [name, setName] = useState(flow.name);
-	const isInvalid = startDate > endDate || startDate <= moment();
+	const [isActive, setIsActive] = useState(flow.active);
+	const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
 
 	const close = () => setOpen(false);
 	const open = () => setOpen(true);
+
+	useEffect(() => {
+		setSpecifyDuration(flow.startDate != null);
+		setStartDate(moment(flow.startDate));
+		setEndDate(moment(flow.endDate));
+		setName(flow.name);
+		setIsActive(flow.active);
+		setIsInvalid(startDate > endDate || startDate <= moment());
+	}, [flow]);
 
 
 	return (<Fragment>
@@ -88,6 +98,14 @@ const Header = () => {
 						}
 					/>
 				</EuiFormRow>}
+				<EuiFormRow label={translate('Active')} >
+					<EuiSwitch
+						label=''
+						checked={isActive}
+						disabled={specifyDuration}
+						onChange={({ target: { checked }}) => setIsActive(checked)}
+					/>
+				</EuiFormRow>
 			</EuiModalBody>
 
 			<EuiModalFooter>
