@@ -22,3 +22,4 @@ system/package-lock.json
 .nx
 .pnpm-store
 .next
+.env.local
