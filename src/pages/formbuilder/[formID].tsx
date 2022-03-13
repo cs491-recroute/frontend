@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -8,7 +8,7 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
-import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiFormRow, EuiForm } from '@elastic/eui';
+import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiFormRow, EuiForm} from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { 
 	isLeftPanelOpen as isFormBuilderLeftPanelOpen,
@@ -21,9 +21,18 @@ type FormBuilderProps = {
 
 type FormOption = EuiSelectableOption;
 
-const options : FormOption[] = [{label: 'Full Name'}, {label: 'Header'}, {label: 'Email'}, {label: 'Address'}, {label: 'Phone number'},];
+const Options : FormOption[] = [
+	{label: 'Full Name'}, 
+	{label: 'Header'},
+	{label: 'Email'},
+	{label: 'Address'},
+	{label: 'Phone number'}
+];
+
 
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
+	const [options, setOptions] = useState(Options);
+
 	const { name } = form;
 	const dispatch = useAppDispatch();
 	const isLeftPanelOpen = useAppSelector(isFormBuilderLeftPanelOpen);
@@ -31,6 +40,41 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 	const toggleLeftPanel = useCallback(status => () => {
 		if (status !== isLeftPanelOpen) dispatch(toggleFormBuilderLeftPanel(status));
 	}, [isLeftPanelOpen]);
+
+	type FormElementProps = {
+		labelName: string
+	}
+
+	function FormElement(props:FormElementProps){
+		return(
+			<EuiFormRow label={props.labelName} >
+				<EuiFieldText/>
+			</EuiFormRow>
+		);
+	}
+
+	function createFormElement(option:EuiSelectableOption){
+		if(option.checked === 'on') {
+			return <FormElement labelName={option.label}/>;
+		}
+	}
+
+	function FormCard(){
+		console.log(options);
+		return( 
+			<EuiCard 
+				className={styles.card}
+				title="Form Title"
+			>
+				<EuiForm>
+					{options.map(createFormElement)}
+				</EuiForm>
+				<EuiButton className={styles.returnToFlow} onClick={toggleLeftPanel(true)}>
+					Return to Flow
+				</EuiButton>
+			</EuiCard>
+		);
+	}
 	
 	return (<Fragment>
 		<div className={styles.header}>
@@ -57,6 +101,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 			<EuiSelectable
 				searchable
 				options={options}
+				onChange={newOptions => setOptions(newOptions)}
 			>
 				{(list, search) => (
 					<Fragment>
@@ -64,23 +109,11 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 						{list}
 					</Fragment>
 				)}
-			</EuiSelectable>	
+			</EuiSelectable>
 		</EuiCollapsibleNav>
 		<div className={styles.content}>
 			<div>
-				<EuiCard 
-					className={styles.card}
-					title='Form'
-				>
-					<EuiForm>
-						<EuiFormRow label="Text field" helpText="I am some friendly help text.">
-							<EuiFieldText name="first" />
-						</EuiFormRow>
-					</EuiForm>
-					<EuiButton className={styles.returnToFlow} onClick={toggleLeftPanel(true)}>
-						Return to Flow
-					</EuiButton>
-				</EuiCard>
+				<FormCard />
 			</div>
 		</div>
 	</Fragment>);
