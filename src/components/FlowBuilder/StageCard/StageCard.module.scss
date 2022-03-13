@@ -1,3 +1,5 @@
+@import '../../../styles/global.scss';
+
 .container{
     width: 420px;
     cursor: pointer;
@@ -5,13 +7,13 @@
         border-top-width: 10px;
         border-top-style: solid;
         &.form {
-            border-top-color: blue;
+            border-top-color: $formColor;
         }
         &.test {
-            border-top-color: green;
+            border-top-color: $testColor;
         }
         &.interview {
-            border-top-color: red;
+            border-top-color: $interviewColor;
         }
     }
 }

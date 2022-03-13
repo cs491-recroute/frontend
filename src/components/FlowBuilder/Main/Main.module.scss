@@ -1,3 +1,5 @@
+@import '../../../styles/global.scss';
+
 .container {
   padding: 30px 0;
   overflow-y: auto;
@@ -41,6 +43,8 @@
     justify-content: space-around;
     border-style: dashed;
     border-radius: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
 
     & > div {
       padding: 10px;
@@ -49,9 +53,36 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      border-color: rgb(52, 55, 65);
 
       &:not(:last-child) {
         border-right-style: dashed;
+      }
+
+      &.new {
+        &.form {
+          color: $formColor;
+          &:hover {
+            background-color: lighten($formColor, 20%);
+            color: white;
+          }
+        }
+
+        &.test {
+          color: $testColor;
+          &:hover {            
+            background-color: lighten($testColor, 20%);
+            color: white;
+          }
+        }
+
+        &.interview {
+          color: $interviewColor;
+          &:hover {            
+            background-color: lighten($interviewColor, 20%);
+            color: white;
+          }
+        }
       }
     }
   }
