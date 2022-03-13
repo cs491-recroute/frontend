@@ -41,7 +41,7 @@ const Header = () => {
 				<SettingsIcon className={styles.settingsIcon}/>
 			</IconButton> 
 		</div>
-		{isOpen ? (<EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
+		{isOpen && (<EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
 			<EuiModalHeader>
 				<EuiModalHeaderTitle>{translate('Update Flow Settings')}</EuiModalHeaderTitle>
 			</EuiModalHeader>
@@ -95,7 +95,7 @@ const Header = () => {
                     Save
 				</EuiButton>
 			</EuiModalFooter>
-		</EuiModal>) : (null)};
+		</EuiModal>)}
 	</Fragment>
 
 	);	
