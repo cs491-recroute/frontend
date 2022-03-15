@@ -21,6 +21,7 @@ import { translate } from '../../../utils';
 import moment from 'moment';
 const Header = () => {
 
+    const [toggle, setToggle] = useState(true)
     const [isOpen, setOpen] = useState(false);
     const flow = useAppSelector(getCurrentFlow);
     const [specifyDuration, setSpecifyDuration] = useState(flow.startDate != null);
@@ -45,7 +46,16 @@ const Header = () => {
 
     return (<Fragment>
         <div className={styles.header}>
-            {name}
+            {toggle ? (<p onDoubleClick={() => {setToggle(false)}}>{name}</p>) : (<input className={styles.input} type='text' value={name}
+                onChange={event => {setName(event.target.value)}}
+                onKeyDown={event => {
+                    if (event.key === 'Enter') {
+                        setToggle(true)
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                }}
+            />)}
             <IconButton onClick={open}>
                 <SettingsIcon className={styles.settingsIcon}/>
             </IconButton> 
