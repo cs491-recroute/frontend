@@ -7,7 +7,10 @@ import type { AppState } from '../store';
 export interface FlowBuilderState {
 	ui: {
 		leftPanelStatus: STAGE_TYPE | false;
-		rightPanelOpen: boolean;
+		rightPanelStatus: {
+            stageType: STAGE_TYPE | false;
+            stageId: string;
+        };
 	},
 	currentFlow: Flow
 }
@@ -15,7 +18,10 @@ export interface FlowBuilderState {
 const initialState: FlowBuilderState = {
     ui: {
         leftPanelStatus: false,
-        rightPanelOpen: false
+        rightPanelStatus: {
+            stageType: false,
+            stageId: ''
+        }
     },
     currentFlow: {
         _id: '', name: '', stages: [], active: false, conditions: []
@@ -41,8 +47,8 @@ export const flowBuilderSlice = createSlice({
         toggleLeftPanel: (state, action: { payload: STAGE_TYPE | false; }) => {
             state.ui.leftPanelStatus = action.payload;
         },
-        toggleRightPanel: (state, action) => {
-            state.ui.rightPanelOpen = action.payload;
+        toggleRightPanel: (state, action: {payload: {stageType: STAGE_TYPE | false, stageId: string}}) => {
+            state.ui.rightPanelStatus = action.payload;
         },
         setCurrentFlow: (state, action) => {
             state.currentFlow = action.payload;
@@ -60,7 +66,7 @@ export const flowBuilderSlice = createSlice({
 export const { toggleLeftPanel, toggleRightPanel, setCurrentFlow } = flowBuilderSlice.actions;
 
 export const getLeftPanelStatus = (state: AppState) => state.flowBuilder.ui.leftPanelStatus;
-export const isRightPanelOpen = (state: AppState) => state.flowBuilder.ui.rightPanelOpen;
+export const getRightPanelStatus = (state: AppState) => state.flowBuilder.ui.rightPanelStatus;
 export const getCurrentFlow = (state: AppState) => state.flowBuilder.currentFlow;
 
 export default flowBuilderSlice.reducer;

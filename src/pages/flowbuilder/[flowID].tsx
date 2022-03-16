@@ -15,7 +15,7 @@ import {
     addStageAsync,
     getCurrentFlow,
     getLeftPanelStatus,
-    isRightPanelOpen as isFlowBuilderRightPanelOpen,
+    getRightPanelStatus,
     setCurrentFlow,
     toggleLeftPanel as toggleFlowBuilderLeftPanel,
     toggleRightPanel as toggleFlowBuilderRightPanel
@@ -25,20 +25,21 @@ import Main from '../../components/FlowBuilder/Main';
 import Header from '../../components/FlowBuilder/Header';
 import { wrapper } from '../../redux/store';
 import capitalize from 'lodash.capitalize';
+import RightPanelContent from '../../components/FlowBuilder/RightPanelContent';
 
 const FlowBuilderPage: NextPage = () => {
     const dispatch = useAppDispatch();
     const { stages, conditions } = useAppSelector(getCurrentFlow);
     const leftPanelStatus = useAppSelector(getLeftPanelStatus);
-    const isRightPanelOpen = useAppSelector(isFlowBuilderRightPanelOpen);
+    const rightPanelStatus = useAppSelector(getRightPanelStatus);
 
     const toggleLeftPanel = useCallback((status: STAGE_TYPE | false) => () => {
         if (status !== leftPanelStatus) dispatch(toggleFlowBuilderLeftPanel(status));
     }, [leftPanelStatus]);
 
     const toggleRightPanel = useCallback(status => () => {
-        if (status !== isRightPanelOpen) dispatch(toggleFlowBuilderRightPanel(status));
-    }, [isRightPanelOpen]);
+        if (status !== rightPanelStatus) dispatch(toggleFlowBuilderRightPanel(status));
+    }, [rightPanelStatus]);
 
     const handleFormSelect = useCallback(formID => {
         dispatch(addStageAsync({
@@ -71,8 +72,8 @@ const FlowBuilderPage: NextPage = () => {
             <EuiCollapsibleNav
                 className={styles.rightPanel}
                 style={{ top: 120 }}
-                isOpen={isRightPanelOpen}
-                onClose={toggleRightPanel(false)}
+                isOpen={rightPanelStatus.stageType !== false}
+                onClose={toggleRightPanel({stageType: false, stageId: ''})}
                 closeButtonPosition="inside"
                 ownFocus={false}
                 side="right"
@@ -81,6 +82,7 @@ const FlowBuilderPage: NextPage = () => {
                     {translate('Settings')}
                 </EuiText>
                 <hr />
+                <RightPanelContent stageType={rightPanelStatus.stageType} stageId={rightPanelStatus.stageId}/>
             </EuiCollapsibleNav>
             <Header />
             <Main

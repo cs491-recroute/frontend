@@ -20,7 +20,7 @@ const stageIcons : {[key in STAGE_TYPE]: string} = {
 
 const StageCard = ({ type, name, id }: StageCardProps) => {
     const dispatch = useAppDispatch();
-    const onClick = () => dispatch(toggleRightPanel(true));
+    const onClick = () => dispatch(toggleRightPanel({stageType: type, stageId: id}));
 	
     console.log(id);
     // TODO: @goktug id refers to stage id.
