@@ -41,12 +41,12 @@ const FlowBuilderPage: NextPage = () => {
         if (status !== rightPanelStatus) dispatch(toggleFlowBuilderRightPanel(status));
     }, [rightPanelStatus]);
 
-    const handleFormSelect = useCallback(formID => {
+    const handleLeftPanelItemSelect = useCallback(itemID => {
         dispatch(addStageAsync({
-            type: STAGE_TYPE.FORM,
-            stageID: formID
+            type: leftPanelStatus as NonNullable<STAGE_TYPE>,
+            stageID: itemID
         }));
-    }, []);
+    }, [leftPanelStatus]);
 
     return (
         <>
@@ -64,7 +64,7 @@ const FlowBuilderPage: NextPage = () => {
                     <hr />
                     <Picker
                         returnBack
-                        onSelect={handleFormSelect}
+                        onSelect={handleLeftPanelItemSelect}
                         itemType={leftPanelStatus as Exclude<STAGE_TYPE, STAGE_TYPE.INTERVIEW>}
                     />)
                 </>}
