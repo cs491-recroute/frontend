@@ -30,7 +30,7 @@ const initialState: FlowBuilderState = {
 
 export const addStageAsync = createAsyncThunk(
     'flow/addStage',
-    async (stageData: { type: STAGE_TYPE; stageID: string; }, { getState }) => {
+    async (stageData: { type: STAGE_TYPE; stageID?: string; }, { getState }) => {
         const { flowBuilder: { currentFlow: { _id: flowID, startDate, endDate } = {} } } = getState() as AppState;
         const { data: { stage } } = await axios.post(`/api/flows/${flowID}/stage`, {
             ...stageData,

@@ -4,7 +4,7 @@ import { Stage, Condition } from '../../../types/models';
 import StageCard from '../StageCard';
 import ConditionElement from '../ConditionElement';
 import { useAppDispatch } from '../../../utils/hooks';
-import { toggleLeftPanel } from '../../../redux/slices/flowBuilderSlice';
+import { toggleLeftPanel, addStageAsync } from '../../../redux/slices/flowBuilderSlice';
 import { EuiText } from '@elastic/eui';
 import { translate } from '../../../utils';
 import classNames from 'classnames';
@@ -49,7 +49,6 @@ const Main = ({ stages, conditions, className }: MainProps) => {
                 <>
                     <div className={styles.dummyArrow}/>
                     <div className={styles.newStage}>
-                        {/* TODO: Implement onclick functions for below elements */}
                         <div 
                             onClick={() => dispatch(toggleLeftPanel(STAGE_TYPE.FORM))}
                             className={classNames(styles.new, styles.form)}
@@ -63,7 +62,7 @@ const Main = ({ stages, conditions, className }: MainProps) => {
                             {translate('Test')}
                         </div>
                         <div 
-                            // onClick={() => dispatch(toggleLeftPanel(true))}
+                            onClick={() => dispatch(addStageAsync({ type: STAGE_TYPE.INTERVIEW }))}
                             className={classNames(styles.new, styles.interview)}
                         >
                             {translate('Interview')}
