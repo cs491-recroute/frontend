@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Children, Fragment, useCallback, useState } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -16,13 +16,15 @@ import {
 } from '../../redux/slices/formBuilderSlice';
 import { useRouter } from 'next/router';
 
+import {List, ListItem, ListItemButton, ListItemText} from '@mui/material';
+
 type FormBuilderProps = {
     form: Form;
 }
 
 type FormOption = EuiSelectableOption;
 
-const Options : FormOption[] = [
+const options : FormOption[] = [
     {label: 'Full Name'}, 
     {label: 'Header'},
     {label: 'Email'},
@@ -32,7 +34,8 @@ const Options : FormOption[] = [
 
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
     const { query: { returnTo }, push } = useRouter();
-    const [options, setOptions] = useState(Options);
+    const [formElements, setFormElements] = useState([]);
+    const [formElementCount, setFormElementCount] = useState(0);
 
     const { name } = form;
     const dispatch = useAppDispatch();
@@ -42,32 +45,61 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
         if (status !== isLeftPanelOpen) dispatch(toggleFormBuilderLeftPanel(status));
     }, [isLeftPanelOpen]);
 
-    type FormElementProps = {
-        labelName: string
+    type formElementType = {
+        label:string;
+        id: number;
     }
 
-    function FormElement(props:FormElementProps){
+    function FormElement(props:formElementType){
         return(
-            <EuiFormRow label={props.labelName} >
-                <EuiFieldText/>
-            </EuiFormRow>);
+            <table style={{marginTop:10}}>
+                <tr>
+                    <th style={{width:350}}>
+                        <EuiText textAlign='left'>{props.label}</EuiText>
+                        <EuiFieldText/>
+                    </th>
+                    <th>
+                        <button>
+                            <EuiIcon type="gear" style={{marginLeft:10}}/>
+                        </button>
+                        <button onClick={() => deleteFormElement(props.id)}>
+                            <EuiIcon type="trash" style={{marginLeft:10}}/>
+                        </button>
+                    </th>
+                </tr>
+            </table>
+        )
     }
 
-    function createFormElement(option:EuiSelectableOption){
-        if(option.checked === 'on') {
-            return <FormElement labelName={option.label}/>;
-        }
+    /*
+    function deleteFormElement(id:number) {
+        setFormElements(formElements.pop());
+        setFormElementCount(formElementCount - 1);
+    }*/
+
+    function addFormElement(label:string) {
+        setFormElements(formElements.concat(<FormElement id={formElementCount} label={label}/>));
+        setFormElementCount(formElementCount + 1);
     }
 
+    function createListItem(option:EuiSelectableOption){
+        return(
+            <ListItem disablePadding>
+                <ListItemButton onClick={() => addFormElement(option.label)}>
+                    <ListItemText primary={option.label} />
+                </ListItemButton>
+            </ListItem>
+        )
+    }
+    
     function FormCard(){
-        console.log(options);
         return( 
             <EuiCard 
                 className={styles.card}
                 title="Form Title"
             >
                 <EuiForm>
-                    {options.map(createFormElement)}
+                    {formElements}
                 </EuiForm>
                 {returnTo && 
                     <EuiButton 
@@ -103,18 +135,9 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
                 {translate('Form Elements')}
             </EuiText>
             <hr/>
-            <EuiSelectable
-                searchable
-                options={options}
-                onChange={newOptions => setOptions(newOptions)}
-            >
-                {(list, search) => (
-                    <Fragment>
-                        {search}
-                        {list}
-                    </Fragment>
-                )}
-            </EuiSelectable>
+            <List>
+                {options.map(createListItem)}
+            </List>
         </EuiCollapsibleNav>
         <div className={styles.content}>
             <div>
