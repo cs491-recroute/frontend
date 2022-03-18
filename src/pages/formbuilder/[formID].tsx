@@ -1,4 +1,4 @@
-import React, { Children, Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -8,15 +8,18 @@ import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
-import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectable, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiFormRow, EuiForm} from '@elastic/eui';
+import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiForm} from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { 
     isLeftPanelOpen as isFormBuilderLeftPanelOpen,
-    toggleLeftPanel as toggleFormBuilderLeftPanel
+    toggleLeftPanel as toggleFormBuilderLeftPanel,
+    isRightPanelOpen as isFormBuilderRightPanelOpen,
+    toggleRightPanel as toggleFormBuilderRightPanel
 } from '../../redux/slices/formBuilderSlice';
 import { useRouter } from 'next/router';
 
 import {List, ListItem, ListItemButton, ListItemText} from '@mui/material';
+import { nanoid } from "nanoid";
 
 type FormBuilderProps = {
     form: Form;
@@ -35,19 +38,23 @@ const options : FormOption[] = [
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
     const { query: { returnTo }, push } = useRouter();
     const [formElements, setFormElements] = useState([]);
-    const [formElementCount, setFormElementCount] = useState(0);
 
     const { name } = form;
     const dispatch = useAppDispatch();
     const isLeftPanelOpen = useAppSelector(isFormBuilderLeftPanelOpen);
+    const isRightPanelOpen = useAppSelector(isFormBuilderRightPanelOpen);
 
     const toggleLeftPanel = useCallback(status => () => {
         if (status !== isLeftPanelOpen) dispatch(toggleFormBuilderLeftPanel(status));
     }, [isLeftPanelOpen]);
 
+    const toggleRightPanel = useCallback(status => () => {
+        if (status !== isRightPanelOpen) dispatch(toggleFormBuilderRightPanel(status));
+    }, [isRightPanelOpen]);
+
     type formElementType = {
         label:string;
-        id: number;
+        id: string;
     }
 
     function FormElement(props:formElementType){
@@ -59,7 +66,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
                         <EuiFieldText/>
                     </th>
                     <th>
-                        <button>
+                        <button onClick={toggleLeftPanel(true)}>
                             <EuiIcon type="gear" style={{marginLeft:10}}/>
                         </button>
                         <button onClick={() => deleteFormElement(props.id)}>
@@ -71,15 +78,16 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
         )
     }
 
-    /*
-    function deleteFormElement(id:number) {
-        setFormElements(formElements.pop());
-        setFormElementCount(formElementCount - 1);
-    }*/
+    function deleteFormElement(id:string) {
+        console.log(id);
+        setFormElements(formElements.filter((formElement : formElementType) => id !== formElement.id));
+        console.log(formElements);
+    }
 
     function addFormElement(label:string) {
-        setFormElements(formElements.concat(<FormElement id={formElementCount} label={label}/>));
-        setFormElementCount(formElementCount + 1);
+        const newId = nanoid();
+        const newFormElement = <FormElement id={newId} label={label}/>;
+        setFormElements(formElements.concat(newFormElement));
     }
 
     function createListItem(option:EuiSelectableOption){
