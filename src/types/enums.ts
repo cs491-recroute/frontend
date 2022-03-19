@@ -13,3 +13,9 @@ export enum STAGE_TYPE {
   TEST = 'TEST',
   INTERVIEW = 'INTERVIEW'
 }
+
+export enum QUESTION_TYPES {
+  OPEN_ENDED = 'openEnded',
+  MULTIPLE_CHOICE = 'multipleChoice',
+  CODING = 'coding'
+}

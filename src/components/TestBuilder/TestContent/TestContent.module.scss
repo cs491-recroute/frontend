@@ -1,0 +1,14 @@
+.container { 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+
+    .questionList {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 50%;
+    }
+}

@@ -1,4 +1,4 @@
-import { OPERATIONS, STAGE_TYPE } from './enums';
+import { OPERATIONS, STAGE_TYPE, QUESTION_TYPES } from './enums';
 
 type Basic = {
   _id: string;
@@ -35,4 +35,12 @@ export type Form = {
 
 export type Test = {
   name: string;
+  questions: Question[];
+} & Basic;
+
+export type Question = {
+  description: string;
+  type: QUESTION_TYPES;
+  options?: { description: string; isCorrect: boolean; }[];
+  testCases?: { input: string; output: string; }
 } & Basic;
