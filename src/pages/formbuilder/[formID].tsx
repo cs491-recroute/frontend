@@ -7,6 +7,7 @@ import { gatewayManager } from '../../utils/gatewayManager';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
+import { useRouterWithReturnBack } from '../../utils/hooks';
 import { MAIN_PAGE } from '../../constants';
 import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiForm} from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
@@ -16,7 +17,6 @@ import {
     isRightPanelOpen as isFormBuilderRightPanelOpen,
     toggleRightPanel as toggleFormBuilderRightPanel
 } from '../../redux/slices/formBuilderSlice';
-import { useRouter } from 'next/router';
 
 import {List, ListItem, ListItemButton, ListItemText} from '@mui/material';
 import { nanoid } from "nanoid";
@@ -36,7 +36,7 @@ const options : FormOption[] = [
 ];
 
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
-    const { query: { returnTo }, push } = useRouter();
+    const { returnAvailable, returnBack } = useRouterWithReturnBack();
     const [formElements, setFormElements] = useState([]);
 
     const { name } = form;
@@ -109,10 +109,10 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
                 <EuiForm>
                     {formElements}
                 </EuiForm>
-                {returnTo && 
+                {returnAvailable && 
                     <EuiButton 
                         className={styles.returnToFlow} 
-                        onClick={() => push(returnTo.toString())}
+                        onClick={returnBack}
                     >
                         Return to Flow
                     </EuiButton>

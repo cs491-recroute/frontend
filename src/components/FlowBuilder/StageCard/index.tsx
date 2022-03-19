@@ -5,12 +5,16 @@ import { toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
 import { STAGE_TYPE } from '../../../types/enums';
 import { useAppDispatch } from '../../../utils/hooks';
 import styles from './StageCard.module.scss';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
+import { STAGE_PROPS } from '../../../constants';
+import { useRouterWithReturnBack } from '../../../utils/hooks';
+import { Stage } from '../../../types/models';
 
 type StageCardProps = {
     type: STAGE_TYPE;
     name: string;
-		id: string;
-}
+    id: string;
+} & Stage;
 
 const stageIcons : {[key in STAGE_TYPE]: string} = {
     [STAGE_TYPE.FORM]: 'indexEdit',
@@ -18,16 +22,23 @@ const stageIcons : {[key in STAGE_TYPE]: string} = {
     [STAGE_TYPE.INTERVIEW]: 'indexEdit'
 };
 
-const StageCard = ({ type, name, id }: StageCardProps) => {
+const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
     const dispatch = useAppDispatch();
     const onClick = () => dispatch(toggleRightPanel({stageType: type, stageId: id}));
+    const { pushWithReturn } = useRouterWithReturnBack();
 	
-    console.log(id);
-    // TODO: @goktug id refers to stage id.
+    const goToBuilder = () => {
+        const { builderURL } = STAGE_PROPS[type];
+        if (builderURL) {
+            pushWithReturn(`/${builderURL}/${stageID}`);
+        }
+    };
 
     return (
-        <div onClick={onClick} className={styles.container}>
+        <div className={styles.container}>
+            <BuildCircleIcon onClick={goToBuilder} className={styles.builderIcon} />
             <EuiCard
+                onClick={onClick} 
                 layout='horizontal'
                 className={classNames(styles.card, styles[type.toLowerCase()])}
                 icon={<EuiIcon size="xl" type={stageIcons[type]} />}

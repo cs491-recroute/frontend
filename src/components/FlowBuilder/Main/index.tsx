@@ -20,7 +20,7 @@ const Main = ({ stages, conditions, className }: MainProps) => {
     const dispatch = useAppDispatch();
     const stagesAndConditions = useMemo(() => stages.reduce((acc: JSX.Element[], stage, index, stageArray) => {
         const stageElement = <StageCard
-            type={stage.type} 
+            {...stage}
             name={stage.stageProps.name} 
             key={stage._id}
             id={stage._id}

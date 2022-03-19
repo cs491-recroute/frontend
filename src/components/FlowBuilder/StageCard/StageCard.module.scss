@@ -16,4 +16,13 @@
             border-top-color: $interviewColor;
         }
     }
+    position: relative;
+
+    .builderIcon {
+        position: absolute;
+        top: 10px;
+        right: -40px;
+        height: 30px;
+        width: 30px;
+    }
 }

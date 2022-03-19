@@ -1,13 +1,14 @@
 import { EuiButton, EuiSelectable, EuiSelectableOption } from '@elastic/eui';
 import axios from 'axios';
-import { useRouter } from 'next/router';
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Form, Test } from '../../types/models';
 import { translate } from '../../utils';
+import { useRouterWithReturnBack } from '../../utils/hooks';
 import styles from './Picker.module.scss';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { STAGE_TYPE } from '../../types/enums';
 import capitalize from 'lodash.capitalize';
+import { STAGE_PROPS } from '../../constants';
 
 type ItemOption = EuiSelectableOption<{ name: string; itemID: string; }>;
 
@@ -17,28 +18,15 @@ type PickerOptions = {
     itemType: STAGE_TYPE.FORM | STAGE_TYPE.TEST;
 }
 
-const itemProps = {
-    [STAGE_TYPE.FORM]: {
-        getEndpoint: '/api/templates/form',
-        builderURL: 'formbuilder',
-        createEndpoint: '/api/templates/createForm'
-    },
-    [STAGE_TYPE.TEST]: {
-        getEndpoint: '/api/templates/test',
-        builderURL: 'testbuilder',
-        createEndpoint: '/api/templates/createTest'
-    }
-}
-
 type ItemType = Form | Test;
 
 // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-constraint
 const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
-    const { getEndpoint, builderURL, createEndpoint } = itemProps[itemType];
+    const { getEndpoint, builderURL, createEndpoint } = STAGE_PROPS[itemType];
 
     const [templates, setTemplates] = useState([] as ItemType[]);
     const [loading, setLoading] = useState(true);
-    const router = useRouter();
+    const { pushWithReturn, push } = useRouterWithReturnBack();
 
     useEffect(() => {
         axios.get(getEndpoint).then(({ data }) => {
@@ -53,9 +41,9 @@ const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
 
     const goToBuilder = useCallback(itemID => {
         const url = `/${builderURL}/${itemID}`;
-        const query = `${returnBack ? `?returnTo=${router.asPath}` : ''}`;
-        router.push(url + query, url);
-    }, [router, returnBack, builderURL]);
+        const method = returnBack ? pushWithReturn : push;
+        method(url);
+    }, [push, pushWithReturn, builderURL, returnBack]);
 
     const handleCreate = useCallback(() => {
         axios.post(createEndpoint).then(({ data: itemID }) => {
