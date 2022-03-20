@@ -15,7 +15,8 @@ import {
     isLeftPanelOpen as isFormBuilderLeftPanelOpen,
     toggleLeftPanel as toggleFormBuilderLeftPanel,
     isRightPanelOpen as isFormBuilderRightPanelOpen,
-    toggleRightPanel as toggleFormBuilderRightPanel
+    toggleRightPanel as toggleFormBuilderRightPanel,
+    options
 } from '../../redux/slices/formBuilderSlice';
 
 import {List, ListItem, ListItemButton, ListItemText} from '@mui/material';
@@ -24,16 +25,6 @@ import { nanoid } from "nanoid";
 type FormBuilderProps = {
     form: Form;
 }
-
-type FormOption = EuiSelectableOption;
-
-const options : FormOption[] = [
-    {label: 'Full Name'}, 
-    {label: 'Header'},
-    {label: 'Email'},
-    {label: 'Address'},
-    {label: 'Phone number'}
-];
 
 const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
@@ -57,7 +48,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
         id: string;
     }
 
-    function FormElement(props:formElementType){
+    const FormElement = (props:formElementType) => {
         return(
             <table style={{marginTop:10}}>
                 <tr>
@@ -66,7 +57,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
                         <EuiFieldText/>
                     </th>
                     <th>
-                        <button onClick={toggleLeftPanel(true)}>
+                        <button onClick={toggleRightPanel(true)}>
                             <EuiIcon type="gear" style={{marginLeft:10}}/>
                         </button>
                         <button onClick={() => deleteFormElement(props.id)}>
@@ -78,19 +69,17 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
         )
     }
 
-    function deleteFormElement(id:string) {
-        console.log(id);
+    const deleteFormElement = (id:string) => {
         setFormElements(formElements.filter((formElement : formElementType) => id !== formElement.id));
-        console.log(formElements);
     }
 
-    function addFormElement(label:string) {
+    const addFormElement = (label:string) => {
         const newId = nanoid();
         const newFormElement = <FormElement id={newId} label={label}/>;
         setFormElements(formElements.concat(newFormElement));
     }
 
-    function createListItem(option:EuiSelectableOption){
+    const createListItem = (option:EuiSelectableOption) => {
         return(
             <ListItem disablePadding>
                 <ListItemButton onClick={() => addFormElement(option.label)}>
@@ -100,7 +89,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
         )
     }
     
-    function FormCard(){
+    const FormCard = () => {
         return( 
             <EuiCard 
                 className={styles.card}
@@ -126,6 +115,20 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
             {name}
             <EuiIcon type="gear" size="l" className={styles.settingsIcon}/>
         </div>
+        <EuiCollapsibleNav
+            className={styles.rightPanel}
+            style={{ top: 120 }}
+            isOpen={isRightPanelOpen}
+            onClose={toggleRightPanel(false)}
+            closeButtonPosition="inside"
+            ownFocus={false}
+            side="right"
+        >
+            <EuiText className={styles.title}>
+                {translate('Element Settings')}
+            </EuiText>
+            <hr/>
+        </EuiCollapsibleNav>
         <EuiCollapsibleNav
             className={styles.leftPanel}
             style={{ top: 120 }}

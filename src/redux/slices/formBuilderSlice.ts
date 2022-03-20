@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { AppState } from '../store';
 
+import {EuiSelectableOption} from '@elastic/eui';
+
 export interface FormBuilderState {
 	ui: {
 		leftPanelOpen: boolean;
@@ -34,3 +36,13 @@ export const isLeftPanelOpen = (state: AppState) => state.formBuilder.ui.leftPan
 export const isRightPanelOpen = (state: AppState) => state.formBuilder.ui.rightPanelOpen;
 
 export default formBuilderSlice.reducer;
+
+type FormOption = EuiSelectableOption;
+
+export const options : FormOption[] = [
+    {label: 'Full Name'}, 
+    {label: 'Header'},
+    {label: 'Email'},
+    {label: 'Address'},
+    {label: 'Phone number'}
+];
