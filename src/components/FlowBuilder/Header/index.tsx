@@ -2,8 +2,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 import styles from './Header.module.scss';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useAppSelector } from '../../../utils/hooks';
-import { getCurrentFlow } from '../../../redux/slices/flowBuilderSlice';
+import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
+import { getCurrentFlow, updateFlowTitleAsync } from '../../../redux/slices/flowBuilderSlice';
 import {
     EuiButton,
     EuiModal,
@@ -21,6 +21,7 @@ import { translate } from '../../../utils';
 import moment from 'moment';
 const Header = () => {
 
+    const dispatch = useAppDispatch();
     const [toggle, setToggle] = useState(true)
     const [isOpen, setOpen] = useState(false);
     const flow = useAppSelector(getCurrentFlow);
@@ -44,12 +45,25 @@ const Header = () => {
         setIsInvalid(startDate > endDate || startDate <= moment());
     }, [flow]);
 
+    const handleTitleField = () => {
+        if(flow){
+            dispatch(updateFlowTitleAsync({
+                name: "name",
+                value: name
+            }));
+        }else{
+            alert('Error: Name is not changed')
+        }
+
+    };
+
     return (<Fragment>
         <div className={styles.header}>
             {toggle ? (<p onDoubleClick={() => {setToggle(false)}}>{name}</p>) : (<input className={styles.input} type='text' value={name}
                 onChange={event => {setName(event.target.value)}}
                 onKeyDown={event => {
                     if (event.key === 'Enter') {
+                        handleTitleField()
                         setToggle(true)
                         event.preventDefault()
                         event.stopPropagation()
