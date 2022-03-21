@@ -107,7 +107,7 @@ export const flowBuilderSlice = createSlice({
                 state.ui.rightPanelStatus.stageType = false;
             })
             .addCase(updateFlowTitleAsync.fulfilled, (state, action) => {
-                state.currentFlow = action.payload;
+                state.currentFlow.name = action.payload.name;
             })
             .addCase(updateFlowAsync.fulfilled, (state, action) => {
                 state.currentFlow.name = action.payload.name;
