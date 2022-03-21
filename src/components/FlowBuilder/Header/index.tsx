@@ -3,7 +3,7 @@ import styles from './Header.module.scss';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
-import { getCurrentFlow, updateFlowTitleAsync } from '../../../redux/slices/flowBuilderSlice';
+import { getCurrentFlow, updateFlowAsync, updateFlowTitleAsync } from '../../../redux/slices/flowBuilderSlice';
 import {
     EuiButton,
     EuiModal,
@@ -53,8 +53,22 @@ const Header = () => {
             }));
         }else{
             alert('Error: Name is not changed')
-        }
+        } 
+    };
 
+    const handleSaveButton = () => {
+        if(flow){
+            dispatch(updateFlowAsync({
+                name: name,
+                active: isActive,
+                ...(specifyDuration && {startDate: startDate.toString()}),
+                ...(specifyDuration && {endDate: endDate.toString()})
+    
+            }));
+        }else{
+            alert('Error: Changes could not be saved!')
+        }
+        setOpen(false);
     };
 
     return (<Fragment>
@@ -134,7 +148,7 @@ const Header = () => {
             </EuiModalBody>
 
             <EuiModalFooter>
-                <EuiButton>
+                <EuiButton onClick={handleSaveButton}>
                     Save
                 </EuiButton>
             </EuiModalFooter>

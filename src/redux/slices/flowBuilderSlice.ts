@@ -63,6 +63,17 @@ export const updateFlowTitleAsync = createAsyncThunk(
     }
 );
 
+export const updateFlowAsync = createAsyncThunk(
+    'flow/updateFlow',
+    async (flowData: {name: string; active: boolean; startDate?: string, endDate?: string}, { getState }) => {
+        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
+        const {data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlow`, {
+            ...flowData
+        });
+        return flow;
+    }
+);
+
 export const flowBuilderSlice = createSlice({
     name: 'flowBuilder',
     initialState,
@@ -97,6 +108,12 @@ export const flowBuilderSlice = createSlice({
             })
             .addCase(updateFlowTitleAsync.fulfilled, (state, action) => {
                 state.currentFlow = action.payload;
+            })
+            .addCase(updateFlowAsync.fulfilled, (state, action) => {
+                state.currentFlow.name = action.payload.name;
+                state.currentFlow.active = action.payload.active;
+                state.currentFlow.startDate = action.payload.startDate;
+                state.currentFlow.endDate = action.payload.endDate;
             });
     }
 });
