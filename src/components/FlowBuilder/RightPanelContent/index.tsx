@@ -24,10 +24,10 @@ const RightPanelContent = ({ stageType, stageId }: RightPanelProps) => {
     const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
 
     useEffect(() => {
-        setStage(flow.stages.find(e => e._id === stageId));
-        setSpecifyDuration(stage?.startDate !== null);
-        setStartDate(moment(stage?.startDate));
-        setEndDate(moment(stage?.endDate));
+        const newStage = flow.stages.find(e => e._id === stageId);
+        setSpecifyDuration(newStage?.startDate !== null);
+        setStartDate(moment(newStage?.startDate));
+        setEndDate(moment(newStage?.endDate));
         setIsInvalid(startDate > endDate || startDate <= moment());
     }, [flow, stageId]);
 
