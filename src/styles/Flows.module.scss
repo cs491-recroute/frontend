@@ -59,11 +59,15 @@
             box-shadow: 0px 0.9px 4px -1px rgba(0, 0, 0, 0.08), 0px 2.6px 8px -1px rgba(0, 0, 0, 0.06), 0px 5.7px 12px -1px rgba(0, 0, 0, 0.05), 0px 15px 15px -1px rgba(0, 0, 0, 0.04);
             border-radius: 6px;
             margin: 10px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 10px;
             .flowCard {
                 display: flex;
                 align-items: center;
                 padding: 0 20px;
-                gap: 10px;
+                gap: px;
                 .flowTitle {
                     align-items: center;
                     font-size: 18px;
@@ -72,9 +76,11 @@
                     }
                 }
                 .details {
-                    display: flex;
-                    gap: 10px;
                     font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    padding: 0 20px;
+                    gap: 10px;
                 }
             }
         }

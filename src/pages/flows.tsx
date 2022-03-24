@@ -1,13 +1,14 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef, MouseEventHandler } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
-import { fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
+import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
-import { EuiButton, EuiCheckbox, EuiHorizontalRule, EuiText } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiLink, EuiText } from '@elastic/eui';
 import styles from '../styles/Flows.module.scss';
 import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
+import { Paper } from '@mui/material';
 
 interface SelectedBoxes {
 	[key: string]: boolean
@@ -28,6 +29,14 @@ const FlowsPage: NextPage = () => {
         }
         setChecked(initialObj);
     }, []);
+
+    const handleDeleteButton = (flowID: string) => {
+        if(flowID){
+            dispatch(deleteFlowAsync(flowID));
+        }else{
+            alert('Flow was not deleted!')
+        }
+    };
 
     const handleCheckboxClick: ChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const id = e.target.id;
@@ -59,29 +68,26 @@ const FlowsPage: NextPage = () => {
             <div className={styles.flowList}>
                 FLOWS PAGE
                 {isReady ? flows.map(({ name, _id }) => (
-                    <div key={name} className={styles.cardContainer}>
-                        <div  className={styles.flowCard}>
-                            <EuiCheckbox
-                                id={_id}
-                                checked={checked[_id]}
-                                onChange={e => handleCheckboxClick(e)}
-                            />
-                            <div className={styles.flowTitle}>
-                                <Link href={`flowbuilder/${_id}`}>
-                                    <a>{name}</a>
-                                </Link>
-                                <div className={styles.description}>description</div>
-                            </div>
-                            <div style={{ flex: 1 }}/>
-                            <div className={styles.details}>
-                                <EuiText>Share</EuiText>
-                                <EuiText>Edit</EuiText>
-                                <EuiText>Submissions</EuiText>
-                                <EuiText>Delete</EuiText>
-                            </div>						
+                    <Paper key={_id}  className={styles.cardContainer}>
+                        <EuiCheckbox
+                            id={_id}
+                            checked={checked[_id]}
+                            onChange={e => handleCheckboxClick(e)}
+                        />
+                        <div className={styles.flowTitle}>
+                            <Link href={`flowbuilder/${_id}`}>
+                                <a>{name}</a>
+                            </Link>
+                            <div className={styles.description}>description</div>
                         </div>
-                    </div>
-
+                        <div style={{ flex: 1 }}/>
+                        <div className={styles.flowCard}>
+                            <EuiButtonEmpty color='text' isSelected={true}>Share</EuiButtonEmpty>
+                            <EuiButtonEmpty color='text' href={`flowbuilder/${_id}`}>Edit</EuiButtonEmpty>
+                            <EuiButtonEmpty color='text'>Submissions</EuiButtonEmpty>
+                            <EuiButtonEmpty color='text' onClick={() => handleDeleteButton(_id)}>Delete</EuiButtonEmpty>
+                        </div>						
+                    </Paper>
                 )) : <div>Fetching</div>}
             </div>
             <CreateFlowModal ref={createFlowRef} />

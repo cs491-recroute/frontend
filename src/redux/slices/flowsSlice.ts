@@ -29,6 +29,14 @@ export const createFlowAsync = createAsyncThunk(
     }
 );
 
+export const deleteFlowAsync = createAsyncThunk(
+    'flow/deleteFlow',
+    async (flowID: string) => {
+        await axios.post(`/api/flows/${flowID}.ts`);
+        return flowID;
+    }
+);
+
 export const flowsSlice = createSlice({
     name: 'flows',
     initialState,
@@ -44,6 +52,12 @@ export const flowsSlice = createSlice({
             })
             .addCase(createFlowAsync.fulfilled, (state, action) => {
                 state.flows.push(action.payload);
+            })
+            .addCase(deleteFlowAsync.fulfilled, (state, action) => {
+                const index = state.flows.map(e => e._id).indexOf(action.payload);
+                if (index > -1) {
+                    state.flows.splice(index, 1);
+                }
             });
     }
 });
