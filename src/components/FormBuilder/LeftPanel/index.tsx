@@ -28,7 +28,7 @@ const LeftPanel = () => {
             closeButtonPosition="inside"
             ownFocus={false}
             button={
-                <EuiButton onClick={toggle(true)} iconType='plusInCircle'>
+                <EuiButton onClick={toggle(true)} iconType='plusInCircle' className={styles.openButton}>
                     {translate('Add New Form Component')}
                 </EuiButton>
             }

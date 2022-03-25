@@ -1,6 +1,6 @@
 import LongText from '../components/FormComponents/LongText';
 import ShortText from '../components/FormComponents/ShortText';
-import { ComponentTypes } from '../types/models';
+import { ComponentTypes, Component } from '../types/models';
 import { translate } from '../utils';
 import { STAGE_TYPE } from './../types/enums';
 export const MAIN_PAGE = '/flows';
@@ -22,7 +22,7 @@ export const STAGE_PROPS = {
 export const COMPONENT_MAPPINGS: Record<any, {
     text: string;
     type: ComponentTypes;
-    Renderer: () => JSX.Element;
+    Renderer: (props: Partial<Component> & { editMode?: boolean; }) => JSX.Element;
     defaultProps: Record<any, any>;
 }> = {
     [ComponentTypes.shortText]: {

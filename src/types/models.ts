@@ -32,7 +32,7 @@ export type Stage = {
 export enum ComponentTypes { 
   address = "address", 
   datePicker = "datePicker", 
-  dropdown = "dropDown", 
+  dropDown = "dropDown", 
   fullName = "fullName",
   header = "header",
   longText = "longText",
@@ -56,7 +56,7 @@ export type Component = {
   placeholder: string;
   placeholders: string[];
   options: Option[];
-}
+} & Basic;
 
 export type Form = {
   name: string;
