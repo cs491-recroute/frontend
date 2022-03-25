@@ -33,6 +33,17 @@ export const addQuestionAsync = createAsyncThunk(
     }
 );
 
+export const updateTestTitleAsync = createAsyncThunk(
+    'test/updateTitle',
+    async (titleData: { name: string; value: string}, { getState }) => {
+        const {testBuilder: {currentTest: {_id: testId} = {} } } = getState() as AppState;
+        const {data: test} = await axios.put(`/api/tests/${testId}/updateTitle`, { 
+            ...titleData
+        });
+        return test;
+    }
+);
+
 export const testBuilderSlice = createSlice({
     name: 'testBuilder',
     initialState,
@@ -48,6 +59,9 @@ export const testBuilderSlice = createSlice({
         builder
             .addCase(addQuestionAsync.fulfilled, (state, action) => {
                 state.ui.leftPanelStatus = false;
+            })
+            .addCase(updateTestTitleAsync.fulfilled, (state, action) => {
+                state.currentTest.name = action.payload.name;
             });
     }
 });
