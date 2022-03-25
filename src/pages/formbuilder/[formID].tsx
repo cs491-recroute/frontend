@@ -2,42 +2,38 @@ import React, { Fragment, useCallback, useState } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
-import { Form } from '../../types/models';
+import { ComponentTypes, Form } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { SERVICES } from '../../constants/services';
 import { translate } from '../../utils';
 import { useRouterWithReturnBack } from '../../utils/hooks';
-import { MAIN_PAGE } from '../../constants';
+import { COMPONENT_MAPPINGS, MAIN_PAGE } from '../../constants';
 import { EuiButton, EuiCollapsibleNav, EuiIcon, EuiSelectableOption, EuiCard, EuiText, EuiFieldText, EuiForm} from '@elastic/eui';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import { 
-    isLeftPanelOpen as isFormBuilderLeftPanelOpen,
-    toggleLeftPanel as toggleFormBuilderLeftPanel,
+import {
     isRightPanelOpen as isFormBuilderRightPanelOpen,
     toggleRightPanel as toggleFormBuilderRightPanel,
-    options
+    options,
+    setCurrentForm,
+    getCurrentForm
 } from '../../redux/slices/formBuilderSlice';
 
 import {List, ListItem, ListItemButton, ListItemText} from '@mui/material';
 import { nanoid } from "nanoid";
+import { wrapper } from '../../redux/store';
+import LeftPanel from '../../components/FormBuilder/LeftPanel';
 
-type FormBuilderProps = {
-    form: Form;
-}
+// eslint-disable-next-line @typescript-eslint/ban-types
+type FormBuilderProps = {}
 
-const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps) => {
+const FormBuilderPage: NextPage<FormBuilderProps> = () => {
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
     const [formElements, setFormElements] = useState([]);
 
-    const { name } = form;
     const dispatch = useAppDispatch();
-    const isLeftPanelOpen = useAppSelector(isFormBuilderLeftPanelOpen);
+    const { name } = useAppSelector(getCurrentForm);
     const isRightPanelOpen = useAppSelector(isFormBuilderRightPanelOpen);
-
-    const toggleLeftPanel = useCallback(status => () => {
-        if (status !== isLeftPanelOpen) dispatch(toggleFormBuilderLeftPanel(status));
-    }, [isLeftPanelOpen]);
 
     const toggleRightPanel = useCallback(status => () => {
         if (status !== isRightPanelOpen) dispatch(toggleFormBuilderRightPanel(status));
@@ -115,6 +111,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
             {name}
             <EuiIcon type="gear" size="l" className={styles.settingsIcon}/>
         </div>
+        <LeftPanel />
         <EuiCollapsibleNav
             className={styles.rightPanel}
             style={{ top: 120 }}
@@ -129,27 +126,6 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
             </EuiText>
             <hr/>
         </EuiCollapsibleNav>
-        <EuiCollapsibleNav
-            className={styles.leftPanel}
-            style={{ top: 120 }}
-            isOpen={isLeftPanelOpen}
-            onClose={toggleLeftPanel(false)}
-            closeButtonPosition="inside"
-            ownFocus={false}
-            button={
-                <EuiButton onClick={toggleLeftPanel(true)} iconType='plusInCircle'>
-    Create New Form
-                </EuiButton>
-            }
-        >
-            <EuiText className={styles.title}>
-                {translate('Form Elements')}
-            </EuiText>
-            <hr/>
-            <List>
-                {options.map(createListItem)}
-            </List>
-        </EuiCollapsibleNav>
         <div className={styles.content}>
             <div>
                 <FormCard />
@@ -159,11 +135,12 @@ const FormBuilderPage: NextPage<FormBuilderProps> = ({ form }: FormBuilderProps)
 };
 
 export const getServerSideProps = withPageAuthRequired({
-    getServerSideProps: async context => {
+    getServerSideProps: wrapper.getServerSideProps(({ dispatch }) => async context => {
         const { formID } = context.query;
         try {
             const { data: form }: AxiosResponse<Form> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/form/${formID}`);
-            return { props: { form } as FormBuilderProps};
+            dispatch(setCurrentForm(form));
+            return { props: {}};
         } catch (error) {
             return {
                 redirect: {
@@ -172,7 +149,7 @@ export const getServerSideProps = withPageAuthRequired({
                 }
             };
         }
-    }
+    })
 });
 
 export default FormBuilderPage;

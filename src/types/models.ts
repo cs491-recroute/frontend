@@ -29,8 +29,38 @@ export type Stage = {
   stageProps: Record<string, any>;
 } & Basic;
 
+export enum ComponentTypes { 
+  address = "address", 
+  datePicker = "datePicker", 
+  dropdown = "dropDown", 
+  fullName = "fullName",
+  header = "header",
+  longText = "longText",
+  multipleChoice = "multipleChoice",
+  phone = "phone",
+  shortText = "shortText",
+  singleChoice = "singleChoice",
+  upload = "upload"
+}
+
+export interface Option {
+  key: number,
+  value: string
+}
+
+export type Component = {
+  type: ComponentTypes;
+  required: boolean;
+  title: string;
+  titles: string[];
+  placeholder: string;
+  placeholders: string[];
+  options: Option[];
+}
+
 export type Form = {
   name: string;
+  components: Component[] 
 } & Basic;
 
 export type Test = {
