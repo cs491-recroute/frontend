@@ -21,6 +21,7 @@ import {
 import { wrapper } from '../../redux/store';
 import LeftPanel from '../../components/FormBuilder/LeftPanel';
 import FormContent from '../../components/FormBuilder/FormContent';
+import Header from '../../components/FormBuilder/Header';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FormBuilderProps = {}
@@ -37,10 +38,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
     }, [isRightPanelOpen]);
     
     return (<Fragment>
-        <div className={styles.header}>
-            {form.name}
-            <EuiIcon type="gear" size="l" className={styles.settingsIcon}/>
-        </div>
+        <Header/>
         <LeftPanel />
         <div className={styles.content}>
             <FormContent form={form} editMode />

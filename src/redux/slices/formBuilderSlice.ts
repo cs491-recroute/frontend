@@ -30,6 +30,17 @@ export const addComponentAsync = createAsyncThunk(
     }
 );
 
+export const updateFormTitleAsync = createAsyncThunk(
+    'form/updateTitle',
+    async (titleData: { name: string; value: string}, { getState }) => {
+        const {formBuilder: {currentForm: {_id: formID} = {} } } = getState() as AppState;
+        const {data: form} = await axios.put(`/api/forms/${formID}/updateTitle`, { 
+            ...titleData
+        });
+        return form;
+    }
+);
+
 export const formBuilderSlice = createSlice({
     name: 'formBuilder',
     initialState,
@@ -48,6 +59,9 @@ export const formBuilderSlice = createSlice({
         builder
             .addCase(addComponentAsync.fulfilled, (state, action) => {
                 state.currentForm = action.payload;
+            })
+            .addCase(updateFormTitleAsync.fulfilled, (state, action) => {
+                state.currentForm.name = action.payload.name;
             });
     }
 });
