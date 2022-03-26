@@ -2,13 +2,25 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 20px;
 
     .questionList {
+        margin: 20px;
         padding: 30px;
         display: flex;
         flex-direction: column;
         align-items: stretch;
         width: 50%;
+
     }
+    
+    .divider {
+        margin: 14px 0;
+        
+        &:last-child {
+            display: none;
+        }
+    }
+}
+.fullScreen {
+    display: none;
 }

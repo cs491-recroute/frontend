@@ -1,4 +1,4 @@
-import { Test } from '../../types/models';
+import { Test, Question } from '../../types/models';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { STAGE_TYPE } from '../../types/enums';
@@ -22,14 +22,10 @@ const initialState: TestBuilderState = {
 
 export const addQuestionAsync = createAsyncThunk(
     'test/addQuestion',
-    async (questionData, { getState }) => {
+    async (questionData: Partial<Question>, { getState }) => {
         const { testBuilder: { currentTest: { _id: testID } = {} } } = getState() as AppState;
-        // const { data: { stage } } = await axios.post(`/api/flows/${flowID}/stage`, {
-        //     ...stageData,
-        //     ...(startDate && endDate && { startDate, endDate })
-        // });
-        console.log(testID);
-        return testID;
+        const { data: test } = await axios.post(`/api/tests/${testID}/question`, questionData);
+        return test;
     }
 );
 
@@ -58,7 +54,7 @@ export const testBuilderSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(addQuestionAsync.fulfilled, (state, action) => {
-                state.ui.leftPanelStatus = false;
+                state.currentTest = action.payload;
             })
             .addCase(updateTestTitleAsync.fulfilled, (state, action) => {
                 state.currentTest.name = action.payload.name;
@@ -68,7 +64,7 @@ export const testBuilderSlice = createSlice({
 
 export const { toggleLeftPanel, setCurrentTest } = testBuilderSlice.actions;
 
-export const getLeftPanelStatus = (state: AppState) => state.testBuilder.ui.leftPanelStatus;
+export const isLeftPanelOpen = (state: AppState) => state.testBuilder.ui.leftPanelStatus;
 export const getCurrentTest = (state: AppState) => state.testBuilder.currentTest;
 
 export default testBuilderSlice.reducer;

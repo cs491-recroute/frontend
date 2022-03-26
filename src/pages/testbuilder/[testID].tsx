@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { AxiosResponse } from 'axios';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
+import { EuiCollapsibleNav, EuiText, EuiButton } from '@elastic/eui';
 import styles from '../../styles/TestBuilder.module.scss';
 import { Test } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
@@ -11,58 +11,31 @@ import { translate } from '../../utils';
 import { MAIN_PAGE } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import TestContent from '../../components/TestBuilder/TestContent';
-import {
-    addQuestionAsync,
-    getLeftPanelStatus,
-    setCurrentTest,
-    toggleLeftPanel as toggleTestBuilderLeftPanel,
-    getCurrentTest
-} from '../../redux/slices/testBuilderSlice';
+import { useRouterWithReturnBack } from '../../utils/hooks';
+import { setCurrentTest, getCurrentTest } from '../../redux/slices/testBuilderSlice';
 import Header from '../../components/TestBuilder/Header';
 import { wrapper } from '../../redux/store';
-import { Button } from '@mui/material';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import LeftPanel from '../../components/TestBuilder/LeftPanel';
 
 const TestBuilderPage: NextPage = () => {
-    const dispatch = useAppDispatch();
+    const { returnAvailable, returnBack } = useRouterWithReturnBack();
     const test = useAppSelector(getCurrentTest);
-    const isLeftPanelOpen = useAppSelector(getLeftPanelStatus);
-
-    const toggleLeftPanel = useCallback((status: boolean) => () => {
-        if (status !== isLeftPanelOpen) dispatch(toggleTestBuilderLeftPanel(status));
-    }, [isLeftPanelOpen]);
 
     return (
         <>
-            <EuiCollapsibleNav
-                className={styles.leftPanel}
-                isOpen={isLeftPanelOpen}
-                onClose={toggleLeftPanel(false)}
-                closeButtonPosition="inside"
-                ownFocus={false}
-            >
-                {isLeftPanelOpen && <>                
-                    <EuiText className={styles.title}>
-                        {translate('Questions')}
-                    </EuiText>
-                    <hr />
-                </>}
-            </EuiCollapsibleNav>
-            <Button 
-                variant='contained' 
-                style={{ 
-                    borderTopLeftRadius: 0, 
-                    borderBottomLeftRadius: 0,
-                    borderTopRightRadius: 15,
-                    borderBottomRightRadius: 15,
-                    position: 'absolute'
-                }}
-                className={styles.leftPanelButton}
-                startIcon={<AddCircleOutlineIcon/>}
-                onClick={toggleLeftPanel(true)}
-            >{translate('Add Question')}</Button>
+            <LeftPanel />
             <Header />
-            <TestContent test={test} editMode />
+            <div className={styles.content}>
+                <TestContent test={test} editMode />
+            </div>
+            {returnAvailable && 
+            <EuiButton
+                className={styles.returnToFlow} 
+                onClick={returnBack}
+            >
+                Return to Flow
+            </EuiButton>
+            }
         </>
     );
 };

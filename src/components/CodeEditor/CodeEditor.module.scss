@@ -1,0 +1,42 @@
+.container {
+    &.darkMode {
+        background-color: #282c34;
+
+        label, div {
+            color: white;
+        }
+
+        .editor {
+            background-color: #282c34;
+        }
+    }
+    width: 100%;
+    
+    .options {
+        display: flex;
+        align-items: center;
+        
+        .languageSelect {
+            margin-left: 10px;
+            height: 35px;
+            width: 200px;
+        }
+    }
+    
+    .editor {
+        min-height: 100px;
+        max-height: 300px;
+        overflow: auto;
+        background-color: white;
+        margin: 10px 0;
+
+        &.fullScreen {
+            height: calc(100vh - 150px);
+            max-height: calc(100vh - 150px);
+        }
+    }
+
+    .runButton {
+        float: right
+    }
+}

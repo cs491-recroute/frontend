@@ -11,6 +11,11 @@
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "1.6.2",
+    "@codemirror/basic-setup": "^0.19.1",
+    "@codemirror/lang-html": "^0.19.4",
+    "@codemirror/lang-java": "^0.19.1",
+    "@codemirror/lang-javascript": "^0.19.7",
+    "@codemirror/theme-one-dark": "^0.19.1",
     "@elastic/datemath": "5.0.3",
     "@elastic/eui": "43.1.1",
     "@emotion/react": "^11.8.1",
