@@ -16,6 +16,7 @@ import { setCurrentTest, getCurrentTest } from '../../redux/slices/testBuilderSl
 import Header from '../../components/TestBuilder/Header';
 import { wrapper } from '../../redux/store';
 import LeftPanel from '../../components/TestBuilder/LeftPanel';
+import RightPanel from '../../components/TestBuilder/RightPanel';
 
 const TestBuilderPage: NextPage = () => {
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
@@ -36,6 +37,7 @@ const TestBuilderPage: NextPage = () => {
                 Return to Flow
             </EuiButton>
             }
+            <RightPanel />
         </>
     );
 };

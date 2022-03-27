@@ -71,6 +71,6 @@ export type Test = {
 export type Question = {
   description: string;
   type: QUESTION_TYPES;
-  options?: { description: string; isCorrect: boolean; _id?: string }[];
-  testCases?: { input: string; output: string; }[]
+  options?: ({ description: string; isCorrect: boolean; } & Partial<Basic>)[];
+  testCases?: ({ input: string; output: string; } & Partial<Basic>)[]
 } & Basic;

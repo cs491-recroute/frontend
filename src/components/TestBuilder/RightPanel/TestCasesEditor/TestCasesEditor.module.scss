@@ -1,0 +1,36 @@
+.label {
+    font-size: 0.85rem;
+    line-height: 1.14rem;
+    color: #1a1c21;
+    font-weight: 600;
+}
+
+.sublabel {
+    margin-top: 5px;
+    font-size: 0.75rem;
+    line-height: 1.14286rem;
+    color: #1a1c21;
+    font-weight: 600;
+    display: flex;
+
+    & > *:first-child {
+        width: 52%;
+    }
+}
+
+.addButton {
+    text-decoration: underline;
+    margin-top: 5px;
+}
+
+.singleCase {
+    display: flex;
+    justify-content: space-between;
+    &:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    & > * {
+        width: 48%;
+    }
+}

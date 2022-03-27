@@ -28,7 +28,7 @@ type CodeEditorProps = {
     onDarkModeChange: (darkMode: boolean) => void;
 }
 
-export type RefProps = Partial<HTMLElement> & { content?: string };
+export type RefProps = { content?: string };
 
 const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange }, ref) => {
     const editorRef = useRef<EditorView>();

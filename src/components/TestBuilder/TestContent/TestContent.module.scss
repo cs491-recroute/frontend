@@ -11,15 +11,28 @@
         align-items: stretch;
         width: 50%;
 
-    }
-    
-    .divider {
-        margin: 14px 0;
-        
-        &:last-child {
-            display: none;
+        .question {
+            position: relative;
+            hr {
+                margin: 14px 0;
+            }
+            &:last-child hr {
+                display: none;
+            }
+
+            .editButton {
+                position: absolute;
+                top: 0;
+                left: -75px;
+                background-color: #fff;
+                border: 1px solid #ccc;
+                border-radius: 50%;
+                padding: 5px;
+                cursor: pointer;
+            }
         }
     }
+    
 }
 .fullScreen {
     display: none;
