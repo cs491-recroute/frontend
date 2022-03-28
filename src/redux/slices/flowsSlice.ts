@@ -32,7 +32,7 @@ export const createFlowAsync = createAsyncThunk(
 export const deleteFlowAsync = createAsyncThunk(
     'flow/deleteFlow',
     async (flowID: string) => {
-        await axios.post(`/api/flows/${flowID}.ts`);
+        await axios.delete(`/api/flows/${flowID}`);
         return flowID;
     }
 );

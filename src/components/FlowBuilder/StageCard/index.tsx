@@ -1,7 +1,7 @@
 import { EuiCard, EuiIcon } from '@elastic/eui';
 import classNames from 'classnames';
 import React from 'react';
-import { toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
+import { deleteStageAsync, toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
 import { STAGE_TYPE } from '../../../types/enums';
 import { useAppDispatch } from '../../../utils/hooks';
 import styles from './StageCard.module.scss';
@@ -9,6 +9,7 @@ import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import { STAGE_PROPS } from '../../../constants';
 import { useRouterWithReturnBack } from '../../../utils/hooks';
 import { Stage } from '../../../types/models';
+import { DeleteForever } from '@mui/icons-material';
 
 type StageCardProps = {
     type: STAGE_TYPE;
@@ -33,10 +34,19 @@ const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
             pushWithReturn(`/${builderURL}/${stageID}`);
         }
     };
+    const deleteStage = () => {
+        if (id) {
+            dispatch(deleteStageAsync(id));
+        }else {
+            alert('Stage was not deleted!')
+        }
+    };
 
     return (
         <div className={styles.container}>
             <BuildCircleIcon onClick={goToBuilder} className={styles.builderIcon} />
+            <DeleteForever onClick={deleteStage} className={styles.deleteIcon} />
+
             <EuiCard
                 onClick={onClick} 
                 layout='horizontal'

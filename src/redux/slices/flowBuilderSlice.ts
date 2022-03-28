@@ -39,6 +39,14 @@ export const addStageAsync = createAsyncThunk(
         return stage;
     }
 );
+export const deleteStageAsync = createAsyncThunk(
+    'flow/deleteStage',
+    async (stageID: string, { getState }) => {
+        const { flowBuilder: { currentFlow: { _id: flowID} = {} } } = getState() as AppState;
+        const { data } = await axios.delete(`/api/flows/${flowID}/stages/${stageID}/deleteStage`); 
+        return data;
+    }
+);
 
 export const updateStageAsync = createAsyncThunk(
     'flow/updateStage',
@@ -103,7 +111,7 @@ export const flowBuilderSlice = createSlice({
                         return x;
                     }
                 });
-                state.currentFlow.stages = updatedFlowStages ;
+                state.currentFlow.stages = updatedFlowStages;
                 state.ui.rightPanelStatus.stageType = false;
             })
             .addCase(updateFlowTitleAsync.fulfilled, (state, action) => {
@@ -114,6 +122,10 @@ export const flowBuilderSlice = createSlice({
                 state.currentFlow.active = action.payload.active;
                 state.currentFlow.startDate = action.payload.startDate;
                 state.currentFlow.endDate = action.payload.endDate;
+            })
+            .addCase(deleteStageAsync.fulfilled, (state, action) => {
+                const index = state.currentFlow.stages.findIndex(stage => stage._id === action.payload.sid);
+                state.currentFlow.stages.splice(index,1);
             });
     }
 });
