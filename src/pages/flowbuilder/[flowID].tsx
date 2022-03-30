@@ -26,10 +26,11 @@ import Header from '../../components/FlowBuilder/Header';
 import { wrapper } from '../../redux/store';
 import capitalize from 'lodash.capitalize';
 import RightPanelContent from '../../components/FlowBuilder/RightPanelContent';
+import DisabledPage from '../../components/DisabledPage';
 
 const FlowBuilderPage: NextPage = () => {
     const dispatch = useAppDispatch();
-    const { stages, conditions } = useAppSelector(getCurrentFlow);
+    const { stages, conditions, active } = useAppSelector(getCurrentFlow);
     const leftPanelStatus = useAppSelector(getLeftPanelStatus);
     const rightPanelStatus = useAppSelector(getRightPanelStatus);
 
@@ -49,7 +50,7 @@ const FlowBuilderPage: NextPage = () => {
     }, [leftPanelStatus]);
 
     return (
-        <>
+        <div style={{overflow: 'hidden'}}>
             <EuiCollapsibleNav
                 className={styles.leftPanel}
                 isOpen={!!leftPanelStatus}
@@ -85,12 +86,16 @@ const FlowBuilderPage: NextPage = () => {
                 <RightPanelContent stageType={rightPanelStatus.stageType} stageId={rightPanelStatus.stageId}/>
             </EuiCollapsibleNav>
             <Header />
-            <Main
-                conditions={conditions}
-                stages={stages}
-                className={styles.content}
-            />
-        </>
+            <div style={{position: 'relative'}}>
+                {active && <DisabledPage/>}
+                <Main
+                    conditions={conditions}
+                    stages={stages}
+                    className={styles.content}
+                />
+            </div>
+
+        </div>
     );
 };
 

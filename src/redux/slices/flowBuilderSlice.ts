@@ -82,6 +82,17 @@ export const updateFlowAsync = createAsyncThunk(
     }
 );
 
+export const updateActiveStatusAsync = createAsyncThunk(
+    'flow/updateActiveStatus',
+    async (statusData: { name: string; value: boolean}, { getState }) => {
+        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
+        const {data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlowStatus`, {
+            ...statusData
+        });
+        return flow;
+    }
+);
+
 export const flowBuilderSlice = createSlice({
     name: 'flowBuilder',
     initialState,
@@ -126,6 +137,9 @@ export const flowBuilderSlice = createSlice({
             .addCase(deleteStageAsync.fulfilled, (state, action) => {
                 const index = state.currentFlow.stages.findIndex(stage => stage._id === action.payload.sid);
                 state.currentFlow.stages.splice(index,1);
+            })
+            .addCase(updateActiveStatusAsync.fulfilled, (state, action) => {
+                state.currentFlow.active = action.payload.active;
             });
     }
 });

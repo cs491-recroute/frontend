@@ -6,6 +6,7 @@
     align-items: center;
     font-size: 20px;
     font-weight: bold;
+    position: relative;
 
     .input {
       font-size: 20px;
@@ -13,5 +14,10 @@
   
     .settingsIcon {
       margin: 10px;
+    }
+
+    .rightButtons {
+      position: absolute;
+      right: 0;
     }
 }

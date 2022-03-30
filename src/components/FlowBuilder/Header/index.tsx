@@ -3,7 +3,7 @@ import styles from './Header.module.scss';
 import IconButton from '@mui/material/IconButton';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
-import { getCurrentFlow, updateFlowAsync, updateFlowTitleAsync } from '../../../redux/slices/flowBuilderSlice';
+import { getCurrentFlow, updateActiveStatusAsync, updateFlowAsync, updateFlowTitleAsync } from '../../../redux/slices/flowBuilderSlice';
 import {
     EuiButton,
     EuiModal,
@@ -70,6 +70,19 @@ const Header = () => {
         }
         setOpen(false);
     };
+  
+    const handleIsActiveSwitch = (e: { target: { checked: boolean }; }) => {
+        if(flow) {
+            dispatch(updateActiveStatusAsync({
+                name: "active",
+                value: e.target.checked
+            }));
+            setIsActive(e.target.checked);
+        }else{
+            alert('Error: Status of the flow could not be updated');
+        }
+
+    };
 
     return (<Fragment>
         <div className={styles.header}>
@@ -86,7 +99,24 @@ const Header = () => {
             />)}
             <IconButton onClick={open}>
                 <SettingsIcon className={styles.settingsIcon}/>
-            </IconButton> 
+            </IconButton>
+            <div className={styles.rightButtons}>
+                <EuiSwitch
+                    label={isActive ? 'Active' : 'Inactive'}
+                    checked={isActive}
+                    onChange={handleIsActiveSwitch}                
+                />
+                <EuiButton
+                    style={{marginLeft: '10px'}}
+                    iconType={'share'}
+                    color={'primary'}
+                    isDisabled={!isActive}
+                    onClick={() => {console.log();}}
+                >
+                    Share
+                </EuiButton>
+            </div>
+
         </div>
         {isOpen && (<EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
             <EuiModalHeader>
