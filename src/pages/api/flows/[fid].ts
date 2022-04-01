@@ -8,7 +8,8 @@ const handler: NextApiHandler = async (request, response) => {
 
     switch(request.method) {
         case 'GET': {
-            // TODO: Get flow whose id is fid
+            const { data: flow } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get(`/flow/${fid}`);
+            response.status(200).send(flow);
             break;
         }
         case 'UPDATE': {

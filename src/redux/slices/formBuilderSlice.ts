@@ -9,7 +9,8 @@ export interface FormBuilderState {
 		leftPanelOpen: boolean;
 		rightPanelOpen: boolean;
 	},
-    currentForm: Form
+    currentForm: Form,
+    isActive: boolean
 }
 
 const initialState: FormBuilderState = {
@@ -17,7 +18,8 @@ const initialState: FormBuilderState = {
         leftPanelOpen: false,
         rightPanelOpen: false
     },
-    currentForm: { _id: '' ,name: '', components: [] }
+    currentForm: { _id: '' ,name: '', components: [], flowID: '' },
+    isActive: false
 };
 
 export const addComponentAsync = createAsyncThunk(
@@ -38,6 +40,15 @@ export const updateFormTitleAsync = createAsyncThunk(
             ...titleData
         });
         return form;
+    }
+);
+
+export const getParentFlowAsync = createAsyncThunk(
+    'form/getParentFlow',
+    async (any , { getState }) => {
+        const {formBuilder: {currentForm: {flowID: fid} = {} } } = getState() as AppState;
+        const {data: flow} = await axios.get(`/api/flows/${fid}`);
+        return flow;
     }
 );
 
@@ -62,7 +73,10 @@ export const formBuilderSlice = createSlice({
             })
             .addCase(updateFormTitleAsync.fulfilled, (state, action) => {
                 state.currentForm.name = action.payload.name;
-            });
+            })
+            .addCase(getParentFlowAsync.fulfilled, (state, action) => {
+                state.isActive = action.payload.active;
+            })
     }
 });
 
@@ -71,5 +85,6 @@ export const { toggleLeftPanel, toggleRightPanel, setCurrentForm } = formBuilder
 export const isLeftPanelOpen = (state: AppState) => state.formBuilder.ui.leftPanelOpen;
 export const isRightPanelOpen = (state: AppState) => state.formBuilder.ui.rightPanelOpen;
 export const getCurrentForm = (state: AppState) => state.formBuilder.currentForm;
+export const getIsActive = (state: AppState) => state.formBuilder.isActive;
 
 export default formBuilderSlice.reducer;

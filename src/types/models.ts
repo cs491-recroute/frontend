@@ -60,7 +60,8 @@ export type Component = {
 
 export type Form = {
   name: string;
-  components: Component[] 
+  components: Component[];
+  flowID: string ;
 } & Basic;
 
 export type Test = {

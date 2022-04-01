@@ -1,4 +1,4 @@
-import React, { Fragment, useCallback } from 'react';
+import React, { Fragment, useCallback, useEffect } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
@@ -15,13 +15,16 @@ import {
     isRightPanelOpen as isFormBuilderRightPanelOpen,
     toggleRightPanel as toggleFormBuilderRightPanel,
     setCurrentForm,
-    getCurrentForm
+    getCurrentForm,
+    getParentFlowAsync,
+    getIsActive
 } from '../../redux/slices/formBuilderSlice';
 
 import { wrapper } from '../../redux/store';
 import LeftPanel from '../../components/FormBuilder/LeftPanel';
 import FormContent from '../../components/FormBuilder/FormContent';
 import Header from '../../components/FormBuilder/Header';
+import DisabledPage from '../../components/DisabledPage';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FormBuilderProps = {}
@@ -31,14 +34,20 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
 
     const dispatch = useAppDispatch();
     const form = useAppSelector(getCurrentForm);
+    const isActive = useAppSelector(getIsActive);
     const isRightPanelOpen = useAppSelector(isFormBuilderRightPanelOpen);
 
     const toggleRightPanel = useCallback(status => () => {
         if (status !== isRightPanelOpen) dispatch(toggleFormBuilderRightPanel(status));
     }, [isRightPanelOpen]);
+
+    useEffect(() => {
+        dispatch(getParentFlowAsync());
+    }, [form]);
     
     return (<Fragment>
         <Header/>
+        {isActive && <DisabledPage/>}
         <LeftPanel />
         <div className={styles.content}>
             <FormContent form={form} editMode />
