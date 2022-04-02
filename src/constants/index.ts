@@ -1,6 +1,17 @@
 import LongText from '../components/FormComponents/LongText';
 import ShortText from '../components/FormComponents/ShortText';
-import { ComponentTypes, Component } from '../types/models';
+import Address from '../components/FormComponents/Address';
+import DatePicker from '../components/FormComponents/DatePicker';
+import DropDown from '../components/FormComponents/DropDown';
+import FullName from '../components/FormComponents/FullName';
+import Header from '../components/FormComponents/Header';
+/*
+import MultipleChoice from '../components/FormComponents/MultipleChoice';
+import Phone from '../components/FormComponents/Phone';
+import SingleChoice from '../components/FormComponents/SingleChoice';
+import Upload from '../components/FormComponents/Upload';*/
+
+import { ComponentTypes, Component} from '../types/models';
 import { translate } from '../utils';
 import { STAGE_TYPE } from './../types/enums';
 export const MAIN_PAGE = '/flows';
@@ -46,5 +57,103 @@ export const COMPONENT_MAPPINGS: Record<any, {
             title: 'Please enter',
             placeholder: 'Enter your answer'
         }
-    }
+    },
+    [ComponentTypes.address]: {
+        text: translate('Address'),
+        type: ComponentTypes.address,
+        Renderer: Address,
+        defaultProps: {
+            type: ComponentTypes.address,
+            required: false,
+            title: 'Please enter your address',
+            placeholder: 'Enter your address'
+        }
+    },
+    [ComponentTypes.datePicker]: {
+        text: translate('Date Picker'),
+        type: ComponentTypes.datePicker,
+        Renderer: DatePicker,
+        defaultProps: {
+            type: ComponentTypes.datePicker,
+            required: false,
+            title: 'Select Date',
+            placeholder: 'Select Date'
+        }
+    },
+    [ComponentTypes.dropDown]: {
+        text: translate('Drop Down'),
+        type: ComponentTypes.dropDown,
+        Renderer: DropDown,
+        defaultProps: {
+            type: ComponentTypes.dropDown,
+            required: false,
+            title: 'Select Options',
+            options: [{1: 'option 1'}, {2: 'option 2'}]
+        }
+    },
+    [ComponentTypes.fullName]: {
+        text: translate('Full Name'),
+        type: ComponentTypes.fullName,
+        Renderer: FullName,
+        defaultProps: {
+            type: ComponentTypes.fullName,
+            required: true,
+            titles: ['Please enter your name', 'Please enter your surname'],
+            placeholders: ['Enter your name', 'Enter your surname']
+        }
+    },
+    [ComponentTypes.header]: {
+        text: translate('Header'),
+        type: ComponentTypes.header,
+        Renderer: Header,
+        defaultProps: {
+            type: ComponentTypes.header,
+            required: false,
+            title: 'Please enter',
+            placeholder: 'Enter your answer'
+        }
+    }/*,
+    [ComponentTypes.multipleChoice]: {
+        text: translate('Multiple Choice'),
+        type: ComponentTypes.multipleChoice,
+        Renderer: MultipleChoice,
+        defaultProps: {
+            type: ComponentTypes.multipleChoice,
+            required: false,
+            title: 'Please select',
+            options: [{1: 'option 1'}, {2: 'option 2'}]
+        }
+    },
+    [ComponentTypes.phone]: {
+        text: translate('Phone'),
+        type: ComponentTypes.phone,
+        Renderer: Phone,
+        defaultProps: {
+            type: ComponentTypes.phone,
+            required: false,
+            title: 'Please enter you phone number',
+            placeholder: 'Enter your phone number'
+        }
+    },
+    [ComponentTypes.upload]: {
+        text: translate('Upload'),
+        type: ComponentTypes.upload,
+        Renderer: Upload,
+        defaultProps: {
+            type: ComponentTypes.upload,
+            required: false,
+            title: 'Please enter',
+            placeholder: 'Enter your answer'
+        }
+    },
+    [ComponentTypes.singleChoice]: {
+        text: translate('Single Choice'),
+        type: ComponentTypes.singleChoice,
+        Renderer: SingleChoice,
+        defaultProps: {
+            type: ComponentTypes.singleChoice,
+            required: false,
+            title: 'Please select'
+        }
+    }*/
 }

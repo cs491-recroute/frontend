@@ -1,17 +1,19 @@
-import { EuiFormRow, EuiTextArea, EuiIcon } from '@elastic/eui';
+import { EuiFormRow, EuiSelect, EuiIcon } from '@elastic/eui';
 import React from 'react';
+import {Option} from '../../../types/models';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync} from '../../../redux/slices/formBuilderSlice';
 
-type LongTextProps = {
+type DropDownProps = {
     required?: boolean;
     title?: string;
-    placeholder?: string;
     editMode?: boolean;
+    placeholder?: string;
+    options?: Option[];
     _id?: string;
 }
 
-const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps) => {
+const DropDown = ({ required, title, placeholder, editMode, options, _id }: DropDownProps) => {
     const dispatch = useAppDispatch();
 
     const handleComponentDelete = () => {
@@ -23,16 +25,23 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
         
     };
 
+    const newArray = options?.map(option => {
+        return {
+            key: option.key,
+            text: option.value
+        }; 
+    });
+
     return <table>
         <tr>
             <th>
                 <EuiFormRow label={title} fullWidth>
-                    <EuiTextArea 
-                        fullWidth 
+                    <EuiSelect 
+                        fullWidth
+                        options={newArray} 
                         disabled={editMode} 
-                        required={required} 
+                        required={required}
                         placeholder={placeholder}
-                        resize={editMode ? 'none' : 'vertical'}
                     />
                 </EuiFormRow>
             </th>
@@ -49,4 +58,4 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
 
 };
 
-export default LongText;
+export default DropDown;

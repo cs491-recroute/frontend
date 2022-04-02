@@ -1,9 +1,9 @@
-import { EuiFormRow, EuiTextArea, EuiIcon } from '@elastic/eui';
+import { EuiFieldText, EuiFormRow, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync} from '../../../redux/slices/formBuilderSlice';
 
-type LongTextProps = {
+type AddressProps = {
     required?: boolean;
     title?: string;
     placeholder?: string;
@@ -11,7 +11,7 @@ type LongTextProps = {
     _id?: string;
 }
 
-const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps) => {
+const Address = ({ required, title, placeholder, editMode, _id }: AddressProps) => {
     const dispatch = useAppDispatch();
 
     const handleComponentDelete = () => {
@@ -27,12 +27,11 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
         <tr>
             <th>
                 <EuiFormRow label={title} fullWidth>
-                    <EuiTextArea 
-                        fullWidth 
+                    <EuiFieldText 
+                        fullWidth
                         disabled={editMode} 
                         required={required} 
                         placeholder={placeholder}
-                        resize={editMode ? 'none' : 'vertical'}
                     />
                 </EuiFormRow>
             </th>
@@ -46,7 +45,6 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
             </th>
         </tr>
     </table>
-
 };
 
-export default LongText;
+export default Address;

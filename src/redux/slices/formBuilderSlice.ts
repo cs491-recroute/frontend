@@ -32,6 +32,15 @@ export const addComponentAsync = createAsyncThunk(
     }
 );
 
+export const deleteComponentAsync = createAsyncThunk(
+    'form/deleteComponent',
+    async (componentID: string, { getState }) => {
+        const { formBuilder: { currentForm: { _id: formID } = {} } } = getState() as AppState;
+        const { data } = await axios.delete(`/api/forms/${formID}/components/${componentID}/deleteComponent`);
+        return data;
+    }
+);
+
 export const updateFormTitleAsync = createAsyncThunk(
     'form/updateTitle',
     async (titleData: { name: string; value: string}, { getState }) => {
@@ -77,6 +86,10 @@ export const formBuilderSlice = createSlice({
             .addCase(getParentFlowAsync.fulfilled, (state, action) => {
                 state.isActive = action.payload.active;
             })
+            .addCase(deleteComponentAsync.fulfilled, (state, action) => {
+                const index = state.currentForm.components.findIndex(component => component._id === action.payload._id);
+                state.currentForm.components.splice(index,1);
+            });
     }
 });
 

@@ -1,17 +1,17 @@
-import { EuiFormRow, EuiTextArea, EuiIcon } from '@elastic/eui';
+import { EuiFieldText, EuiFormRow, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync} from '../../../redux/slices/formBuilderSlice';
 
-type LongTextProps = {
+type FullNameProps = {
     required?: boolean;
-    title?: string;
-    placeholder?: string;
+    titles?: string[];
+    placeholders?: string[];
     editMode?: boolean;
     _id?: string;
 }
 
-const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps) => {
+const FullName = ({ required, titles, placeholders, editMode, _id }: FullNameProps) => {
     const dispatch = useAppDispatch();
 
     const handleComponentDelete = () => {
@@ -25,14 +25,21 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
 
     return <table>
         <tr>
-            <th>
-                <EuiFormRow label={title} fullWidth>
-                    <EuiTextArea 
-                        fullWidth 
+            <th style={{marginRight:20}}>
+                <EuiFormRow label={titles?.[0]} fullWidth>
+                    <EuiFieldText 
                         disabled={editMode} 
                         required={required} 
-                        placeholder={placeholder}
-                        resize={editMode ? 'none' : 'vertical'}
+                        placeholder={placeholders?.[0]}
+                    />
+                </EuiFormRow>
+            </th>
+            <th style={{marginLeft:20}}>
+                <EuiFormRow label={titles?.[1]} fullWidth>
+                    <EuiFieldText 
+                        disabled={editMode} 
+                        required={required} 
+                        placeholder={placeholders?.[1]}
                     />
                 </EuiFormRow>
             </th>
@@ -40,13 +47,13 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
                 <button>
                     <EuiIcon type="gear" style={{marginTop:30}}/>
                 </button>
-                <button onClick={handleComponentDelete}>
+                <button  onClick={handleComponentDelete}>
                     <EuiIcon type="trash" style={{marginLeft:20, marginTop:30}}/>
                 </button>
             </th>
         </tr>
-    </table>
-
+    </table> 
+    
 };
 
-export default LongText;
+export default FullName;

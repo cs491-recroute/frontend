@@ -1,17 +1,17 @@
-import { EuiFormRow, EuiTextArea, EuiIcon } from '@elastic/eui';
+import { EuiFormRow, EuiDatePicker, EuiIcon } from '@elastic/eui';
 import React from 'react';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync} from '../../../redux/slices/formBuilderSlice';
 
-type LongTextProps = {
+type DatePickerProps = {
     required?: boolean;
     title?: string;
-    placeholder?: string;
     editMode?: boolean;
+    placeholder?: string;
     _id?: string;
 }
 
-const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps) => {
+const DatePicker = ({ required, title, placeholder, editMode, _id }: DatePickerProps) => {
     const dispatch = useAppDispatch();
 
     const handleComponentDelete = () => {
@@ -26,13 +26,12 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
     return <table>
         <tr>
             <th>
-                <EuiFormRow label={title} fullWidth>
-                    <EuiTextArea 
+                <EuiFormRow label={title}>
+                    <EuiDatePicker 
                         fullWidth 
                         disabled={editMode} 
                         required={required} 
                         placeholder={placeholder}
-                        resize={editMode ? 'none' : 'vertical'}
                     />
                 </EuiFormRow>
             </th>
@@ -46,7 +45,6 @@ const LongText = ({ required, title, placeholder, editMode, _id }: LongTextProps
             </th>
         </tr>
     </table>
-
 };
 
-export default LongText;
+export default DatePicker;
