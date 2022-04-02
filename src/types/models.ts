@@ -27,6 +27,7 @@ export type Stage = {
   startDate?: Date;
   endDate?: Date;
   stageProps: Record<string, any>;
+  testDuration?: number;
 } & Basic;
 
 export enum ComponentTypes { 

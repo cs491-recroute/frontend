@@ -3,7 +3,7 @@ import styles from './RightPanelContent.module.scss';
 import { Stage } from '../../../types/models';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import { getCurrentFlow, updateStageAsync } from '../../../redux/slices/flowBuilderSlice';
-import { EuiButton, EuiDatePicker, EuiFormRow, EuiSpacer, EuiSwitch } from '@elastic/eui';
+import { EuiButton, EuiDatePicker, EuiFormRow, EuiSpacer, EuiSwitch, EuiFieldNumber } from '@elastic/eui';
 import { translate } from '../../../utils';
 import { STAGE_TYPE } from '../../../types/enums';
 import moment from 'moment';
@@ -22,6 +22,7 @@ const RightPanelContent = ({ stageType, stageId }: RightPanelProps) => {
     const [startDate, setStartDate] = useState(moment(stage?.startDate));
     const [endDate, setEndDate] = useState(moment(stage?.endDate));
     const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
+    const [testDuration, setTestDuration] = useState(stage?.testDuration);
 
     useEffect(() => {
         const newStage = flow.stages.find(e => e._id === stageId);
@@ -29,6 +30,7 @@ const RightPanelContent = ({ stageType, stageId }: RightPanelProps) => {
         setStartDate(moment(newStage?.startDate));
         setEndDate(moment(newStage?.endDate));
         setIsInvalid(startDate > endDate || startDate <= moment());
+        setTestDuration(newStage?.testDuration);
     }, [flow, stageId]);
 
     const handleSaveButton = () => {
@@ -37,6 +39,7 @@ const RightPanelContent = ({ stageType, stageId }: RightPanelProps) => {
             dispatch(updateStageAsync({
                 type: stage.type,
                 stageID: stage.stageID,
+                ...(testDuration && { testDuration }),
                 ...(specifyDuration && {startDate: startDate.toString()}),
                 ...(specifyDuration && {endDate: endDate.toString()})
     
@@ -89,7 +92,15 @@ const RightPanelContent = ({ stageType, stageId }: RightPanelProps) => {
                 />
             </EuiFormRow></>
             }
-
+            {stageType === STAGE_TYPE.TEST && <EuiFormRow label={translate('Test Duration')}>
+                <EuiFieldNumber 
+                    min={0}
+                    step={5}
+                    append={translate('Minutes')}
+                    value={testDuration}
+                    onChange={({ target: { value }}) => setTestDuration(parseInt(value))}
+                />
+            </EuiFormRow>}
             <EuiSpacer/>
             <EuiFormRow>
                 <EuiButton onClick={handleSaveButton}>
