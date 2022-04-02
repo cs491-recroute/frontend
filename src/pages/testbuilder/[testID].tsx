@@ -12,20 +12,29 @@ import { MAIN_PAGE } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import TestContent from '../../components/TestBuilder/TestContent';
 import { useRouterWithReturnBack } from '../../utils/hooks';
-import { setCurrentTest, getCurrentTest } from '../../redux/slices/testBuilderSlice';
+import { setCurrentTest, getCurrentTest, getParentFlowAsync, getIsActive } from '../../redux/slices/testBuilderSlice';
 import Header from '../../components/TestBuilder/Header';
 import { wrapper } from '../../redux/store';
 import LeftPanel from '../../components/TestBuilder/LeftPanel';
 import RightPanel from '../../components/TestBuilder/RightPanel';
+import DisabledPage from '../../components/DisabledPage';
 
 const TestBuilderPage: NextPage = () => {
+    
+    const dispatch = useAppDispatch();
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
     const test = useAppSelector(getCurrentTest);
+    const isActive = useAppSelector(getIsActive);
+
+    useEffect(() => {
+        dispatch(getParentFlowAsync());
+    }, [test]);
 
     return (
         <>
             <LeftPanel />
             <Header />
+            {isActive && <DisabledPage/>}
             <div className={styles.content}>
                 <TestContent test={test} editMode />
             </div>

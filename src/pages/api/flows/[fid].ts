@@ -22,8 +22,6 @@ const handler: NextApiHandler = async (request, response) => {
             break;
         }
     }
-
-    response.json({ data: fid });
 };
 
 export default withApiAuthRequired(handler);

@@ -12,7 +12,8 @@ export interface TestBuilderState {
             question?: Question;
         }
 	},
-	currentTest: Test
+	currentTest: Test,
+    isActive: boolean
 }
 
 const initialState: TestBuilderState = {
@@ -23,8 +24,9 @@ const initialState: TestBuilderState = {
         }
     },
     currentTest: {
-        _id: '', name: '', questions: []
-    }
+        _id: '', name: '', questions: [], flowID: '' 
+    },
+    isActive: false
 };
 
 export const addQuestionAsync = createAsyncThunk(
@@ -52,6 +54,15 @@ export const updateTestTitleAsync = createAsyncThunk(
         const {data: test} = await axios.put(`/api/tests/${testId}/updateTitle`, { 
             ...titleData
         });
+        return test;
+    }
+);
+
+export const getParentFlowAsync = createAsyncThunk(
+    'test/getParentFlow',
+    async (any , { getState }) => {
+        const {testBuilder: {currentTest: {flowID: fid} = {} } } = getState() as AppState;
+        const {data: test} = await axios.get(`/api/flows/${fid}`);
         return test;
     }
 );
@@ -84,6 +95,9 @@ export const testBuilderSlice = createSlice({
                 const { _id: questionID } = action.payload;
                 const index = questions.findIndex(question => question._id === questionID);
                 state.currentTest.questions[index] = action.payload;
+            })
+            .addCase(getParentFlowAsync.fulfilled, (state, action) => {
+                state.isActive = action.payload.active;
             });
     }
 });
@@ -93,5 +107,6 @@ export const { toggleLeftPanel, setCurrentTest, toggleRightPanel } = testBuilder
 export const isLeftPanelOpen = (state: AppState) => state.testBuilder.ui.leftPanelStatus;
 export const getCurrentTest = (state: AppState) => state.testBuilder.currentTest;
 export const getRightPanelStatus = (state: AppState) => state.testBuilder.ui.rightPanelStatus;
+export const getIsActive = (state: AppState) => state.testBuilder.isActive;
 
 export default testBuilderSlice.reducer;
