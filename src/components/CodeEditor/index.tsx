@@ -13,6 +13,7 @@ import { EuiButton } from '@elastic/eui';
 import classNames from 'classnames';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { IconButton } from '@mui/material';
+import { v4 } from 'uuid';
 
 const languageOptions = [ 
     { value: 'java', text: 'Java', extension: java, defaultCode: JAVA_DEFAULT_CODE },
@@ -31,6 +32,7 @@ type CodeEditorProps = {
 export type RefProps = { content?: string };
 
 const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange }, ref) => {
+    const id = useRef(v4());
     const editorRef = useRef<EditorView>();
     const [isDarkTheme, setDarkTheme] = useState(false);
     const [currentLanguage, setCurrentLanguage] = useState('javascript');
@@ -53,7 +55,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
                     ...(isDarkTheme ? [oneDarkTheme] : [])
                 ]
             }),
-            parent: document.getElementById('editor') || document.body
+            parent: document.getElementById(id.current) || document.body
         });
         editorRef.current = editor;
         return editor;
@@ -96,7 +98,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
                     <FullscreenIcon/>
                 </IconButton>
             </div>
-            <div id='editor' className={classNames(styles.editor, { [styles.editMode]: editMode, [styles.fullScreen]: fullScreen })} />
+            <div id={id.current} className={classNames(styles.editor, { [styles.editMode]: editMode, [styles.fullScreen]: fullScreen })} />
             <EuiButton onClick={handleRunCode} className={styles.runButton} disabled={editMode}>{translate('Run Code')}</EuiButton>
         </div>
     )
