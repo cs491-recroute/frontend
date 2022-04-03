@@ -26,7 +26,6 @@ export const addComponentAsync = createAsyncThunk(
     'form/addComponent',
     async (defaultProps: Record<any, any>, { getState }) => {
         const { formBuilder: { currentForm: { _id: formID } = {} } } = getState() as AppState;
-        console.log('props:', defaultProps);
         const { data: form } = await axios.post(`/api/forms/${formID}/component`, defaultProps);
         return form as Form;
     }
@@ -87,7 +86,7 @@ export const formBuilderSlice = createSlice({
                 state.isActive = action.payload.active;
             })
             .addCase(deleteComponentAsync.fulfilled, (state, action) => {
-                const index = state.currentForm.components.findIndex(component => component._id === action.payload._id);
+                const index = state.currentForm.components.findIndex(component => component._id === action.payload.cid);
                 state.currentForm.components.splice(index,1);
             });
     }
