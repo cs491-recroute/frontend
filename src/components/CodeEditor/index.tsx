@@ -3,39 +3,33 @@ import styles from './CodeEditor.module.scss';
 import { EditorView, EditorState, basicSetup } from '@codemirror/basic-setup';
 import { javascript } from '@codemirror/lang-javascript';
 import { oneDarkTheme } from '@codemirror/theme-one-dark';
-import { html } from '@codemirror/lang-html';
-import { java } from '@codemirror/lang-java';
 import DarkModeSwitch from './DarkModeSwitch';
 import { Select, MenuItem, InputLabel } from '@mui/material';
 import { translate } from '../../utils';
-import { JAVASCRIPT_DEFAULT_CODE, JAVA_DEFAULT_CODE } from './constants';
+import { languageOptions } from './constants';
 import { EuiButton } from '@elastic/eui';
 import classNames from 'classnames';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import { IconButton } from '@mui/material';
 import { v4 } from 'uuid';
-
-const languageOptions = [ 
-    { value: 'java', text: 'Java', extension: java, defaultCode: JAVA_DEFAULT_CODE },
-    { value: 'javascript', text: 'JavaScript', extension: javascript, defaultCode: JAVASCRIPT_DEFAULT_CODE }
-    // { value: 'html', text: 'HTML', extension: html, defaultCode: 'html' }
-]
+import RunResult from './RunResult';
 
 type CodeEditorProps = {
-    onRunCode: (language: string, content: string) => void;
+    onRunCode: (language: number, content: string) => void;
     editMode?: boolean;
     onFullScreen: () => void;
     fullScreen?: boolean;
     onDarkModeChange: (darkMode: boolean) => void;
+    result?: boolean[] | string;
 }
 
 export type RefProps = { content?: string };
 
-const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange }, ref) => {
+const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange, result }, ref) => {
     const id = useRef(v4());
     const editorRef = useRef<EditorView>();
     const [isDarkTheme, setDarkTheme] = useState(false);
-    const [currentLanguage, setCurrentLanguage] = useState('javascript');
+    const [currentLanguage, setCurrentLanguage] = useState(63);
 
     const getCurrentContent = () => editorRef?.current?.state.doc.toString() || '';
 
@@ -45,7 +39,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
 
     const initializeEditor = (content?: string) => {
         if (editorRef.current) editorRef.current.destroy();
-        const { extension = html, defaultCode } = languageOptions.find(language => language.value === currentLanguage) || {};
+        const { extension = javascript, defaultCode } = languageOptions.find(language => language.value === currentLanguage) || {};
         const editor = new EditorView({
             state: EditorState.create({
                 doc: content || defaultCode,
@@ -81,7 +75,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
                 <Select
                     labelId='language-label'
                     value={currentLanguage}
-                    onChange={({ target: { value }}) => setCurrentLanguage(value)}
+                    onChange={({ target: { value }}) => setCurrentLanguage(value as number)}
                     className={styles.languageSelect}
                 >
                     {languageOptions.map(({ value, text }) => <MenuItem key={value} value={value}>{text}</MenuItem>)}
@@ -99,7 +93,10 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
                 </IconButton>
             </div>
             <div id={id.current} className={classNames(styles.editor, { [styles.editMode]: editMode, [styles.fullScreen]: fullScreen })} />
-            <EuiButton onClick={handleRunCode} className={styles.runButton} disabled={editMode}>{translate('Run Code')}</EuiButton>
+            <div className={styles.footer}>
+                <EuiButton onClick={handleRunCode} className={styles.runButton} disabled={editMode}>{translate('Run Code')}</EuiButton>
+                <RunResult result={result} />
+            </div>
         </div>
     )
 });

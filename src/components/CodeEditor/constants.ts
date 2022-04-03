@@ -1,3 +1,6 @@
+import { javascript } from '@codemirror/lang-javascript';
+import { java } from '@codemirror/lang-java';
+
 export const JAVASCRIPT_DEFAULT_CODE = `'use strict';
 
 const fs = require('fs');
@@ -12,22 +15,29 @@ process.stdin.on('data', function(inputStdin) {
 });
 
 process.stdin.on('end', function() {
-    inputString = inputString.split('\n');
+    inputString = inputString.split('\\n');
     main();
 });
 
-/*
- * Complete the function below according to the question.
- */
-
-function desiredFunction(input) {
-    // Write your code here.
-    return input;
-}
+{{CONTENT}}
 
 function main() {
-    inputString.forEach(input => console.log(desiredFunction(input)));
+    inputString.forEach((input, index) => {
+        process.stdout.write(desiredFunction(input));
+        if (index !== inputString.length - 1) {
+            process.stdout.write('\\n');
+        }
+    });
 }`;
+
+export const JAVASCRIPT_USER_CODE = `/*
+* Complete the function below according to the question.
+*/
+
+function desiredFunction(input) {
+   // Write your code here.
+   return input;
+}`
 
 export const JAVA_DEFAULT_CODE = `import java.io.*;
 import java.math.*;
@@ -43,14 +53,7 @@ import static java.util.stream.Collectors.toList;
 
 class Result {
 
-    /*
-     * Complete the function below according to the question.
-     */
-
-    public static String desiredFunction(String s) {
-        // Write your code here
-        return s;
-    }
+    {{CONTENT}}
 
 }
 
@@ -74,3 +77,16 @@ public class Main {
     }
 }
 `;
+
+export const JAVA_USER_CODE = `/*
+* Complete the function below according to the question.
+*/
+public static String desiredFunction(String s) {
+    // Write your code here
+    return s;
+}`;
+
+export const languageOptions = [ 
+    { value: 62, text: 'Java', extension: java, defaultCode: JAVA_USER_CODE, completeTemplate: JAVA_DEFAULT_CODE },
+    { value: 63, text: 'JavaScript', extension: javascript, defaultCode: JAVASCRIPT_USER_CODE, completeTemplate: JAVASCRIPT_DEFAULT_CODE }
+]

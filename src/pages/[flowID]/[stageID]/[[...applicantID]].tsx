@@ -22,7 +22,10 @@ type FillingPageProps = {
 const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPageProps) => {
     const [started, setStarted] = useState(false);
     if (!stage) {
-        return <div>{error}</div>;
+        return <Paper elevation={10} className={styles.container}>
+            <Image src='/assets/stage_error.png' width={250} height={250} />
+            <EuiText color='danger' style={{ marginTop: 20 }}><h2>{error}</h2></EuiText>
+        </Paper>;
     }
 
     const startTest = () => {
@@ -66,6 +69,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPagePr
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(({ dispatch }) => async (context): Promise<any> => {
     const { flowID, stageID, applicantID } = context.query;
+    console.log(applicantID && applicantID[0]);
     // TODO: If applicant filled this stage before, show corresponding warning
     try {
         dispatch(setHeaderVisible(false));

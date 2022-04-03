@@ -5,7 +5,7 @@ import OpenEnded from './OpenEnded';
 import Coding from '../Questions/Coding';
 import MultipleChoice from './MultipleChoice';
 
-export type RendererProps = Partial<Question> & { editMode?: boolean; number: number; }
+export type RendererProps = Partial<Question> & { editMode?: boolean; number: number; ref: React.RefObject<{ answer: any; }> };
 export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
     text: string;
     type: QUESTION_TYPES;
