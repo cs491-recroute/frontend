@@ -33,11 +33,13 @@ const TestBuilderPage: NextPage = () => {
     return (
         <>
             <LeftPanel />
-            <Header />
-            {isActive && <DisabledPage/>}
-            <div className={styles.content}>
-                <TestContent test={test} editMode />
-            </div>
+            <DisabledPage isActive={isActive}>
+                <Header />
+                <div className={styles.content}>
+                    <TestContent test={test} editMode />
+                </div>
+            </DisabledPage>
+
             {returnAvailable && 
             <EuiButton
                 className={styles.returnToFlow} 

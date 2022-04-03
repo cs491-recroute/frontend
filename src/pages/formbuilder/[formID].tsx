@@ -46,12 +46,14 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
     }, [form]);
     
     return (<Fragment>
-        <Header/>
-        {isActive && <DisabledPage/>}
+        <DisabledPage isActive={isActive}>
+            <Header/>
+            <div className={styles.content}>
+                <FormContent form={form} editMode />
+            </div>
+        </DisabledPage>
         <LeftPanel />
-        <div className={styles.content}>
-            <FormContent form={form} editMode />
-        </div>
+
         {returnAvailable && 
             <EuiButton 
                 className={styles.returnToFlow} 

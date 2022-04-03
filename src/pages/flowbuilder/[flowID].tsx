@@ -85,15 +85,15 @@ const FlowBuilderPage: NextPage = () => {
                 <hr />
                 <RightPanelContent stageType={rightPanelStatus.stageType} stageId={rightPanelStatus.stageId}/>
             </EuiCollapsibleNav>
-            <Header />
-            <div style={{position: 'relative'}}>
-                {active && <DisabledPage/>}
+
+            <DisabledPage isActive={active}>
+                <Header />
                 <Main
                     conditions={conditions}
                     stages={stages}
                     className={styles.content}
                 />
-            </div>
+            </DisabledPage>
 
         </div>
     );
