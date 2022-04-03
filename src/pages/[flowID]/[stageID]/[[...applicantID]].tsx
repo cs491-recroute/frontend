@@ -46,7 +46,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPagePr
                         <br/>
                         {`${translate('You have {duration} minutes to solve this test.', { duration: stage.testDuration })}`}
                         <br/>
-                        {translate('After starting the test, you will be redirected to the test page.')}
+                        {translate('After clicking the below button, you will be redirected to the test page.')}
                         <br/>
                         {translate('If you exit the test page, you will not be able to continue the test.')}
                         <Button 
