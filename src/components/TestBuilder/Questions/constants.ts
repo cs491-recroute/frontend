@@ -4,12 +4,13 @@ import { QUESTION_TYPES } from './../../../types/enums';
 import OpenEnded from './OpenEnded';
 import Coding from '../Questions/Coding';
 import MultipleChoice from './MultipleChoice';
+import { ReactElement } from 'react';
 
 export type RendererProps = Partial<Question> & { editMode?: boolean; number: number; ref: React.RefObject<{ answer: any; }> };
 export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
     text: string;
     type: QUESTION_TYPES;
-    Renderer: (props: RendererProps) => JSX.Element;
+    Renderer: (props: RendererProps) => ReactElement | null;
     defaultProps: Partial<Question>;
 }> = {
     [QUESTION_TYPES.OPEN_ENDED]: {
