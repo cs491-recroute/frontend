@@ -35,5 +35,6 @@ yarn-error.log*
 
 .env
 .env.local
+.env.production
 
 /public/assets/logo_black.png

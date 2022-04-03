@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { NextPage, GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { AxiosResponse } from 'axios';
-import { Stage, Test } from '../../../types/models';
-import { gatewayManager } from '../../../utils/gatewayManager';
-import { SERVICES } from '../../../constants/services';
-import { wrapper } from '../../../redux/store';
-import { setHeaderVisible } from '../../../redux/slices/globalSlice';
-import TestContent from '../../../components/TestBuilder/TestContent';
-import { STAGE_TYPE } from '../../../types/enums';
+import { Stage, Test } from '../../types/models';
+import { gatewayManager } from '../../utils/gatewayManager';
+import { SERVICES } from '../../constants/services';
+import { wrapper } from '../../redux/store';
+import { setHeaderVisible } from '../../redux/slices/globalSlice';
+import TestContent from '../../components/TestBuilder/TestContent';
+import { STAGE_TYPE } from '../../types/enums';
 import { Paper, Button } from '@mui/material';
-import styles from '../../../styles/StageFillingPage.module.scss';
+import styles from '../../styles/StageFillingPage.module.scss';
 import { EuiText } from '@elastic/eui';
-import { translate } from '../../../utils';
+import { translate } from '../../utils';
 
 type FillingPageProps = {
     stage?: Stage;
@@ -68,8 +68,16 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPagePr
 };
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(({ dispatch }) => async (context): Promise<any> => {
-    const { flowID, stageID, applicantID } = context.query;
-    console.log(applicantID && applicantID[0]);
+    const { applicationIDs } = context.query;
+    if (!applicationIDs || !Array.isArray(applicationIDs)) {
+        return {
+            redirect: {
+                destination: '/',
+                permanent: false
+            }
+        };
+    }
+    const [flowID, stageID, applicantID] = applicationIDs;
     // TODO: If applicant filled this stage before, show corresponding warning
     try {
         dispatch(setHeaderVisible(false));
