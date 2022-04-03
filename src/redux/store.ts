@@ -5,12 +5,14 @@ import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import flowsSlice from './slices/flowsSlice';
 import formBuilderSlice from './slices/formBuilderSlice';
 import testBuilderSlice from './slices/testBuilderSlice';
+import globalSlice from './slices/globalSlice';
 
 const combinedReducer = combineReducers({
     formBuilder: formBuilderSlice,
     flowBuilder: flowBuilderSlice,
     flows: flowsSlice,
-    testBuilder: testBuilderSlice
+    testBuilder: testBuilderSlice,
+    global: globalSlice
 });
 
 const reducer = (state: ReturnType<typeof combinedReducer> | undefined, action: AnyAction) => {

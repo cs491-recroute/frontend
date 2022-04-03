@@ -6,4 +6,8 @@ export const getUserID = (user: UserProfile): string => {
     return user[AUTH0_NAMESPACE + '/dbID'] as string;
 };
 
-export const translate = (string: string) => string;
+export const translate = (string: string, mappings?: { [key: string]: any }) => {
+    return string.replace(/\{([^}]+)\}/g, (match, key) => {
+        return mappings && mappings[key] || match;
+    });
+};

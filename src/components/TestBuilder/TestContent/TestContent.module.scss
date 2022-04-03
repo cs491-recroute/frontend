@@ -3,6 +3,10 @@
     display: flex;
     justify-content: center;
 
+    &.fillingMode .questionList {
+        width: 100%;
+    }
+
     .questionList {
         margin: 20px;
         padding: 30px;
@@ -33,6 +37,17 @@
         }
     }
     
+    .submitButton {
+        width: 300px;
+        margin-left: auto;
+    }
+
+    .countdown {
+        right: 10px;
+        top: 10px;
+        position: absolute;
+        padding: 10px;
+    }
 }
 .fullScreen {
     display: none;

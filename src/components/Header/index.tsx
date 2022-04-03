@@ -5,11 +5,14 @@ import Image from 'next/image';
 import { EuiContextMenu, EuiPopover, EuiText, useGeneratedHtmlId } from '@elastic/eui';
 import Link from 'next/link';
 import { useUser } from '@auth0/nextjs-auth0';
+import { useAppSelector } from '../../utils/hooks';
+import { isHeaderVisible } from '../../redux/slices/globalSlice';
 
 const Header = () => {
     const { user } = useUser();
     const router = useRouter();
     const [isUserMenuOpen, toggleUserMenu] = useState(false);
+    const isVisible = useAppSelector(isHeaderVisible);
 
     const contextMenuPopoverId = useGeneratedHtmlId({
         prefix: 'contextMenuPopover'
@@ -17,7 +20,7 @@ const Header = () => {
     const onAvatarClick = () => toggleUserMenu(open => !open);
     const closeMenu = () => toggleUserMenu(false);
 
-    if (!user) {
+    if (!user || !isVisible) {
         return null;
     }
 
