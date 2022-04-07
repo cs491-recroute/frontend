@@ -9,6 +9,8 @@ import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiLink, Eui
 import styles from '../styles/Flows.module.scss';
 import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
 import { Paper } from '@mui/material';
+import { useWithConfirmation } from '../contexts/confirmation';
+import { translate } from '../utils';
 
 interface SelectedBoxes {
 	[key: string]: boolean
@@ -20,6 +22,7 @@ const FlowsPage: NextPage = () => {
     const dispatch = useAppDispatch();
     const flows = useAppSelector(getFlows);
     const isReady = useAppSelector(isFlowsReady);
+    const withConfirmation = useWithConfirmation();
 
     useEffect(() => {
         dispatch(fetchFlowsAsync());
@@ -30,13 +33,27 @@ const FlowsPage: NextPage = () => {
         setChecked(initialObj);
     }, []);
 
-    const handleDeleteButton = (flowID: string) => {
-        if(flowID){
-            dispatch(deleteFlowAsync(flowID));
-        }else{
-            alert('Flow was not deleted!')
+    const handleDeleteButton = withConfirmation({
+        onApprove: (flowID: string) => {
+            if(flowID){
+                dispatch(deleteFlowAsync(flowID));
+            }else{
+                alert('Flow was not deleted!')
+            }
+        },
+        texts: {
+            approve: translate('Delete'),
+            cancel: translate('Cancel'),
+            prompt: <div style={{ textAlign: 'center' }}>
+                <EuiText size='m' style={{ fontWeight: 'bold' }}>
+                    {translate('Are you sure you want to delete this flow?')}
+                </EuiText>
+                <EuiText size='s'>
+                    {translate('All the submissions will be deleted as well.')}
+                </EuiText>
+            </div>
         }
-    };
+    });
 
     const handleCheckboxClick: ChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const id = e.target.id;

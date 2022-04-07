@@ -74,6 +74,7 @@ module.exports = {
         'react/jsx-closing-bracket-location': [2, 'line-aligned'],
         'no-shadow': 'off',
         '@typescript-eslint/no-shadow': ['error'],
-        'no-param-reassign': ['error', { props: false }]
+        'no-param-reassign': ['error', { props: false }],
+        '@typescript-eslint/no-empty-function': 'off'
     }
 };
