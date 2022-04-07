@@ -50,7 +50,7 @@ const FlowBuilderPage: NextPage = () => {
     }, [leftPanelStatus]);
 
     return (
-        <div style={{overflow: 'hidden'}}>
+        <>
             <EuiCollapsibleNav
                 className={styles.leftPanel}
                 isOpen={!!leftPanelStatus}
@@ -95,7 +95,7 @@ const FlowBuilderPage: NextPage = () => {
                 />
             </DisabledPage>
 
-        </div>
+        </>
     );
 };
 

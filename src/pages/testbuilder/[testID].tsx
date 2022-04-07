@@ -32,13 +32,13 @@ const TestBuilderPage: NextPage = () => {
 
     return (
         <>
-            <LeftPanel />
             <DisabledPage isActive={isActive}>
                 <Header />
                 <div className={styles.content}>
                     <TestContent test={test} editMode />
                 </div>
             </DisabledPage>
+            <LeftPanel />
 
             {returnAvailable && 
             <EuiButton
