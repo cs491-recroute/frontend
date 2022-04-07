@@ -21,4 +21,15 @@
       z-index: 11;
       right: 0;
     }
+  }
+  
+.shareLinkButtons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-bottom: 10px;
+
+  & > *:not(:first-child) {
+    margin-left: 10px;
+  }
 }

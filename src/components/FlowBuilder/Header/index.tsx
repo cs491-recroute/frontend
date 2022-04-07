@@ -36,8 +36,8 @@ const Header = () => {
     //specific states for share modal
     const [isShareClicked, setShareClicked] = useState(false);
     let flowURL = '';
-    if(flow.stages[0]){
-        flowURL = `www.recroute/fill/${flow._id}/${flow.stages[0]._id}`
+    if(flow.stages[0] && typeof window !== 'undefined'){
+        flowURL = `${window?.location?.host}/fill/${flow._id}/${flow.stages[0]._id}`
     }
     const [inviteMail, setInviteMail] = useState('');
 
@@ -222,11 +222,20 @@ const Header = () => {
                         fullWidth
                     />
                 </EuiFormRow>
-                <EuiFormRow fullWidth>
-                    <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} style={{float: 'right'}}  fill>
+                <div className={styles.shareLinkButtons}>                        
+                    <EuiFormRow>
+                        <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} fill>
                         Copy Link
-                    </EuiButton>
-                </EuiFormRow>
+                        </EuiButton>
+                    </EuiFormRow>
+
+                    <EuiFormRow>
+                        <EuiButton onClick={() => window.open(flowURL, '_blank')} fill>
+                            {translate('Open in New Tab')}
+                        </EuiButton>
+                    </EuiFormRow>
+                </div>
+
                 <EuiFormRow label={translate('INVITE BY EMAIL')}  fullWidth>
                     <EuiFieldText icon={'email'} value={inviteMail}
                         placeholder="info@recroute.com"
