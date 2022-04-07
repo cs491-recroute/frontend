@@ -37,7 +37,7 @@ const Header = () => {
     const [isShareClicked, setShareClicked] = useState(false);
     let flowURL = '';
     if(flow.stages[0] && typeof window !== 'undefined'){
-        flowURL = `${window?.location?.host}/fill/${flow._id}/${flow.stages[0]._id}`
+        flowURL = `${window?.location?.origin}/fill/${flow._id}/${flow.stages[0]._id}`
     }
     const [inviteMail, setInviteMail] = useState('');
 
