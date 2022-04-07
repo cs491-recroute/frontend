@@ -6,6 +6,8 @@ import { COMPONENT_MAPPINGS } from '../../../constants';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync} from '../../../redux/slices/formBuilderSlice';
 import { EuiIcon } from '@elastic/eui';
+import { Button } from '@mui/material';
+import { translate } from '../../../utils';
 
 type FormContentProps = {
     form: Form;
@@ -40,6 +42,14 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
                     <EuiIcon type="trash" />
                 </button></>;
             })}
+            {!editMode && <Button 
+                variant='contained' 
+                color='success' 
+                className={styles.submitButton}
+                // onClick={handleSubmit}
+            >
+                {translate('SUBMIT')}
+            </Button>}
         </Paper>
     </div>
 }
