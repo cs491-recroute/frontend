@@ -19,8 +19,8 @@ import {
 } from '@elastic/eui';
 import { translate } from '../../../utils';
 import moment from 'moment';
+import axios from 'axios';
 const Header = () => {
-
     const dispatch = useAppDispatch();
     const [toggle, setToggle] = useState(true)
     const [isOpen, setOpen] = useState(false);
@@ -32,6 +32,18 @@ const Header = () => {
     const [name, setName] = useState(flow.name);
     const [isActive, setIsActive] = useState(flow.active);
     const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
+
+    //specific states for share modal
+    const [isShareClicked, setShareClicked] = useState(false);
+    let flowURL = '';
+    if(flow.stages[0]){
+        flowURL = `www.recroute/fill/${flow._id}/${flow.stages[0]._id}`
+    }
+    const [inviteMail, setInviteMail] = useState('');
+
+    //functions for share modal
+    const openShareModal = () => setShareClicked(true);
+    const closeShareModal = () => setShareClicked(false);
 
     const close = () => setOpen(false);
     const open = () => setOpen(true);
@@ -84,6 +96,20 @@ const Header = () => {
 
     };
 
+    const handleSendInvite = async () => {
+        if(inviteMail){
+            try {
+                const res = await axios.post(`/api/flows/${flow._id}/inviteMail`, {
+                    mail: inviteMail
+                });
+            } catch ({ response: { data }}: any) {
+                const res = data as string;
+            }
+        }else{
+            alert('You should enter an email address');
+        }
+    };
+
     return (<Fragment>
         <div className={styles.header}>
             {toggle ? (<p onDoubleClick={() => {setToggle(false)}}>{name}</p>) : (<input className={styles.input} type='text' value={name}
@@ -111,7 +137,7 @@ const Header = () => {
                     iconType={'share'}
                     color={'primary'}
                     isDisabled={!isActive}
-                    onClick={() => {console.log();}}
+                    onClick={openShareModal}
                 >
                     Share
                 </EuiButton>
@@ -183,6 +209,38 @@ const Header = () => {
                 </EuiButton>
             </EuiModalFooter>
         </EuiModal>)}
+        {isShareClicked && (<EuiModal onClose={closeShareModal} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
+            <EuiModalHeader>
+                <EuiModalHeaderTitle>{translate('Share Flow')}</EuiModalHeaderTitle>
+            </EuiModalHeader>
+
+            <EuiModalBody>
+                <EuiFormRow label={translate('LINK TO SHARE')} fullWidth>
+                    <EuiFieldText icon={'link'} value={flowURL}
+                        placeholder="Placeholder text" 
+                        disabled={true}
+                        fullWidth
+                    />
+                </EuiFormRow>
+                <EuiFormRow fullWidth>
+                    <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} style={{float: 'right'}}  fill>
+                        Copy Link
+                    </EuiButton>
+                </EuiFormRow>
+                <EuiFormRow label={translate('INVITE BY EMAIL')}  fullWidth>
+                    <EuiFieldText icon={'email'} value={inviteMail}
+                        placeholder="info@recroute.com"
+                        fullWidth
+                        onChange={event => {setInviteMail(event.target.value)}}
+                    />
+                </EuiFormRow>
+                <EuiFormRow fullWidth>  
+                    <EuiButton onClick={handleSendInvite} style={{float: 'right'}} fill>
+                        Send Invite
+                    </EuiButton>
+                </EuiFormRow>
+            </EuiModalBody>
+        </EuiModal>)};
     </Fragment>
 
     );	
