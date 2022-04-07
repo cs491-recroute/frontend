@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { AxiosResponse } from 'axios';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { EuiCollapsibleNav, EuiText, EuiButton } from '@elastic/eui';
+import Head from 'next/head';
 import styles from '../../styles/TestBuilder.module.scss';
 import { Test } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
@@ -32,6 +33,9 @@ const TestBuilderPage: NextPage = () => {
 
     return (
         <>
+            <Head>
+                <title>{`${translate('Test Builder')} | ${test.name}`}</title>
+            </Head>
             <DisabledPage isActive={isActive}>
                 <Header />
                 <div className={styles.content}>

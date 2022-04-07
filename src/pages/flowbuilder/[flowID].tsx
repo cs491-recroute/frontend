@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import { AxiosResponse } from 'axios';
+import Head from 'next/head';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import styles from '../../styles/FlowBuilder.module.scss';
@@ -30,7 +31,7 @@ import DisabledPage from '../../components/DisabledPage';
 
 const FlowBuilderPage: NextPage = () => {
     const dispatch = useAppDispatch();
-    const { stages, conditions, active } = useAppSelector(getCurrentFlow);
+    const { stages, conditions, active, name } = useAppSelector(getCurrentFlow);
     const leftPanelStatus = useAppSelector(getLeftPanelStatus);
     const rightPanelStatus = useAppSelector(getRightPanelStatus);
 
@@ -51,6 +52,9 @@ const FlowBuilderPage: NextPage = () => {
 
     return (
         <>
+            <Head>
+                <title>{`${translate('Flow Builder')} | ${name}`}</title>
+            </Head>
             <EuiCollapsibleNav
                 className={styles.leftPanel}
                 isOpen={!!leftPanelStatus}

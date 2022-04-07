@@ -2,6 +2,7 @@ import React, { Fragment, useCallback, useEffect } from 'react';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../../styles/FormBuilder.module.scss';
 import { AxiosResponse } from 'axios';
+import Head from 'next/head';
 import { Form } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
@@ -46,6 +47,9 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
     }, [form]);
     
     return (<Fragment>
+        <Head>
+            <title>{`${translate('Form Builder')} | ${form.name}`}</title>
+        </Head>
         <DisabledPage isActive={isActive}>
             <Header/>
             <div className={styles.content}>

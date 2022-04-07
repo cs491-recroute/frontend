@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { NextPage, GetServerSideProps } from 'next';
 import Image from 'next/image';
 import { AxiosResponse } from 'axios';
-import { Stage, Test } from '../../types/models';
+import { Stage, Test, Form } from '../../types/models';
 import { gatewayManager } from '../../utils/gatewayManager';
 import { SERVICES } from '../../constants/services';
 import { wrapper } from '../../redux/store';
@@ -12,17 +12,24 @@ import { STAGE_TYPE } from '../../types/enums';
 import { Paper, Button } from '@mui/material';
 import styles from '../../styles/StageFillingPage.module.scss';
 import { EuiText } from '@elastic/eui';
+import Head from 'next/head';
 import { translate } from '../../utils';
+import FormContent from '../../components/FormBuilder/FormContent';
 
 type FillingPageProps = {
     stage?: Stage;
     error?: string;
+    flowName?: string;
 }
 
-const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPageProps) => {
+const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName }: FillingPageProps) => {
+    const HeadTitle = flowName ? <Head>
+        <title>{flowName}</title>
+    </Head> : null;
     const [started, setStarted] = useState(false);
     if (!stage) {
         return <Paper elevation={10} className={styles.container}>
+            {HeadTitle}
             <Image src='/assets/stage_error.png' width={250} height={250} />
             <EuiText color='danger' style={{ marginTop: 20 }}><h2>{error}</h2></EuiText>
         </Paper>;
@@ -36,6 +43,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPagePr
         case STAGE_TYPE.TEST: {
             if (!started) {
                 return <Paper elevation={10} className={styles.container} >
+                    {HeadTitle}
                     <EuiText textAlign='center'>
                         <span style={{ fontSize: 20 }}>
                             {`${translate('You are about to start solving')} `}
@@ -59,7 +67,16 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error }: FillingPagePr
                     </EuiText>
                 </Paper>;
             }
-            return <TestContent test={stage.stageProps as Test} duration={stage.testDuration}/>
+            return <>
+                {HeadTitle}
+                <TestContent test={stage.stageProps as Test} duration={stage.testDuration}/>
+            </>
+        }
+        case STAGE_TYPE.FORM: {
+            return <>
+                {HeadTitle}
+                <FormContent form={stage.stageProps as Form} editMode={false} />
+            </>
         }
         default: {
             return null;
@@ -81,10 +98,10 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     // TODO: If applicant filled this stage before, show corresponding warning
     try {
         dispatch(setHeaderVisible(false));
-        const { data: stage }: AxiosResponse<Stage> = await gatewayManager.useService(SERVICES.FLOW).get(`/flow/${flowID}/stage/${stageID}`);
-        return { props: { stage } };
-    } catch ({ response: { data: { message }}}: any) {
-        return { props: { error: message } };
+        const { data: { stage, flowName } }: AxiosResponse<{ stage: Stage, flowName: string }> = await gatewayManager.useService(SERVICES.FLOW).get(`/flow/${flowID}/stage/${stageID}`);
+        return { props: { stage, flowName } };
+    } catch ({ response: { data: { message, flowName }}}: any) {
+        return { props: { error: message, flowName } };
     }
 });
 

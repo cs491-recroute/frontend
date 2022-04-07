@@ -2,6 +2,7 @@ import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef, Mo
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
@@ -68,6 +69,9 @@ const FlowsPage: NextPage = () => {
 
     return (
         <div className={styles.mainDiv}>
+            <Head>
+                <title>{translate('Flows')}</title>
+            </Head>
             <div className={styles.leftPanel}>
                 <EuiButton className={styles.createButton} onClick={createFlowRef.current?.open}>
                     <EuiText className={styles.text}>CREATE FLOW</EuiText>
