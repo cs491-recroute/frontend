@@ -1,13 +1,16 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import type { AppState } from '../store';
 
-import { Form } from '../../types/models';
+import { Form, Component } from '../../types/models';
 import axios from 'axios';
 
 export interface FormBuilderState {
 	ui: {
 		leftPanelOpen: boolean;
-		rightPanelOpen: boolean;
+		rightPanelStatus: {
+            status: boolean;
+            component?: Component;
+        }
 	},
     currentForm: Form,
     isActive: boolean
@@ -16,7 +19,9 @@ export interface FormBuilderState {
 const initialState: FormBuilderState = {
     ui: {
         leftPanelOpen: false,
-        rightPanelOpen: false
+        rightPanelStatus: {
+            status: false
+        }
     },
     currentForm: { _id: '' ,name: '', components: [], flowID: '' },
     isActive: false
@@ -37,6 +42,18 @@ export const deleteComponentAsync = createAsyncThunk(
         const { formBuilder: { currentForm: { _id: formID } = {} } } = getState() as AppState;
         const { data } = await axios.delete(`/api/forms/${formID}/components/${componentID}/deleteComponent`);
         return data;
+    }
+);
+
+export const updateComponentAsync = createAsyncThunk(
+    'form/updateComponent',
+    async ({ newProps, componentID }: { newProps: Partial<Component>; componentID?: string; }, { getState }) => {
+        const { formBuilder: { currentForm: { _id: formID } = {} } } = getState() as AppState;
+        const { data: component } = await axios.put(`/api/forms/${formID}/components/${componentID}/updateComponent`, newProps, { params: { componentID } });
+        console.log(component)
+        console.log(newProps)
+        console.log(componentID)
+        return component;
     }
 );
 
@@ -64,11 +81,11 @@ export const formBuilderSlice = createSlice({
     name: 'formBuilder',
     initialState,
     reducers: {
-        toggleLeftPanel: (state, action) => {
+        toggleLeftPanel: (state, action: { payload: boolean; }) => {
             state.ui.leftPanelOpen = action.payload;
         },
-        toggleRightPanel: (state, action) => {
-            state.ui.rightPanelOpen = action.payload;
+        toggleRightPanel: (state, action : { payload: { status: boolean; component?: Component }; }) => {
+            state.ui.rightPanelStatus = action.payload;
         },
         setCurrentForm: (state, action: { payload: Form; }) => {
             state.currentForm = action.payload;
@@ -88,6 +105,13 @@ export const formBuilderSlice = createSlice({
             .addCase(deleteComponentAsync.fulfilled, (state, action) => {
                 const index = state.currentForm.components.findIndex(component => component._id === action.payload.cid);
                 state.currentForm.components.splice(index,1);
+            })
+            .addCase(updateComponentAsync.fulfilled, (state, action) => {
+                console.log(action.payload);
+                const { components } = state.currentForm;
+                const { _id: componentID } = action.payload;
+                const index = components.findIndex(component => component._id === componentID);
+                state.currentForm.components[index] = action.payload;
             });
     }
 });
@@ -95,7 +119,7 @@ export const formBuilderSlice = createSlice({
 export const { toggleLeftPanel, toggleRightPanel, setCurrentForm } = formBuilderSlice.actions;
 
 export const isLeftPanelOpen = (state: AppState) => state.formBuilder.ui.leftPanelOpen;
-export const isRightPanelOpen = (state: AppState) => state.formBuilder.ui.rightPanelOpen;
+export const isRightPanelOpen = (state: AppState) => state.formBuilder.ui.rightPanelStatus;
 export const getCurrentForm = (state: AppState) => state.formBuilder.currentForm;
 export const getIsActive = (state: AppState) => state.formBuilder.isActive;
 

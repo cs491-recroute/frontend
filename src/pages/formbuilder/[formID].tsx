@@ -26,6 +26,7 @@ import LeftPanel from '../../components/FormBuilder/LeftPanel';
 import FormContent from '../../components/FormBuilder/FormContent';
 import Header from '../../components/FormBuilder/Header';
 import DisabledPage from '../../components/DisabledPage';
+import RightPanel from '../../components/FormBuilder/RightPanel';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FormBuilderProps = {}
@@ -66,20 +67,7 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
                 Return to Flow
             </EuiButton>
         }
-        <EuiCollapsibleNav
-            className={styles.rightPanel}
-            style={{ top: 120 }}
-            isOpen={isRightPanelOpen}
-            onClose={toggleRightPanel(false)}
-            closeButtonPosition="inside"
-            ownFocus={false}
-            side="right"
-        >
-            <EuiText className={styles.title}>
-                {translate('Element Settings')}
-            </EuiText>
-            <hr/>
-        </EuiCollapsibleNav>
+        <RightPanel />
     </Fragment>);
 };
 

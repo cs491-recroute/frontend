@@ -107,10 +107,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         type: ComponentTypes.header,
         Renderer: Header,
         defaultProps: {
+            required: true,
             type: ComponentTypes.header,
-            required: false,
-            title: 'Please enter',
-            placeholder: 'Enter your answer'
+            title: 'Heading'
         }
     },
     [ComponentTypes.phone]: {
