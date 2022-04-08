@@ -13,7 +13,7 @@ const handler: NextApiHandler = async (request, response) => {
         }
         case 'PUT': {
             const { questionID } = request.query;
-            const { data: question } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).put(`/test/${tid}/question/${questionID}`, request.body);
+            const { data: question } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).put(`/test/${tid}/question/${questionID}/all`, request.body);
             return response.status(200).send(question);
         }
     }
