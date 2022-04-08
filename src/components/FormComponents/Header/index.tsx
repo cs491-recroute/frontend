@@ -1,22 +1,20 @@
-import { EuiFormRow, EuiTextArea } from '@elastic/eui';
+import { EuiFormRow } from '@elastic/eui';
 import React from 'react';
+import styles from './Header.module.scss'
 
 type HeaderProps = {
-    required?: boolean;
     title?: string;
-    placeholder?: string;
     editMode?: boolean;
 }
 
-const Header = ({ required, title, placeholder, editMode }: HeaderProps) => {
-    return <EuiFormRow label={title} fullWidth>
-        <EuiTextArea 
-            fullWidth 
-            disabled={editMode} 
-            required={required} 
-            placeholder={placeholder}
-            resize={editMode ? 'none' : 'vertical'}
-        />
+const Header = ({ title, editMode }: HeaderProps) => {
+    return <EuiFormRow fullWidth>
+        <div
+            aria-disabled={editMode}
+        >
+            <h1 className={styles.heading}>{title}</h1>
+            <hr className={styles.hr}></hr>
+        </div>
     </EuiFormRow>
 
 };
