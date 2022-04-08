@@ -41,7 +41,8 @@ export enum ComponentTypes {
   phone = "phone",
   shortText = "shortText",
   singleChoice = "singleChoice",
-  upload = "upload"
+  upload = "upload",
+  email = "email"
 }
 
 export type Option = {

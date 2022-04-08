@@ -5,11 +5,11 @@ import DatePicker from '../components/FormComponents/DatePicker';
 import DropDown from '../components/FormComponents/DropDown';
 import FullName from '../components/FormComponents/FullName';
 import Header from '../components/FormComponents/Header';
-/*
-import MultipleChoice from '../components/FormComponents/MultipleChoice';
 import Phone from '../components/FormComponents/Phone';
+import Upload from '../components/FormComponents/Upload';
+import Email from '../components/FormComponents/Email';
 import SingleChoice from '../components/FormComponents/SingleChoice';
-import Upload from '../components/FormComponents/Upload';*/
+import MultipleChoice from '../components/FormComponents/MultipleChoice';
 
 import { ComponentTypes, Component} from '../types/models';
 import { translate } from '../utils';
@@ -112,17 +112,6 @@ export const COMPONENT_MAPPINGS: Record<any, {
             title: 'Please enter',
             placeholder: 'Enter your answer'
         }
-    }/*,
-    [ComponentTypes.multipleChoice]: {
-        text: translate('Multiple Choice'),
-        type: ComponentTypes.multipleChoice,
-        Renderer: MultipleChoice,
-        defaultProps: {
-            type: ComponentTypes.multipleChoice,
-            required: false,
-            title: 'Please select',
-            options: [{1: 'option 1'}, {2: 'option 2'}]
-        }
     },
     [ComponentTypes.phone]: {
         text: translate('Phone'),
@@ -142,8 +131,19 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.upload,
             required: false,
-            title: 'Please enter',
-            placeholder: 'Enter your answer'
+            title: 'Please upload files here',
+            placeholder: 'Select or drag and drop files'
+        }
+    },
+    [ComponentTypes.email]: {
+        text: translate('Email'),
+        type: ComponentTypes.email,
+        Renderer: Email,
+        defaultProps: {
+            type: ComponentTypes.email,
+            required: false,
+            title: 'Please enter your Email',
+            placeholder: 'Enter your Email'
         }
     },
     [ComponentTypes.singleChoice]: {
@@ -153,7 +153,37 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.singleChoice,
             required: false,
-            title: 'Please select'
+            title: 'Single select',
+            options : [
+                {
+                    _id : "deneme idsi",
+                    value: "deneme valuesu"
+                },
+                {
+                    _id : "deneme idsi 2",
+                    value: "deneme valuesu 2"
+                }
+            ]
         }
-    }*/
+    },
+    [ComponentTypes.multipleChoice]: {
+        text: translate('Multiple Choice'),
+        type: ComponentTypes.multipleChoice,
+        Renderer: MultipleChoice,
+        defaultProps: {
+            type: ComponentTypes.multipleChoice,
+            required: false,
+            title: 'Multiple select',
+            options : [
+                {
+                    _id : "deneme idsi",
+                    value: "deneme valuesu"
+                },
+                {
+                    _id : "deneme idsi 2",
+                    value: "deneme valuesu 2"
+                }
+            ]
+        }
+    }
 }
