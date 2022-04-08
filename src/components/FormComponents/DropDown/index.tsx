@@ -14,7 +14,7 @@ const DropDown = ({ required, title, placeholder, editMode, options }: DropDownP
     const newArray = options?.map(option => {
         return {
             key: option._id,
-            text: option.value
+            text: option.description
         };
     });
 
