@@ -30,10 +30,10 @@ export type Stage = {
   testDuration?: number;
 } & Basic;
 
-export enum ComponentTypes { 
-  address = "address", 
-  datePicker = "datePicker", 
-  dropDown = "dropDown", 
+export enum ComponentTypes {
+  address = "address",
+  datePicker = "datePicker",
+  dropDown = "dropDown",
   fullName = "fullName",
   header = "header",
   longText = "longText",
@@ -44,10 +44,9 @@ export enum ComponentTypes {
   upload = "upload"
 }
 
-export interface Option {
-  key: number,
+export type Option = {
   value: string
-}
+} & Basic;
 
 export type Component = {
   type: ComponentTypes;
@@ -62,13 +61,13 @@ export type Component = {
 export type Form = {
   name: string;
   components: Component[];
-  flowID: string ;
+  flowID: string;
 } & Basic;
 
 export type Test = {
   name: string;
   questions: Question[];
-  flowID: string ;
+  flowID: string;
 } & Basic;
 
 export type Question = {
