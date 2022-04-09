@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef, MouseEventHandler } from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef} from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
@@ -6,12 +6,13 @@ import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
-import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiLink, EuiText } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText } from '@elastic/eui';
+import { useWithConfirmation } from '../contexts/confirmation';
+import { translate } from '../utils';
 import styles from '../styles/Flows.module.scss';
 import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
 import { Paper } from '@mui/material';
-import { useWithConfirmation } from '../contexts/confirmation';
-import { translate } from '../utils';
+import FlowsShareButton from '../components/FlowsShareButton';
 
 interface SelectedBoxes {
 	[key: string]: boolean
@@ -89,7 +90,6 @@ const FlowsPage: NextPage = () => {
             </div>
             <div className={styles.flowList}>
                 <div>
-                    FLOWS PAGE
                     <EuiIcon className={styles.searchIcon} type="search"/>
                     <input
                         className={styles.searchBar}
@@ -107,28 +107,29 @@ const FlowsPage: NextPage = () => {
                         console.log(flow.name.toLowerCase());
                         return flow;
                     }
-                }).map(({ name, _id }) => (
-                    <Paper key={_id}  className={styles.cardContainer}>
-                        <EuiCheckbox
-                            id={_id}
-                            checked={checked[_id]}
-                            onChange={e => handleCheckboxClick(e)}
-                        />
-                        <div className={styles.flowTitle}>
-                            <Link href={`flowbuilder/${_id}`}>
-                                <a>{name}</a>
-                            </Link>
-                            <div className={styles.description}>description</div>
-                        </div>
-                        <div style={{ flex: 1 }}/>
-                        <div className={styles.flowCard}>
-                            <EuiButtonEmpty color='text' isSelected={true}>Share</EuiButtonEmpty>
-                            <EuiButtonEmpty color='text' href={`flowbuilder/${_id}`}>Edit</EuiButtonEmpty>
-                            <EuiButtonEmpty color='text'>Submissions</EuiButtonEmpty>
-                            <EuiButtonEmpty color='text' onClick={() => handleDeleteButton(_id)}>Delete</EuiButtonEmpty>
-                        </div>						
-                    </Paper>
-                )) : <div>Fetching</div>}
+                }).map( flow => {
+                    return (
+                        <Paper key={flow._id}  className={styles.cardContainer}>
+                            <EuiCheckbox
+                                id={flow._id}
+                                checked={checked[flow._id]}
+                                onChange={e => handleCheckboxClick(e)}
+                            />
+                            <div className={styles.flowTitle}>
+                                <Link href={`flowbuilder/${flow._id}`}>
+                                    <a>{flow.name}</a>
+                                </Link>
+                                <div className={styles.description}>description</div>
+                            </div>
+                            <div style={{ flex: 1 }}/>
+                            <div className={styles.flowCard}>
+                                <FlowsShareButton flow={flow}/>
+                                <EuiButtonEmpty color='text' href={`flowbuilder/${flow._id}`}>Edit</EuiButtonEmpty>
+                                <EuiButtonEmpty color='text'>Submissions</EuiButtonEmpty>
+                                <EuiButtonEmpty color='text' onClick={() => handleDeleteButton(flow._id)}>Delete</EuiButtonEmpty>
+                            </div>						
+                        </Paper>
+                    )}) : <div>Fetching</div>}
             </div>
             <CreateFlowModal ref={createFlowRef} />
         </div>
