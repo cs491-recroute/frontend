@@ -53,6 +53,15 @@
     .flowList{
         width: 100%;
         padding: 10px;
+        .searchBar {
+            margin-top: 5px;
+            width: 300px;
+            height: 40px;
+            margin-left: 10px;
+        }
+        .searchIcon{
+            margin-left: 815px;
+        }
         .cardContainer {
             height: 44px;
             background: #FFFFFF;
