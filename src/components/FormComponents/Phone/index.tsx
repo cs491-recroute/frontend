@@ -10,17 +10,34 @@ type PhoneProps = {
 
 const Phone = forwardRef(({ required, title, placeholder, editMode }: PhoneProps, ref) => {
     const [answer, setAnswer] = useState('');
+    const [error, setError] = useState({
+        isError: false,
+        errorMessage: 'This field is required'
+    });
 
-    useImperativeHandle(ref, () => ({ answer }));
+    const triggerError = () => setError({ ...error, isError: true });
 
-    return <EuiFormRow label={title} fullWidth>
+    useImperativeHandle(ref, () => ({ answer, invalid: required && !answer, triggerError }));
+
+    const handleChange = ({ target: { value } }: any) => {
+        setAnswer(value);
+        setError({ ...error, isError: !value });
+    };
+
+    return <EuiFormRow 
+        label={title}
+        fullWidth 
+        isInvalid={error.isError}
+        error={error.errorMessage}
+    >
         <EuiFieldText 
             fullWidth
             disabled={editMode} 
-            required={required} 
+            required={error.isError} 
             placeholder={placeholder}
             value={answer}
-            onChange={e => setAnswer(e.target.value)}
+            onChange={handleChange}
+            onBlur={handleChange}
         />
     </EuiFormRow>
             

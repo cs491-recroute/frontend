@@ -1,5 +1,7 @@
 import { EuiFieldText, EuiFormRow } from '@elastic/eui';
 import React, { forwardRef, useState, useImperativeHandle } from 'react';
+import styles from './FullName.module.scss';
+import { translate } from '../../../utils';
 
 type FullNameProps = {
     required?: boolean;
@@ -10,35 +12,63 @@ type FullNameProps = {
 
 const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullNameProps, ref) => {
     const [answer, setAnswer] = useState({ name: '', surname: '' });
+    const [nameError, setNameError] = useState(false);
+    const [surnameError, setSurnameError] = useState(false);
 
-    useImperativeHandle(ref, () => ({ answer }));
+    const triggerError = () => {
+        if (!answer.name) {
+            setNameError(true);
+        } else {
+            setSurnameError(true);
+        }
+    }
 
-    return <table>
-        <tr>
-            <th>
-                <EuiFormRow label={titles?.[0]} fullWidth>
-                    <EuiFieldText 
-                        disabled={editMode} 
-                        required={required} 
-                        placeholder={placeholders?.[0]}
-                        value={answer.name}
-                        onChange={e => setAnswer({ ...answer, name: e.target.value })}
-                    />
-                </EuiFormRow>
-            </th>
-            <th style={{marginLeft:'10px'}}>
-                <EuiFormRow label={titles?.[1]} fullWidth>
-                    <EuiFieldText 
-                        disabled={editMode} 
-                        required={required} 
-                        placeholder={placeholders?.[1]}
-                        value={answer.surname}
-                        onChange={e => setAnswer({ ...answer, surname: e.target.value })}
-                    />
-                </EuiFormRow>
-            </th>
-        </tr>
-    </table> 
+    useImperativeHandle(ref, () => ({ answer, invalid: required && (!answer.name || !answer.surname), triggerError }));
+
+    const handleChange = ({ target: { value, name } }: any) => {
+        setAnswer({ ...answer, [name]: value });
+        if (name === 'name') {
+            setNameError(!value);
+        } else {
+            setSurnameError(!value);
+        }
+    };
+
+    return <div className={styles.container}>
+        <EuiFormRow 
+            label={titles?.[0]} 
+            fullWidth 
+            isInvalid={nameError} 
+            error={translate('This field is required')}
+        >
+            <EuiFieldText
+                name="name"
+                disabled={editMode} 
+                required={nameError} 
+                placeholder={placeholders?.[0]}
+                value={answer.name}
+                fullWidth
+                onChange={handleChange}
+                onBlur={handleChange}
+            />
+        </EuiFormRow>
+        <EuiFormRow 
+            label={titles?.[1]} 
+            fullWidth 
+            isInvalid={surnameError} 
+            error={translate('This field is required')}
+        >
+            <EuiFieldText 
+                name="surname"
+                disabled={editMode} 
+                required={surnameError}
+                placeholder={placeholders?.[1]}
+                value={answer.surname}
+                onChange={handleChange}
+                onBlur={handleChange}
+            />
+        </EuiFormRow>
+    </div>
     
 });
 

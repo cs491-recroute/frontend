@@ -1,5 +1,6 @@
 import { EuiFieldText, EuiFormRow } from '@elastic/eui';
 import React, { forwardRef, useState, useImperativeHandle } from 'react';
+import { translate } from '../../../utils';
 
 type ShortTextProps = {
     required?: boolean;
@@ -10,16 +11,31 @@ type ShortTextProps = {
 
 const ShortText = forwardRef(({ required, title, placeholder, editMode }: ShortTextProps, ref) => {
     const [answer, setAnswer] = useState('');
-    useImperativeHandle(ref, () => ({ answer }));
+    const [error, setError] = useState(false);
 
-    return <EuiFormRow label={title} fullWidth>
+    const triggerError = () => setError(true);
+
+    useImperativeHandle(ref, () => ({ answer, invalid: required && !answer, triggerError }));
+
+    const handleChange = ({ target: { value } }: any) => {
+        setError(!!required && !value);
+        setAnswer(value);
+    };
+
+    return <EuiFormRow 
+        label={title} 
+        fullWidth 
+        isInvalid={error} 
+        error={translate('This field is required')}
+    >
         <EuiFieldText 
             fullWidth 
             disabled={editMode} 
-            required={required} 
+            required={error} 
             placeholder={placeholder}
             value={answer}
-            onChange={e => setAnswer(e.target.value)}
+            onChange={handleChange}
+            onBlur={handleChange}
         />
     </EuiFormRow>
 });

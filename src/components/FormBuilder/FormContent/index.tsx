@@ -2,7 +2,7 @@ import React, { RefObject, createRef } from 'react';
 import styles from './FormContent.module.scss';
 import { Form, Component } from '../../../types/models';
 import { Paper } from '@mui/material';
-import { COMPONENT_MAPPINGS } from '../../../constants';
+import { COMPONENT_MAPPINGS, ComponentRef } from '../../../constants';
 import {useAppDispatch } from '../../../utils/hooks';
 import { deleteComponentAsync, toggleRightPanel} from '../../../redux/slices/formBuilderSlice';
 import { EuiIcon } from '@elastic/eui';
@@ -13,8 +13,9 @@ type FormContentProps = {
     form: Form;
     editMode?: boolean;
 }
+
 const FormContent = ({ form, editMode }: FormContentProps) => {
-    const componentRefs: { [key: string]: RefObject<{ answer: any; }> } = {};
+    const componentRefs: { [key: string]: RefObject<ComponentRef> } = {};
     const dispatch = useAppDispatch();
 
     const handleSettingsClick = (component: Component) => () => {
@@ -30,11 +31,21 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
     };
 
     const handleSubmit = () => {
-        const answers = Object.keys(componentRefs).reduce((acc, ref) => {
-            return { ...acc, [ref]: componentRefs[ref]?.current?.answer };
-        }, {});
-        // TODO: Send results to backend 
-        console.log(answers);
+        const answers = Object.entries(componentRefs)
+            .filter(([, { current }]) => current)
+            .map(([componentID, { current }]) => {
+                const { answer, invalid, triggerError } = current || {};
+                if (invalid && triggerError) {
+                    triggerError();
+                }
+                return { componentID, answer, invalid };
+            });
+        const validAnswers = answers.every(answer => answer !== null);
+        if (validAnswers) {
+            console.log(answers);
+        } else {
+            console.log("Form is not valid");
+        }
     };
 
     return <div className={styles.container}>
@@ -45,10 +56,11 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
 
                 let newRef;
                 if (!viewComponent) {
-                    newRef = createRef<{ answer: any; }>();
+                    newRef = createRef<ComponentRef>();
                     componentRefs[component._id] = newRef;
                 }
                 return <div className={styles.question} key={component._id} data-componentID={component._id} >
+                    {component.required && <div className={styles.requiredBadge}>*</div>}
                     <Renderer
                         {...component}
                         key={component._id}

@@ -31,10 +31,12 @@ export const STAGE_PROPS = {
     [STAGE_TYPE.INTERVIEW]: {} as any
 }
 
+export type ComponentRef = { answer: any; invalid: boolean, triggerError: () => void };
+
 export const COMPONENT_MAPPINGS: Record<any, {
     text: string;
     type: ComponentTypes;
-    Renderer: (props: Partial<Component> & { editMode?: boolean; ref?: React.RefObject<{ answer: any; }>; }) => ReactElement | null;
+    Renderer: (props: Partial<Component> & { editMode?: boolean; ref?: React.RefObject<ComponentRef>; }) => ReactElement | null;
     defaultProps: Record<any, any>;
     viewComponent?: boolean;
 }> = {
@@ -110,7 +112,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
         Renderer: Header,
         defaultProps: {
             type: ComponentTypes.header,
-            title: 'Heading'
+            title: 'Heading',
+            required: false
         },
         viewComponent: true
     },

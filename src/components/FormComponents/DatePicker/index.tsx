@@ -10,22 +10,31 @@ type DatePickerProps = {
 }
 
 const DatePicker = forwardRef(({ required, title, placeholder, editMode }: DatePickerProps, ref) => {
-    const [date, setDate] = useState<moment.Moment | null>(moment());
+    const [date, setDate] = useState<moment.Moment | null>(null);
+    const [error, setError] = useState({
+        isError: false,
+        errorMessage: 'This field is required'
+    })
 
-    useImperativeHandle(ref, () => ({ answer: date?.toString() }));
+    const triggerError = () => setError({ ...error, isError: true });
+
+    useImperativeHandle(ref, () => ({ answer: date?.toString(), invalid: required && !date, triggerError }));
 
     if (typeof window === 'undefined') {
         // EuiDatePicker is not available in SSR
         return null;
     }
-    return <EuiFormRow label={title}>
+    return <EuiFormRow label={title} isInvalid={error.isError} error={error.errorMessage}>
         <EuiDatePicker 
             fullWidth 
             disabled={editMode} 
-            required={required} 
+            required={error.isError} 
             placeholder={placeholder}
             selected={date}
-            onChange={value => setDate(value)}
+            onChange={value => { 
+                setError({ ...error, isError: false });
+                setDate(value);
+            }}
         />
     </EuiFormRow>
 });

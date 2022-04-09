@@ -1,6 +1,7 @@
 import { EuiFormRow, EuiCheckboxGroup } from '@elastic/eui';
 import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { Option } from '../../../types/models';
+import { translate } from '../../../utils';
 
 type MultipleChoiceProps = {
     required?: boolean;
@@ -11,14 +12,29 @@ type MultipleChoiceProps = {
 
 const MultipleChoice = forwardRef(({ required, title, editMode, options = [] }: MultipleChoiceProps, ref) => {
     const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: boolean }>(options.reduce((acc, option) => ({ ...acc, [option._id || '']: false }), {}));
+    const [error, setError] = useState(false);
 
-    useImperativeHandle(ref, () => ({ answer: Object.entries(selectedOptions).filter(([, value]) => value).map(([key]) => key) }));
+    const triggerError = () => setError(true);
 
-    return <EuiFormRow label={title} fullWidth>
+    useImperativeHandle(ref, () => ({ 
+        answer: Object.entries(selectedOptions).filter(([, value]) => value).map(([key]) => key),
+        invalid: required && Object.values(selectedOptions).every(value => !value),
+        triggerError
+    }));
+
+    return <EuiFormRow 
+        label={title} 
+        fullWidth
+        isInvalid={error}
+        error={translate('This field is required')}
+    >
         <EuiCheckboxGroup 
             options={options.map(e => ({ id: e._id || '', label: e.description }))}
             idToSelectedMap={selectedOptions}
-            onChange={id => setSelectedOptions({ ...selectedOptions, [id]: !selectedOptions[id] })}
+            onChange={id => {
+                setSelectedOptions({ ...selectedOptions, [id]: !selectedOptions[id] });
+                setError(false);
+            }}
         />
     </EuiFormRow>
 });
