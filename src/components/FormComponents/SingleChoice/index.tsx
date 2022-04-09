@@ -1,5 +1,5 @@
 import { EuiFormRow } from '@elastic/eui';
-import React from 'react';
+import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { Option } from '../../../types/models';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -12,7 +12,10 @@ type SingleChoiceProps = {
     options?: Option[];
 }
 
-const SingleChoice = ({ required, title, editMode, options }: SingleChoiceProps) => {
+const SingleChoice = forwardRef(({ required, title, editMode, options }: SingleChoiceProps, ref) => {
+    const [selectedOption, setSelectedOption] = useState<string>("");
+
+    useImperativeHandle(ref, () => ({ answer: selectedOption }));
 
     return <EuiFormRow label={title} fullWidth>
         <RadioGroup
@@ -20,11 +23,12 @@ const SingleChoice = ({ required, title, editMode, options }: SingleChoiceProps)
             aria-disabled={editMode}
             aria-required={required}
             name="radio-buttons-group"
+            onChange={(e, value) => setSelectedOption(value)}
         >
             {options?.map(option => (
                 <FormControlLabel
-                    checked={false}
-                    id={option._id}
+                    checked={option._id === selectedOption}
+                    value={option._id}
                     key={option.description}
                     control={<Radio />}
                     label={option.description}
@@ -32,6 +36,8 @@ const SingleChoice = ({ required, title, editMode, options }: SingleChoiceProps)
             ))}
         </RadioGroup>
     </EuiFormRow>
-};
+});
+
+SingleChoice.displayName = 'SingleChoice';
 
 export default SingleChoice;

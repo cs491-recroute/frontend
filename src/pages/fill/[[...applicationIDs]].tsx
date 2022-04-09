@@ -73,6 +73,26 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName }: Fil
             </>
         }
         case STAGE_TYPE.FORM: {
+            if (!started) {
+                return <Paper elevation={10} className={styles.container} >
+                    {HeadTitle}
+                    <EuiText textAlign='center'>
+                        <span style={{ fontSize: 20 }}>
+                            <b>{stage.stageProps.name}</b>
+                        </span>
+                        <br/>
+                        <Image src='/assets/start_test.png' width={250} height={250} />
+                        <br/>
+                        <Button 
+                            variant='contained' 
+                            color='success'
+                            fullWidth
+                            className={styles.startButton}
+                            onClick={startTest}
+                        >{translate('Start Filling')}</Button>
+                    </EuiText>
+                </Paper>;
+            }
             return <>
                 {HeadTitle}
                 <FormContent form={stage.stageProps as Form} editMode={false} />

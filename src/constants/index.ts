@@ -10,6 +10,7 @@ import Upload from '../components/FormComponents/Upload';
 import Email from '../components/FormComponents/Email';
 import SingleChoice from '../components/FormComponents/SingleChoice';
 import MultipleChoice from '../components/FormComponents/MultipleChoice';
+import { ReactElement } from 'react';
 
 import { ComponentTypes, Component} from '../types/models';
 import { translate } from '../utils';
@@ -33,8 +34,9 @@ export const STAGE_PROPS = {
 export const COMPONENT_MAPPINGS: Record<any, {
     text: string;
     type: ComponentTypes;
-    Renderer: (props: Partial<Component> & { editMode?: boolean; }) => JSX.Element;
+    Renderer: (props: Partial<Component> & { editMode?: boolean; ref?: React.RefObject<{ answer: any; }>; }) => ReactElement | null;
     defaultProps: Record<any, any>;
+    viewComponent?: boolean;
 }> = {
     [ComponentTypes.shortText]: {
         text: translate('Short Text'),
@@ -110,7 +112,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: true,
             type: ComponentTypes.header,
             title: 'Heading'
-        }
+        },
+        viewComponent: true
     },
     [ComponentTypes.phone]: {
         text: translate('Phone'),

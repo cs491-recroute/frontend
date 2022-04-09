@@ -1,5 +1,5 @@
 import { EuiFieldText, EuiFormRow } from '@elastic/eui';
-import React from 'react';
+import React, { forwardRef, useState, useImperativeHandle } from 'react';
 
 type FullNameProps = {
     required?: boolean;
@@ -8,7 +8,11 @@ type FullNameProps = {
     editMode?: boolean;
 }
 
-const FullName = ({ required, titles, placeholders, editMode }: FullNameProps) => {
+const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullNameProps, ref) => {
+    const [answer, setAnswer] = useState({ name: '', surname: '' });
+
+    useImperativeHandle(ref, () => ({ answer }));
+
     return <table>
         <tr>
             <th>
@@ -17,6 +21,8 @@ const FullName = ({ required, titles, placeholders, editMode }: FullNameProps) =
                         disabled={editMode} 
                         required={required} 
                         placeholder={placeholders?.[0]}
+                        value={answer.name}
+                        onChange={e => setAnswer({ ...answer, name: e.target.value })}
                     />
                 </EuiFormRow>
             </th>
@@ -26,12 +32,16 @@ const FullName = ({ required, titles, placeholders, editMode }: FullNameProps) =
                         disabled={editMode} 
                         required={required} 
                         placeholder={placeholders?.[1]}
+                        value={answer.surname}
+                        onChange={e => setAnswer({ ...answer, surname: e.target.value })}
                     />
                 </EuiFormRow>
             </th>
         </tr>
     </table> 
     
-};
+});
+
+FullName.displayName = 'FUllName';
 
 export default FullName;

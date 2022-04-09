@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { RefObject, createRef } from 'react';
 import styles from './FormContent.module.scss';
 import { Form, Component } from '../../../types/models';
 import { Paper } from '@mui/material';
@@ -14,6 +14,7 @@ type FormContentProps = {
     editMode?: boolean;
 }
 const FormContent = ({ form, editMode }: FormContentProps) => {
+    const componentRefs: { [key: string]: RefObject<{ answer: any; }> } = {};
     const dispatch = useAppDispatch();
 
     const handleSettingsClick = (component: Component) => () => {
@@ -28,17 +29,34 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
         }
     };
 
+    const handleSubmit = () => {
+        const answers = Object.keys(componentRefs).reduce((acc, ref) => {
+            return { ...acc, [ref]: componentRefs[ref]?.current?.answer };
+        }, {});
+        // TODO: Send results to backend 
+        console.log(answers);
+    };
+
     return <div className={styles.container}>
         <Paper className={styles.questionList} elevation={4}>
             {form.components.map( component => {
-                const Renderer = COMPONENT_MAPPINGS[component.type]?.Renderer;
+                const { Renderer, viewComponent } = COMPONENT_MAPPINGS[component.type];
                 if (!Renderer) return <div>Component renderer is not found!</div>;
-                return <div className={styles.question} key={component._id} >
+
+                let newRef;
+                if (!viewComponent) {
+                    newRef = createRef<{ answer: any; }>();
+                    componentRefs[component._id] = newRef;
+                }
+                return <div className={styles.question} key={component._id} data-componentID={component._id} >
                     <Renderer
                         {...component}
                         key={component._id}
                         _id={component._id}
                         editMode={editMode}
+                        {...(!viewComponent && {
+                            ref: newRef
+                        })}
                     />
                     {editMode && <button className={styles.editButton} onClick={handleSettingsClick(component)}>
                         <EuiIcon type="gear"/>
@@ -52,7 +70,7 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
                 variant='contained' 
                 color='success' 
                 className={styles.submitButton}
-                // onClick={handleSubmit}
+                onClick={handleSubmit}
             >
                 {translate('SUBMIT')}
             </Button>}
