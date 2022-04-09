@@ -10,7 +10,7 @@ type MultipleChoiceProps = {
 }
 
 const MultipleChoice = forwardRef(({ required, title, editMode, options = [] }: MultipleChoiceProps, ref) => {
-    const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: boolean }>(options.reduce((acc, option) => ({ ...acc, [option._id]: false }), {}));
+    const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: boolean }>(options.reduce((acc, option) => ({ ...acc, [option._id || '']: false }), {}));
 
     useImperativeHandle(ref, () => ({ answer: Object.entries(selectedOptions).filter(([, value]) => value).map(([key]) => key) }));
 
