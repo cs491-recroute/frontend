@@ -8,13 +8,15 @@ import { deleteComponentAsync, toggleRightPanel} from '../../../redux/slices/for
 import { EuiIcon } from '@elastic/eui';
 import { Button } from '@mui/material';
 import { translate } from '../../../utils';
+import { toast } from 'react-toastify';
 
 type FormContentProps = {
     form: Form;
     editMode?: boolean;
+    userIdentifier?: string;
 }
 
-const FormContent = ({ form, editMode }: FormContentProps) => {
+const FormContent = ({ form, editMode, userIdentifier }: FormContentProps) => {
     const componentRefs: { [key: string]: RefObject<ComponentRef> } = {};
     const dispatch = useAppDispatch();
 
@@ -40,12 +42,18 @@ const FormContent = ({ form, editMode }: FormContentProps) => {
                 }
                 return { componentID, answer, invalid };
             });
-        const validAnswers = answers.every(answer => answer !== null);
-        if (validAnswers) {
-            console.log(answers);
-        } else {
-            console.log("Form is not valid");
+        const invalidAnswers = answers.filter(({ invalid }) => invalid);
+        if (invalidAnswers.length > 0) {
+            toast(translate('There is invalid fields in the form. Please correct them before submitting.'), {
+                position: 'top-center',
+                type: 'error',
+                hideProgressBar: true,
+                closeButton: false
+            })
+            return;
         }
+        // TODO: Send answers to server with userIdentifier
+        console.log({answers, userIdentifier});
     };
 
     return <div className={styles.container}>

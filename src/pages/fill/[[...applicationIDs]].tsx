@@ -27,6 +27,8 @@ type FillingPageProps = {
 
 const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, requestMail }: FillingPageProps) => {
     const router = useRouter();
+    const { applicationIDs } = router.query;
+    const [flowID, stageID, applicantID] = applicationIDs as string[];
 
     const HeadTitle = flowName ? <Head>
         <title>{flowName}</title>
@@ -47,8 +49,6 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
     };
 
     const startForm = async () => {
-        const { applicationIDs } = router.query;
-        const [flowID, stageID] = applicationIDs as string[];
 
         if (!validateEmail(email)) {
             setError('Please enter a valid email address');
@@ -133,7 +133,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
             }
             return <>
                 {HeadTitle}
-                <FormContent form={stage.stageProps as Form} editMode={false} />
+                <FormContent form={stage.stageProps as Form} editMode={false} userIdentifier={requestMail ? email : applicantID}/>
             </>
         }
         default: {
