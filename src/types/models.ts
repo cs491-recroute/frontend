@@ -47,7 +47,7 @@ export enum ComponentTypes {
 
 export type Option = {
   description: string
-} & Basic;
+} & Partial<Basic>;
 
 export type Component = {
   type: ComponentTypes;
