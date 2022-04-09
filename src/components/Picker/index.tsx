@@ -13,8 +13,8 @@ import { STAGE_PROPS } from '../../constants';
 type ItemOption = EuiSelectableOption<{ name: string; itemID: string; }>;
 
 type PickerOptions = {
-	returnBack?: boolean;
-	onSelect: (itemID: string) => void;
+    returnBack?: boolean;
+    onSelect: (itemID: string) => void;
     itemType: STAGE_TYPE.FORM | STAGE_TYPE.TEST;
 }
 
@@ -60,7 +60,7 @@ const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
         label: _id,
         name,
         itemID: _id,
-        append: <VisibilityIcon onClick={handlePreview(_id)}/>
+        append: <VisibilityIcon onClick={handlePreview(_id)} />
     })), [templates, handlePreview]);
 
     return <div className={styles.container}>

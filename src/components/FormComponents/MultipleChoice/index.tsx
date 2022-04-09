@@ -1,4 +1,4 @@
-import { EuiFormRow} from '@elastic/eui';
+import { EuiFormRow } from '@elastic/eui';
 import React from 'react';
 import { Option } from '../../../types/models';
 import FormGroup from '@mui/material/FormGroup';
@@ -23,10 +23,10 @@ const MultipleChoice = ({ required, title, editMode, options }: MultipleChoicePr
             {options?.map(option => (
                 <FormControlLabel
                     checked={false}
-                    key={option.value}
+                    key={option.description}
                     id={option._id}
-                    control={<Checkbox />} 
-                    label={option.value}
+                    control={<Checkbox />}
+                    label={option.description}
                 />
             ))}
         </FormGroup>

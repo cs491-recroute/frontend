@@ -25,9 +25,9 @@ const SingleChoice = ({ required, title, editMode, options }: SingleChoiceProps)
                 <FormControlLabel
                     checked={false}
                     id={option._id}
-                    key={option.value}
-                    control={<Radio />} 
-                    label={option.value}
+                    key={option.description}
+                    control={<Radio />}
+                    label={option.description}
                 />
             ))}
         </RadioGroup>
