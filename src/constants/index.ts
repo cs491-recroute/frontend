@@ -99,7 +99,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         Renderer: FullName,
         defaultProps: {
             type: ComponentTypes.fullName,
-            required: true,
+            required: false,
             titles: ['Please enter your name', 'Please enter your surname'],
             placeholders: ['Enter your name', 'Enter your surname']
         }
@@ -109,7 +109,6 @@ export const COMPONENT_MAPPINGS: Record<any, {
         type: ComponentTypes.header,
         Renderer: Header,
         defaultProps: {
-            required: true,
             type: ComponentTypes.header,
             title: 'Heading'
         },
