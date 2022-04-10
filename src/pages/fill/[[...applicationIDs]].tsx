@@ -44,10 +44,14 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
         </Paper>;
     }
 
-    const startTest = () => {
-        // TODO: Send starting info to server
-        window.onbeforeunload = () => '';
-        setStarted(true);
+    const startTest = async () => {
+        try {
+            await axios.post('/api/startTest', { testID: stage.stageID, applicantID });
+            window.onbeforeunload = () => '';
+            setStarted(true);
+        } catch ({ response: { data }}: any) {
+            setError(data as any);
+        }
     };
 
     const startForm = async () => {
@@ -94,6 +98,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
                             className={styles.startButton}
                             onClick={startTest}
                         >{translate('Start Test')}</Button>
+                        <div className={styles.errorText} >{errorText}</div>
                     </EuiText>
                 </Paper>;
             }
