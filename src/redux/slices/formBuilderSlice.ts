@@ -50,9 +50,6 @@ export const updateComponentAsync = createAsyncThunk(
     async ({ newProps, componentID }: { newProps: Partial<Component>; componentID?: string; }, { getState }) => {
         const { formBuilder: { currentForm: { _id: formID } = {} } } = getState() as AppState;
         const { data: component } = await axios.put(`/api/forms/${formID}/components/${componentID}/updateComponent`, newProps, { params: { componentID } });
-        console.log(component)
-        console.log(newProps)
-        console.log(componentID)
         return component;
     }
 );

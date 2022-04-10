@@ -18,7 +18,10 @@ const PlaceholdersEditor = forwardRef<{ value: Component['placeholders']; }, { d
 
     return (
         <>
-            <div className={styles.label}>
+            <div 
+                className={styles.label}
+                key='PlaceholdersEditor'
+            >
                 {translate('Placeholders')}
             </div>
             {value?.map((placeholder, index) => (

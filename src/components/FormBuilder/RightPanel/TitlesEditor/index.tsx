@@ -18,7 +18,10 @@ const TitlesEditor = forwardRef<{ value: Component['titles']; }, { defaultValue:
 
     return (
         <>
-            <div className={styles.label}>
+            <div 
+                className={styles.label}
+                key='TitlesEditor'
+            >
                 {translate('Titles')}
             </div>
             {value?.map((title, index) => (

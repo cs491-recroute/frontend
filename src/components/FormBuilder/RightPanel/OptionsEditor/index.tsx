@@ -28,7 +28,10 @@ const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValu
 
     return (
         <>
-            <div className={styles.label}>
+            <div 
+                className={styles.label}
+                key='OptionsEditor'
+            >
                 {translate('Options')}
             </div>
             {value?.map((option, index) => (

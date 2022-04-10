@@ -92,7 +92,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.dropDown,
             required: false,
             title: 'Select Options',
-            options: [{1: 'option 1'}, {2: 'option 2'}]
+            options: ['option 1', 'option 2']
         }
     },
     [ComponentTypes.fullName]: {
@@ -158,16 +158,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.singleChoice,
             required: false,
             title: 'Single select',
-            options : [
-                {
-                    _id : "deneme idsi",
-                    value: "deneme valuesu"
-                },
-                {
-                    _id : "deneme idsi 2",
-                    value: "deneme valuesu 2"
-                }
-            ]
+            options: ['option 1', 'option 2']
         }
     },
     [ComponentTypes.multipleChoice]: {
@@ -178,16 +169,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.multipleChoice,
             required: false,
             title: 'Multiple select',
-            options : [
-                {
-                    _id : "deneme idsi",
-                    value: "deneme valuesu"
-                },
-                {
-                    _id : "deneme idsi 2",
-                    value: "deneme valuesu 2"
-                }
-            ]
+            options: ['option 1', 'option 2']
         }
     }
 }
