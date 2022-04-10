@@ -1,4 +1,4 @@
-import React, { createRef, RefObject } from 'react';
+import React, { createRef, RefObject, useState } from 'react';
 import styles from './TestContent.module.scss';
 import { Test, Question } from '../../../types/models';
 import { Paper } from '@mui/material';
@@ -10,7 +10,7 @@ import { toggleRightPanel } from '../../../redux/slices/testBuilderSlice';
 import { translate } from '../../../utils';
 import classNames from 'classnames';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
-import { PartialRecord } from '../../../types/customs';
+import { toast } from 'react-toastify';
 
 type TestContentProps = {
     test: Test;
@@ -19,6 +19,7 @@ type TestContentProps = {
     duration?: number;
 }
 const TestContent = ({ test, editMode, duration }: TestContentProps) => {
+    const [finished, setFinished] = useState(false);
     const questionRefs: { [key: string]: RefObject<{ answer: any; }> } = {};
     const dispatch = useAppDispatch();
     const handleSettingsClick = (question: Question) => () => {
@@ -37,15 +38,38 @@ const TestContent = ({ test, editMode, duration }: TestContentProps) => {
     };
 
     const handleSubmit = () => {
-        const answers = Object.keys(questionRefs).reduce((acc, ref) => {
-            return { ...acc, [ref]: questionRefs[ref]?.current?.answer };
-        }, {});
-        // TODO: Send results to backend 
+        const answers = Object.entries(questionRefs).map(([questionID, { current }]) => ({
+            questionID,
+            answer: current?.answer
+        }));
+        // TODO: Send results to Next.js api, calculate grades and send to backend
         console.log(answers);
+        setFinished(true);
     };
 
+    if (finished) {
+        return <Paper elevation={10} className={styles.finishModal} >
+            <h1>{translate('Test finished')}</h1>
+        </Paper>;
+    }
     return <div className={classNames(styles.container, { [styles.fillingMode]: !editMode })}>
-        {!editMode && duration && <Countdown date={Date.now() + duration * 60 * 1000 } renderer={countdownRenderer}/>}
+        {!editMode && duration && 
+            <Countdown 
+                date={Date.now() + duration * 60 * 1000} 
+                renderer={countdownRenderer} 
+                onComplete={handleSubmit}
+                onTick={({ total }) => {
+                    if (total === 600000) {
+                        toast(translate('10 minutes left! Your answers will be automatically submitted on timeout.'), {
+                            position: 'top-center',
+                            type: 'info',
+                            hideProgressBar: true,
+                            autoClose: false
+                        });
+                    }
+                }}
+            />
+        }
         <Paper className={styles.questionList} elevation={4}>
             {test.questions.map((question, index) => {
                 const { Renderer } = QUESTION_MAPPINGS[question.type];
