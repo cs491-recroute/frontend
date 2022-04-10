@@ -11,6 +11,10 @@ import { translate } from '../../../utils';
 import classNames from 'classnames';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import ErrorIcon from '@mui/icons-material/Error';
+import SuccessIcon from '@mui/icons-material/CheckCircle';
+import { EuiText } from '@elastic/eui';
 
 type TestContentProps = {
     test: Test;
@@ -20,8 +24,12 @@ type TestContentProps = {
     userIdentifier?: string;
 }
 const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentProps) => {
-    const [finished, setFinished] = useState(false);
-    const questionRefs: { [key: string]: RefObject<{ answer: any; }> } = {};
+    const [finishState, setFinishState] = useState({
+        finished: false,
+        success: false,
+        message: ''
+    });
+    const questionRefs: { [key: string]: RefObject<{ answer: any; language?: number }> } = {};
     const dispatch = useAppDispatch();
     const handleSettingsClick = (question: Question) => () => {
         dispatch(toggleRightPanel({ status: true, question }));
@@ -38,21 +46,39 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
         </Paper>
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const answers = Object.entries(questionRefs).map(([questionID, { current }]) => ({
             questionID,
-            answer: current?.answer
+            answer: current?.answer,
+            language: current?.language
         }));
-        // TODO: Send results to Next.js api, calculate grades and send to backend
-        console.log({answers, userIdentifier});
-        setFinished(true);
+        try {
+            await axios.post(`/api/submit/test/${test._id}`, answers, { params: { applicantID: userIdentifier } });
+            setFinishState({
+                finished: true,
+                success: true,
+                message: translate('Test finished successfully!')
+            });
+        } catch ({ response: { data }}: any) {
+            setFinishState({
+                finished: true,
+                success: false,
+                message: data as any
+            })
+        }
     };
 
-    if (finished) {
+    if (finishState.finished) {
         return <Paper elevation={10} className={styles.finishModal} >
-            <h1>{translate('Test finished')}</h1>
+            {finishState.success ? 
+                <SuccessIcon sx={{ fontSize: 250 }} color='success' /> : 
+                <ErrorIcon sx={{ fontSize: 250 }} color='error' />}
+            <EuiText color={finishState.success ? 'success' : 'danger'} style={{ fontWeight: 'bold' }}>
+                {finishState.message}
+            </EuiText>
         </Paper>;
     }
+
     return <div className={classNames(styles.container, { [styles.fillingMode]: !editMode })}>
         {!editMode && duration && 
             <Countdown 

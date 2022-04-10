@@ -21,42 +21,49 @@ type CodeEditorProps = {
     fullScreen?: boolean;
     onDarkModeChange: (darkMode: boolean) => void;
     result?: boolean[] | string;
+    uniqueID?: string;
 }
 
-export type RefProps = { content?: string };
+export type RefProps = { content?: string, language?: number };
 
-const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange, result }, ref) => {
-    const id = useRef(v4());
+const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode, onFullScreen, fullScreen, onDarkModeChange, result, uniqueID = '' }, ref) => {
     const editorRef = useRef<EditorView>();
     const [isDarkTheme, setDarkTheme] = useState(false);
     const [currentLanguage, setCurrentLanguage] = useState(63);
-
-    const getCurrentContent = () => editorRef?.current?.state.doc.toString() || '';
+    const [content, setContent] = useState('');
 
     useImperativeHandle(ref, () => ({
-        content: getCurrentContent()
-    }))
+        answer: content,
+        language: currentLanguage
+    }));
 
-    const initializeEditor = (content?: string) => {
+    const initializeEditor = (currentContent?: string) => {
         if (editorRef.current) editorRef.current.destroy();
         const { extension = javascript, defaultCode } = languageOptions.find(language => language.value === currentLanguage) || {};
         const editor = new EditorView({
             state: EditorState.create({
-                doc: content || defaultCode,
+                doc: currentContent || defaultCode,
                 extensions: [
                     basicSetup, 
                     extension(),
-                    ...(isDarkTheme ? [oneDarkTheme] : [])
+                    ...(isDarkTheme ? [oneDarkTheme] : []),
+                    EditorView.updateListener.of(v => {
+                        if(v.docChanged) {
+                            setContent(v.state.doc.toString() || '');
+                        }})
                 ]
             }),
-            parent: document.getElementById(id.current) || document.body
+            parent: document.getElementById(uniqueID) || document.body
         });
         editorRef.current = editor;
+        if (!currentContent) {
+            setContent(currentContent || defaultCode || '');
+        }
         return editor;
     };
 
     useEffect(() => {
-        const editor = initializeEditor(getCurrentContent());
+        const editor = initializeEditor(content);
         return () => editor.destroy();
     }, [isDarkTheme]);
 
@@ -66,7 +73,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
     }, [currentLanguage]);
 
     const handleRunCode = () => {
-        onRunCode(currentLanguage, getCurrentContent());
+        onRunCode(currentLanguage, content);
     }
     return (
         <div className={classNames(styles.container, { [styles.darkMode]: isDarkTheme })}>
@@ -92,7 +99,7 @@ const CodeEditor = forwardRef<RefProps, CodeEditorProps>(({ onRunCode, editMode,
                     <FullscreenIcon/>
                 </IconButton>
             </div>
-            <div id={id.current} className={classNames(styles.editor, { [styles.editMode]: editMode, [styles.fullScreen]: fullScreen })} />
+            <div id={uniqueID} className={classNames(styles.editor, { [styles.editMode]: editMode, [styles.fullScreen]: fullScreen })} />
             <div className={styles.footer}>
                 <EuiButton onClick={handleRunCode} className={styles.runButton} disabled={editMode}>{translate('Run Code')}</EuiButton>
                 <RunResult result={result} />

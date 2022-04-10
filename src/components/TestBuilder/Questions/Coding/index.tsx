@@ -1,4 +1,5 @@
-import React, { useState, useRef, forwardRef, useImperativeHandle} from 'react';
+/* eslint-disable react/prop-types */
+import React, { useState, forwardRef } from 'react';
 import CodeEditor from '../../../CodeEditor';
 import { EuiFormRow } from '@elastic/eui';
 import classNames from 'classnames';
@@ -7,13 +8,10 @@ import { RefProps } from '../../../CodeEditor';
 import { RendererProps } from '../constants';
 import axios, { AxiosResponse } from 'axios';
 
-const Coding = forwardRef(({ description, editMode, number, _id }: RendererProps, ref) => {
-    const editorRef = useRef<RefProps>(null);
+const Coding = forwardRef<RefProps, RendererProps>(({ description, editMode, number, _id }, ref) => {
     const [fullScreen, setFullScreen] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [result, setResult] = useState<boolean[] | string>();
-
-    useImperativeHandle(ref, () => ({ answer: editorRef.current?.content }));
 
     const onRunCode = async (language: number, content: string) => {
         setResult(undefined);
@@ -29,13 +27,14 @@ const Coding = forwardRef(({ description, editMode, number, _id }: RendererProps
 
     return <EuiFormRow label={`${number}. ${description}`} fullWidth className={classNames({ [styles.fullScreen]: fullScreen, [styles.darkMode]: darkMode })}>
         <CodeEditor 
-            ref={editorRef}
+            ref={ref}
             editMode={editMode}
             fullScreen={fullScreen}
             onRunCode={onRunCode}
             onFullScreen={() => setFullScreen(!fullScreen)}
             onDarkModeChange={setDarkMode}
             result={result}
+            uniqueID={_id}
         />
     </EuiFormRow>
 });
