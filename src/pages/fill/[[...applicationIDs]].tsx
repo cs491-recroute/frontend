@@ -46,6 +46,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
 
     const startTest = () => {
         // TODO: Send starting info to server
+        window.onbeforeunload = () => '';
         setStarted(true);
     };
 
