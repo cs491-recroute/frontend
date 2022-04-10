@@ -6,7 +6,7 @@ import { QUESTION_MAPPINGS } from '../Questions/constants';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { IconButton, Button } from '@mui/material';
 import { useAppDispatch } from '../../../utils/hooks';
-import { toggleRightPanel } from '../../../redux/slices/testBuilderSlice';
+import { toggleRightPanel, deleteQuestionAsync } from '../../../redux/slices/testBuilderSlice';
 import { translate } from '../../../utils';
 import classNames from 'classnames';
 import Countdown, { CountdownRenderProps } from 'react-countdown';
@@ -15,6 +15,7 @@ import axios from 'axios';
 import ErrorIcon from '@mui/icons-material/Error';
 import SuccessIcon from '@mui/icons-material/CheckCircle';
 import { EuiText } from '@elastic/eui';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type TestContentProps = {
     test: Test;
@@ -34,6 +35,9 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
     const handleSettingsClick = (question: Question) => () => {
         dispatch(toggleRightPanel({ status: true, question }));
     };
+    const handleQuestionDelete = (id: string) => {
+        dispatch(deleteQuestionAsync(id));
+    }
 
     const countdownRenderer = ({ hours, minutes, seconds }: CountdownRenderProps) => {
         const h = hours < 10 ? `0${hours}` : hours;
@@ -112,6 +116,9 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
                     />
                     {editMode && <IconButton className={styles.editButton} onClick={handleSettingsClick(question)}>
                         <SettingsIcon />
+                    </IconButton>}
+                    {editMode && <IconButton  className={styles.deleteButton} onClick={() => handleQuestionDelete(question._id)}>
+                        <DeleteIcon />
                     </IconButton>}
                     <hr />
                 </div>;

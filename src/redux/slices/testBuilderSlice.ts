@@ -46,6 +46,15 @@ export const updateQuestionAsync = createAsyncThunk(
     }
 );
 
+export const deleteQuestionAsync = createAsyncThunk(
+    'form/deleteQuestion',
+    async (questionID: string, { getState }) => {
+        const { testBuilder: { currentTest: { _id: testID } = {} } } = getState() as AppState;
+        const { data } = await axios.delete(`/api/tests/${testID}/question`, { params: { questionID } });
+        return data;
+    }
+);
+
 export const updateTestTitleAsync = createAsyncThunk(
     'test/updateTitle',
     async (titleData: { name: string; value: string}, { getState }) => {
@@ -96,6 +105,11 @@ export const testBuilderSlice = createSlice({
             })
             .addCase(getParentFlowAsync.fulfilled, (state, action) => {
                 state.isActive = action.payload.active;
+            })
+            .addCase(deleteQuestionAsync.fulfilled, (state, action) => {
+                const { questions } = state.currentTest;
+                const index = questions.findIndex(question => question._id === action.payload);
+                state.currentTest.questions.splice(index, 1);
             });
     }
 });
