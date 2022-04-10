@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, forwardRef } from 'react';
+import React, { useState, forwardRef, RefObject } from 'react';
 import CodeEditor from '../../../CodeEditor';
 import { EuiFormRow } from '@elastic/eui';
 import classNames from 'classnames';
@@ -8,7 +8,7 @@ import { RefProps } from '../../../CodeEditor';
 import { RendererProps } from '../constants';
 import axios, { AxiosResponse } from 'axios';
 
-const Coding = forwardRef<RefProps, RendererProps>(({ description, editMode, number, _id }, ref) => {
+const Coding = forwardRef(({ description, editMode, number, _id }: RendererProps, ref) => {
     const [fullScreen, setFullScreen] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [result, setResult] = useState<boolean[] | string>();
@@ -27,7 +27,7 @@ const Coding = forwardRef<RefProps, RendererProps>(({ description, editMode, num
 
     return <EuiFormRow label={`${number}. ${description}`} fullWidth className={classNames({ [styles.fullScreen]: fullScreen, [styles.darkMode]: darkMode })}>
         <CodeEditor 
-            ref={ref}
+            ref={ref as RefObject<RefProps>}
             editMode={editMode}
             fullScreen={fullScreen}
             onRunCode={onRunCode}

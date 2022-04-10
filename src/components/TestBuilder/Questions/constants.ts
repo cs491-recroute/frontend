@@ -1,3 +1,4 @@
+import { RefProps } from './../../CodeEditor/index';
 import { translate } from './../../../utils/index';
 import { Question } from './../../../types/models';
 import { QUESTION_TYPES } from './../../../types/enums';
@@ -6,7 +7,7 @@ import Coding from '../Questions/Coding';
 import MultipleChoice from './MultipleChoice';
 import { ReactElement } from 'react';
 
-export type RendererProps = Partial<Question> & { editMode?: boolean; number: number; ref: React.RefObject<{ answer: any; }> };
+export type RendererProps = Partial<Question> & { editMode?: boolean; number: number; ref: React.RefObject<{ answer: any; } | RefProps> };
 export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
     text: string;
     type: QUESTION_TYPES;

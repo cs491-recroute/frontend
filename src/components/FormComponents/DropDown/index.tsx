@@ -7,11 +7,11 @@ type DropDownProps = {
     title?: string;
     editMode?: boolean;
     placeholder?: string;
-    options: Option[];
+    options?: Option[];
 }
 
 const DropDown = ({ required, title, placeholder, editMode, options }: DropDownProps) => {
-    const newArray = options.map(option => {
+    const newArray = options?.map(option => {
         return {
             key: option._id,
             text: option.description
