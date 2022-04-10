@@ -5,14 +5,15 @@ import { Flow } from '../../types/models';
 import type { AppState } from '../store';
 
 export interface FlowBuilderState {
-	ui: {
-		leftPanelStatus: STAGE_TYPE | false;
-		rightPanelStatus: {
+    ui: {
+        leftPanelStatus: STAGE_TYPE | false;
+        rightPanelStatus: {
             stageType: STAGE_TYPE | false;
-            stageId: string;
+            _id: string;
+            stageID: string;
         };
-	},
-	currentFlow: Flow
+    },
+    currentFlow: Flow
 }
 
 const initialState: FlowBuilderState = {
@@ -20,7 +21,8 @@ const initialState: FlowBuilderState = {
         leftPanelStatus: false,
         rightPanelStatus: {
             stageType: false,
-            stageId: ''
+            _id: '',
+            stageID: ''
         }
     },
     currentFlow: {
@@ -42,18 +44,18 @@ export const addStageAsync = createAsyncThunk(
 export const deleteStageAsync = createAsyncThunk(
     'flow/deleteStage',
     async (stageID: string, { getState }) => {
-        const { flowBuilder: { currentFlow: { _id: flowID} = {} } } = getState() as AppState;
-        const { data } = await axios.delete(`/api/flows/${flowID}/stages/${stageID}/deleteStage`); 
+        const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
+        const { data } = await axios.delete(`/api/flows/${flowID}/stages/${stageID}/deleteStage`);
         return data;
     }
 );
 
 export const updateStageAsync = createAsyncThunk(
     'flow/updateStage',
-    async (stageData: { type: STAGE_TYPE; stageID: string; startDate?: string, endDate?: string}, { getState }) => {
-        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
-        const {flowBuilder: {ui: {rightPanelStatus: {stageId: stage_id} = {}} } } = getState() as AppState;
-        const {data: { stage } } = await axios.put(`/api/flows/${flowID}/stages/${stage_id}/updateStage`, { 
+    async (stageData: { type: STAGE_TYPE; stageID: string; startDate?: string, endDate?: string }, { getState }) => {
+        const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
+        const { flowBuilder: { ui: { rightPanelStatus: { _id: stage_id } = {} } } } = getState() as AppState;
+        const { data: { stage } } = await axios.put(`/api/flows/${flowID}/stages/${stage_id}/updateStage`, {
             ...stageData
         });
         return stage;
@@ -62,20 +64,31 @@ export const updateStageAsync = createAsyncThunk(
 
 export const updateFlowTitleAsync = createAsyncThunk(
     'flow/updateTitle',
-    async (titleData: { name: string; value: string}, { getState }) => {
-        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
-        const {data: { flow } } = await axios.put(`/api/flows/${flowID}/updateTitle`, { 
+    async (titleData: { name: string; value: string }, { getState }) => {
+        const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
+        const { data: { flow } } = await axios.put(`/api/flows/${flowID}/updateTitle`, {
             ...titleData
         });
         return flow;
     }
 );
 
+export const updateInterviewAsync = createAsyncThunk(
+    'flow/updateInterview',
+    async (interviewData: { interviewLengthInMins: number }, { getState }) => {
+        const { flowBuilder: { ui: { rightPanelStatus: { stageID: interviewID } = {} } } } = getState() as AppState;
+        const { data: interview } = await axios.put(`/api/interviews/${interviewID}`, {
+            ...interviewData
+        });
+        return interview;
+    }
+);
+
 export const updateFlowAsync = createAsyncThunk(
     'flow/updateFlow',
-    async (flowData: {name: string; active: boolean; startDate?: string, endDate?: string}, { getState }) => {
-        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
-        const {data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlow`, {
+    async (flowData: { name: string; active: boolean; startDate?: string, endDate?: string }, { getState }) => {
+        const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
+        const { data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlow`, {
             ...flowData
         });
         return flow;
@@ -84,9 +97,9 @@ export const updateFlowAsync = createAsyncThunk(
 
 export const updateActiveStatusAsync = createAsyncThunk(
     'flow/updateActiveStatus',
-    async (statusData: { name: string; value: boolean}, { getState }) => {
-        const {flowBuilder: {currentFlow: {_id: flowID} = {} } } = getState() as AppState;
-        const {data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlowStatus`, {
+    async (statusData: { name: string; value: boolean }, { getState }) => {
+        const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
+        const { data: { flow } } = await axios.put(`/api/flows/${flowID}/updateFlowStatus`, {
             ...statusData
         });
         return flow;
@@ -100,7 +113,7 @@ export const flowBuilderSlice = createSlice({
         toggleLeftPanel: (state, action: { payload: STAGE_TYPE | false; }) => {
             state.ui.leftPanelStatus = action.payload;
         },
-        toggleRightPanel: (state, action: {payload: {stageType: STAGE_TYPE | false, stageId: string}}) => {
+        toggleRightPanel: (state, action: { payload: { stageType: STAGE_TYPE | false, _id: string, stageID: string } }) => {
             state.ui.rightPanelStatus = action.payload;
         },
         setCurrentFlow: (state, action) => {
@@ -115,10 +128,10 @@ export const flowBuilderSlice = createSlice({
             })
             .addCase(updateStageAsync.fulfilled, (state, action) => {
                 const updatedFlowStages = state.currentFlow.stages.map(x => {
-                    if(x._id === action.payload._id){
+                    if (x._id === action.payload._id) {
                         return action.payload;
                     }
-                    else{
+                    else {
                         return x;
                     }
                 });
@@ -128,6 +141,12 @@ export const flowBuilderSlice = createSlice({
             .addCase(updateFlowTitleAsync.fulfilled, (state, action) => {
                 state.currentFlow.name = action.payload.name;
             })
+            .addCase(updateInterviewAsync.fulfilled, (state, action) => {
+                const newStage = state.currentFlow.stages.find(s => s.stageID === action.payload._id);
+                if (newStage) {
+                    newStage.stageProps = action.payload;
+                }
+            })
             .addCase(updateFlowAsync.fulfilled, (state, action) => {
                 state.currentFlow.name = action.payload.name;
                 state.currentFlow.active = action.payload.active;
@@ -136,7 +155,7 @@ export const flowBuilderSlice = createSlice({
             })
             .addCase(deleteStageAsync.fulfilled, (state, action) => {
                 const index = state.currentFlow.stages.findIndex(stage => stage._id === action.payload.sid);
-                state.currentFlow.stages.splice(index,1);
+                state.currentFlow.stages.splice(index, 1);
             })
             .addCase(updateActiveStatusAsync.fulfilled, (state, action) => {
                 state.currentFlow.active = action.payload.active;

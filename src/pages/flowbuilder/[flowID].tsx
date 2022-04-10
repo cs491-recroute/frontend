@@ -62,7 +62,7 @@ const FlowBuilderPage: NextPage = () => {
                 closeButtonPosition="inside"
                 ownFocus={false}
             >
-                {leftPanelStatus && <>                
+                {leftPanelStatus && <>
                     <EuiText className={styles.title}>
                         {translate(`${capitalize(leftPanelStatus)} Templates`)}
                     </EuiText>
@@ -78,7 +78,7 @@ const FlowBuilderPage: NextPage = () => {
                 className={styles.rightPanel}
                 style={{ top: 120 }}
                 isOpen={rightPanelStatus.stageType !== false}
-                onClose={toggleRightPanel({stageType: false, stageId: ''})}
+                onClose={toggleRightPanel({ stageType: false, _id: '', stageID: '' })}
                 closeButtonPosition="inside"
                 ownFocus={false}
                 side="right"
@@ -87,7 +87,7 @@ const FlowBuilderPage: NextPage = () => {
                     {translate('Settings')}
                 </EuiText>
                 <hr />
-                <RightPanelContent stageType={rightPanelStatus.stageType} stageId={rightPanelStatus.stageId}/>
+                <RightPanelContent stageType={rightPanelStatus.stageType} _id={rightPanelStatus._id} />
             </EuiCollapsibleNav>
 
             <DisabledPage isActive={active}>

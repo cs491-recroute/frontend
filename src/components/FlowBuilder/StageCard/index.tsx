@@ -15,9 +15,10 @@ type StageCardProps = {
     type: STAGE_TYPE;
     name: string;
     id: string;
+    stageID: string;
 } & Stage;
 
-const stageIcons : {[key in STAGE_TYPE]: string} = {
+const stageIcons: { [key in STAGE_TYPE]: string } = {
     [STAGE_TYPE.FORM]: 'indexEdit',
     [STAGE_TYPE.TEST]: 'indexEdit',
     [STAGE_TYPE.INTERVIEW]: 'indexEdit'
@@ -25,9 +26,9 @@ const stageIcons : {[key in STAGE_TYPE]: string} = {
 
 const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
     const dispatch = useAppDispatch();
-    const onClick = () => dispatch(toggleRightPanel({stageType: type, stageId: id}));
+    const onClick = () => dispatch(toggleRightPanel({ stageType: type, _id: id, stageID: stageID }));
     const { pushWithReturn } = useRouterWithReturnBack();
-	
+
     const goToBuilder = () => {
         const { builderURL } = STAGE_PROPS[type];
         if (builderURL) {
@@ -37,7 +38,7 @@ const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
     const deleteStage = () => {
         if (id) {
             dispatch(deleteStageAsync(id));
-        }else {
+        } else {
             alert('Stage was not deleted!')
         }
     };
@@ -48,7 +49,7 @@ const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
             <DeleteForever onClick={deleteStage} className={styles.deleteIcon} />
 
             <EuiCard
-                onClick={onClick} 
+                onClick={onClick}
                 layout='horizontal'
                 className={classNames(styles.card, styles[type.toLowerCase()])}
                 icon={<EuiIcon size="xl" type={stageIcons[type]} />}
