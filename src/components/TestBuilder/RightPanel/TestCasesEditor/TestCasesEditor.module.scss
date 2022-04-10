@@ -13,8 +13,12 @@
     font-weight: 600;
     display: flex;
 
-    & > *:first-child {
-        width: 52%;
+    & > * {
+        flex: 1;
+
+        &:last-child {
+            flex: 0.85;
+        }
     }
 }
 
@@ -30,7 +34,15 @@
         margin-bottom: 10px;
     }
 
-    & > * {
-        width: 48%;
+    & > div {
+        flex: 1;
+
+        &:not(:last-child) {
+            margin-right: 10px;
+        }
+
+        &.pointInput {
+            flex: 0.5
+        }
     }
 }

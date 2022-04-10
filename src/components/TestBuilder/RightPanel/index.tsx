@@ -41,7 +41,7 @@ const RightPanel = () => {
                 {translate('Question Settings')}
             </EuiText>
             <hr />
-            {(Object.keys(question) as Array<keyof Question>).map(key => {
+            {(Object.keys(question) as Array<keyof Question>).sort().map(key => {
                 const Renderer = PROP_EDITORS[key];
 
                 if (!Renderer || !ALLOWED_EDITORS[question.type].includes(key)) return null;
