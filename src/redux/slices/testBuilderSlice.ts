@@ -42,7 +42,6 @@ export const updateQuestionAsync = createAsyncThunk(
     async ({ newProps, questionID }: { newProps: Partial<Question>; questionID?: string; }, { getState }) => {
         const { testBuilder: { currentTest: { _id: testID } = {} } } = getState() as AppState;
         const { data: question } = await axios.put(`/api/tests/${testID}/question`, newProps, { params: { questionID } });
-        console.log(question)
         return question;
     }
 );
@@ -90,7 +89,6 @@ export const testBuilderSlice = createSlice({
                 state.currentTest.name = action.payload.name;
             })
             .addCase(updateQuestionAsync.fulfilled, (state, action) => {
-                console.log(action.payload);
                 const { questions } = state.currentTest;
                 const { _id: questionID } = action.payload;
                 const index = questions.findIndex(question => question._id === questionID);
