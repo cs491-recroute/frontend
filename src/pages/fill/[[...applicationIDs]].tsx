@@ -51,7 +51,6 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
     };
 
     const startForm = async () => {
-
         if (!validateEmail(email)) {
             setError('Please enter a valid email address');
             return;
@@ -121,6 +120,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
                             fullWidth
                             placeholder={translate('Please enter your email')}
                             onChange={e => setEmail(e.target.value)}
+                            onKeyDown={e => e.key === 'Enter' && startForm()}
                         />
                         <Button 
                             variant='contained' 
