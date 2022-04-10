@@ -100,7 +100,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
             }
             return <>
                 {HeadTitle}
-                <TestContent test={stage.stageProps as Test} duration={stage.testDuration}/>
+                <TestContent test={stage.stageProps as Test} duration={stage.testDuration} userIdentifier={applicantID} />
             </>
         }
         case STAGE_TYPE.FORM: {
@@ -135,7 +135,12 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
             }
             return <>
                 {HeadTitle}
-                <FormContent form={stage.stageProps as Form} editMode={false} userIdentifier={requestMail ? email : applicantID}/>
+                <FormContent 
+                    form={stage.stageProps as Form} 
+                    editMode={false} 
+                    userIdentifier={requestMail ? email : applicantID} 
+                    withEmail={requestMail} 
+                />
             </>
         }
         default: {

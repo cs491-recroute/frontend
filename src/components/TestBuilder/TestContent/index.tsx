@@ -17,8 +17,9 @@ type TestContentProps = {
     editMode?: boolean;
     /** in minutes */
     duration?: number;
+    userIdentifier?: string;
 }
-const TestContent = ({ test, editMode, duration }: TestContentProps) => {
+const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentProps) => {
     const [finished, setFinished] = useState(false);
     const questionRefs: { [key: string]: RefObject<{ answer: any; }> } = {};
     const dispatch = useAppDispatch();
@@ -43,7 +44,7 @@ const TestContent = ({ test, editMode, duration }: TestContentProps) => {
             answer: current?.answer
         }));
         // TODO: Send results to Next.js api, calculate grades and send to backend
-        console.log(answers);
+        console.log({answers, userIdentifier});
         setFinished(true);
     };
 

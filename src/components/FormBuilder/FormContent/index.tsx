@@ -1,4 +1,4 @@
-import React, { RefObject, createRef } from 'react';
+import React, { RefObject, createRef, useState } from 'react';
 import styles from './FormContent.module.scss';
 import { Form, Component } from '../../../types/models';
 import { Paper } from '@mui/material';
@@ -9,14 +9,25 @@ import { EuiIcon } from '@elastic/eui';
 import { Button } from '@mui/material';
 import { translate } from '../../../utils';
 import { toast } from 'react-toastify';
+import axios from 'axios';
+import ErrorIcon from '@mui/icons-material/Error';
+import SuccessIcon from '@mui/icons-material/CheckCircle';
+import { EuiText } from '@elastic/eui';
 
 type FormContentProps = {
     form: Form;
     editMode?: boolean;
     userIdentifier?: string;
+    withEmail?: boolean;
 }
 
-const FormContent = ({ form, editMode, userIdentifier }: FormContentProps) => {
+const FormContent = ({ form, editMode, userIdentifier, withEmail }: FormContentProps) => {
+    const [finishState, setFinishState] = useState({
+        finished: false,
+        success: false,
+        message: ''
+    });
+
     const componentRefs: { [key: string]: RefObject<ComponentRef> } = {};
     const dispatch = useAppDispatch();
 
@@ -32,7 +43,7 @@ const FormContent = ({ form, editMode, userIdentifier }: FormContentProps) => {
         }
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         const answers = Object.entries(componentRefs)
             .filter(([, { current }]) => current)
             .map(([componentID, { current }]) => {
@@ -52,9 +63,33 @@ const FormContent = ({ form, editMode, userIdentifier }: FormContentProps) => {
             })
             return;
         }
-        // TODO: Send answers to server with userIdentifier
-        console.log({answers, userIdentifier});
+        const formData = answers.map(({ componentID, answer }) => ({ componentID, value: answer || undefined }));
+        try {
+            await axios.post(`/api/submit/form/${form._id}`, formData, { params: { userIdentifier, withEmail } });
+            setFinishState({
+                finished: true,
+                success: true,
+                message: translate('Form submitted successfully!')
+            });
+        } catch ({ response: { data }}: any) {
+            setFinishState({
+                finished: true,
+                success: false,
+                message: data as any
+            })
+        }
     };
+
+    if (finishState.finished) {
+        return <Paper elevation={10} className={styles.finishModal} >
+            {finishState.success ? 
+                <SuccessIcon sx={{ fontSize: 250 }} color='success' /> : 
+                <ErrorIcon sx={{ fontSize: 250 }} color='error' />}
+            <EuiText color={finishState.success ? 'success' : 'danger'} style={{ fontWeight: 'bold' }}>
+                {finishState.message}
+            </EuiText>
+        </Paper>;
+    }
 
     return <div className={styles.container}>
         <Paper className={styles.questionList} elevation={4}>
