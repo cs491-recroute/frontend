@@ -6,6 +6,7 @@ import PlaceholderEditor from './PlaceholderEditor';
 import TitlesEditor from './TitlesEditor';
 import PlaceholdersEditor from './PlaceholdersEditor';
 import OptionsEditor from './OptionsEditor';
+import RequiredEditor from './RequiredEditor';
 
 import { ForwardRefExoticComponent, RefObject } from 'react';
 
@@ -14,20 +15,21 @@ export const PROP_EDITORS: PartialRecord<keyof Component, (props: { defaultValue
     placeholder: PlaceholderEditor,
     titles: TitlesEditor,
     placeholders: PlaceholdersEditor,
-    options: OptionsEditor
+    options: OptionsEditor,
+    required: RequiredEditor
 };
 
 export const ALLOWED_EDITORS = {
-    [ComponentTypes.address]: ['title', 'placeholder'],
-    [ComponentTypes.datePicker]: ['title', 'placeholder'],
-    [ComponentTypes.dropDown]: ['title', 'placeholder', 'options'],
-    [ComponentTypes.header]: ['title', 'placeholder'],
-    [ComponentTypes.longText]: ['title', 'placeholder'],
-    [ComponentTypes.shortText]: ['title', 'placeholder'],
-    [ComponentTypes.fullName]: ['titles', 'placeholders'],
-    [ComponentTypes.multipleChoice]: ['title', 'options'],
-    [ComponentTypes.phone]: ['title', 'placeholder'],
-    [ComponentTypes.singleChoice]: ['title', 'options'],
-    [ComponentTypes.upload]: ['title', 'placeholder'],
-    [ComponentTypes.email]: ['title', 'placeholder']
+    [ComponentTypes.address]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.datePicker]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.dropDown]: ['title', 'placeholder', 'options', 'required'],
+    [ComponentTypes.header]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.longText]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.shortText]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.fullName]: ['titles', 'placeholders', 'required'],
+    [ComponentTypes.multipleChoice]: ['title', 'options', 'required'],
+    [ComponentTypes.phone]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.singleChoice]: ['title', 'options', 'required'],
+    [ComponentTypes.upload]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.email]: ['title', 'placeholder', 'required']
 }
