@@ -3,6 +3,7 @@ import axios from 'axios';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Flow } from '../../types/models';
 import { translate } from '../../utils';
+import styles from './ShareFlowModal.module.scss';
 
 type ShareFlowModalProps = {
     flow: Flow;
@@ -11,7 +12,7 @@ export type ShareFlowModalRef = { close: () => void, open: () => void };
 
 const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow}, ref)  => {
     
-    const flowURL = flow.stages[0] ? `www.recroute/fill/${flow._id}/${flow.stages[0]._id}` : ''
+    const flowURL = (flow.stages[0] && (typeof window !== 'undefined')) ? `${window?.location?.origin}/fill/${flow._id}/${flow.stages[0]._id}` : ''
     const [inviteMail, setInviteMail] = useState('');
     const [isOpen, setOpen] = useState(false);
 
@@ -50,11 +51,19 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                         fullWidth
                     />
                 </EuiFormRow>
-                <EuiFormRow fullWidth>
-                    <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} style={{float: 'right'}}  fill>
+                <div className={styles.shareLinkButtons}>                        
+                    <EuiFormRow>
+                        <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} fill>
                         Copy Link
-                    </EuiButton>
-                </EuiFormRow>
+                        </EuiButton>
+                    </EuiFormRow>
+
+                    <EuiFormRow>
+                        <EuiButton onClick={() => window.open(flowURL, '_blank')} fill>
+                            {translate('Open in New Tab')}
+                        </EuiButton>
+                    </EuiFormRow>
+                </div>
                 <EuiFormRow label={translate('INVITE BY EMAIL')}  fullWidth>
                     <EuiFieldText icon={'email'} value={inviteMail}
                         placeholder="info@recroute.com"
