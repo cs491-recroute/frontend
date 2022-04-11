@@ -45,11 +45,11 @@ const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
 
     return (
         <div className={styles.container}>
-            <BuildCircleIcon onClick={goToBuilder} className={styles.builderIcon} />
+            <BuildCircleIcon onClick={onClick} className={styles.builderIcon} />
             <DeleteForever onClick={deleteStage} className={styles.deleteIcon} />
 
             <EuiCard
-                onClick={onClick}
+                onClick={goToBuilder}
                 layout='horizontal'
                 className={classNames(styles.card, styles[type.toLowerCase()])}
                 icon={<EuiIcon size="xl" type={stageIcons[type]} />}
