@@ -12,7 +12,7 @@ const FlowsShareButton = ({ flow }: FlowsShareButtonProps) => {
     
     return (
         <>
-            <EuiButtonEmpty color='text' isDisabled={!flow.stages[0]} isSelected={true}
+            <EuiButtonEmpty style={{color: 'black'}} isDisabled={!flow.stages[0]} isSelected={true}
                 onClick={() => shareFlowRef.current?.open()}
             >Share</EuiButtonEmpty>
             <ShareFlowModal flow={flow} ref={shareFlowRef} />

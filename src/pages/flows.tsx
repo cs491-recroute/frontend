@@ -124,9 +124,13 @@ const FlowsPage: NextPage = () => {
                             <div style={{ flex: 1 }}/>
                             <div className={styles.flowCard}>
                                 <FlowsShareButton flow={flow}/>
-                                <EuiButtonEmpty color='text' href={`flowbuilder/${flow._id}`}>Edit</EuiButtonEmpty>
-                                <EuiButtonEmpty color='text'>Submissions</EuiButtonEmpty>
-                                <EuiButtonEmpty color='text' onClick={() => handleDeleteButton(flow._id)}>Delete</EuiButtonEmpty>
+                                <EuiButtonEmpty>
+                                    <Link href={`flowbuilder/${flow._id}`}>
+                                        <a style={{color: 'black'}}>Edit</a>
+                                    </Link>
+                                </EuiButtonEmpty>
+                                <EuiButtonEmpty style={{color: 'black'}}>Submissions</EuiButtonEmpty>
+                                <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>Delete</EuiButtonEmpty>
                             </div>						
                         </Paper>
                     )}) : <div>Fetching</div>}
