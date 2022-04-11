@@ -41,7 +41,18 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
 
         <EuiModalBody>
             <EuiFormRow label={translate('Flow Name')} fullWidth>
-                <EuiFieldText onChange={({ target: { value }}) => setName(value)} className='name' fullWidth/>
+                <EuiFieldText 
+                    onChange={({ target: { value }}) => setName(value)} 
+                    onKeyDown={event => {
+                        if (event.key === 'Enter') {
+                            createFlow()
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+                    }} 
+                    className='name' 
+                    fullWidth
+                />
             </EuiFormRow>
             <EuiFormRow label={translate('Specify Duration')} >
                 <EuiSwitch
