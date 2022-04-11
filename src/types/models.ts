@@ -78,3 +78,7 @@ export type Question = {
   testCases?: ({ input: string; output: string; points: number } & Partial<Basic>)[],
   points?: number;
 } & Basic;
+
+export type Category = {
+  name: string;
+} & Basic;

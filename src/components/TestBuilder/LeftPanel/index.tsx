@@ -1,7 +1,7 @@
 import { EuiButton, EuiCollapsibleNav, EuiText } from '@elastic/eui';
 import { List, ListItem, ListItemButton } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { addQuestionAsync, isLeftPanelOpen, toggleLeftPanel } from '../../../redux/slices/testBuilderSlice';
+import { addQuestionAsync, isLeftPanelOpen, toggleLeftPanel, getMyQuestionsAsync, getQuestions, getCategoriesAsync, getCategories, getPoolQuestionsAsync} from '../../../redux/slices/testBuilderSlice';
 import { translate } from '../../../utils';
 import { useAppSelector, useAppDispatch } from '../../../utils/hooks';
 import styles from './LeftPanel.module.scss';
@@ -13,6 +13,9 @@ const LeftPanel = () => {
     const [activeTab, setActiveTab] = useState(0);
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(isLeftPanelOpen);
+    const questions = useAppSelector(getQuestions);
+    const categories = useAppSelector(getCategories);
+    const  [selectedCategory, setSelectedCategory] = useState('');
     
     const toggle = useCallback(status => () => {
         if (status !== isLeftPanelOpen) dispatch(toggleLeftPanel(status));
@@ -20,6 +23,19 @@ const LeftPanel = () => {
 
     const handleBasicSelect = (defaultProps: Partial<Question>) => () => {
         dispatch(addQuestionAsync(defaultProps));
+    };
+    
+    const getMyQuestions = () => {
+        dispatch(getMyQuestionsAsync());
+    };
+
+    const getPoolCategories = () => {
+        dispatch(getCategoriesAsync());
+    };
+
+    const getPoolQuestions = (categoryID: string) => {
+        setSelectedCategory(categoryID);
+        dispatch(getPoolQuestionsAsync(categoryID));
     };
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -42,39 +58,89 @@ const LeftPanel = () => {
                 </List>
             }
             case 1: {
-                return <div>My Questions</div> // TODO
-            }
+                return <List>
+                    {questions.map(question => (
+                        <ListItem 
+                            key={question._id}
+                            disablePadding 
+                            divider
+                        >
+                            <ListItemButton className={styles.item} onClick={handleBasicSelect(question)} >{question.description}</ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>            }
             case 2: {
-                return <div>Pool</div> // TODO
+                return <List>
+                    {categories.map(({ name, _id }) => (
+                        <ListItem 
+                            key={_id}
+                            disablePadding 
+                            divider
+                        >
+                            <ListItemButton className={styles.item} onClick={() => getPoolQuestions(_id)} >{name}</ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
             }
             default: return null
         }
     }
+
+    const CategoryContent = () => {
+        return <List>
+            {questions.map(question => (
+                <ListItem 
+                    key={question._id}
+                    disablePadding 
+                    divider
+                >
+                    <ListItemButton className={styles.item} onClick={handleBasicSelect(question)} >{question.description}</ListItemButton>
+                </ListItem>
+            ))}
+        </List> 
+    }
+
     return (
-        <EuiCollapsibleNav
+        <><EuiCollapsibleNav
             className={styles.leftPanel}
             style={{ top: 120 }}
             isOpen={isOpen}
             onClose={toggle(false)}
             closeButtonPosition="inside"
             ownFocus={false}
-            button={
-                <EuiButton onClick={toggle(true)} iconType='plusInCircle' className={styles.openButton}>
-                    {translate('Add New Question')}
-                </EuiButton>
-            }
+            outsideClickCloses={false}
+            button={<EuiButton onClick={toggle(true)} iconType='plusInCircle' className={styles.openButton}>
+                {translate('Add New Question')}
+            </EuiButton>}
         >
             <EuiText className={styles.title}>
                 {translate('Questions')}
             </EuiText>
             <hr />
             <Tabs value={activeTab} onChange={handleTabChange}>
-                <Tab label={translate('Basic')}/>
-                <Tab label={translate('My Questions')}/>
-                <Tab label={translate('Pool')}/>
+                <Tab label={translate('Basic')} />
+                <Tab label={translate('My Questions')} onClick={getMyQuestions}/>
+                <Tab label={translate('Pool')} onClick={getPoolCategories}/>
             </Tabs>
             <TabContent />
         </EuiCollapsibleNav>
+        {isOpen && (activeTab === 2) && selectedCategory && <EuiCollapsibleNav
+            className={styles.secondLeftPanel}
+            style={{ top: 168 }}
+            isOpen={isOpen}
+            onClose={() => setSelectedCategory('')}
+            closeButtonPosition="inside"
+            ownFocus={false}
+            outsideClickCloses={false}
+
+        >
+            <EuiText className={styles.title}>
+                {translate('Category 1')}
+            </EuiText>
+            <hr />
+            <CategoryContent />
+        </EuiCollapsibleNav>}
+        </>
     )
 };
 

@@ -1,5 +1,5 @@
 import { QUESTION_TYPES } from './../../types/enums';
-import { Test, Question } from '../../types/models';
+import { Test, Question, Category } from '../../types/models';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { AppState } from '../store';
@@ -13,7 +13,9 @@ export interface TestBuilderState {
         }
 	},
 	currentTest: Test,
-    isActive: boolean
+    isActive: boolean,
+    questions: Question[],
+    categories: Category[]
 }
 
 const initialState: TestBuilderState = {
@@ -26,7 +28,9 @@ const initialState: TestBuilderState = {
     currentTest: {
         _id: '', name: '', questions: [], flowID: '' 
     },
-    isActive: false
+    isActive: false,
+    questions: [],
+    categories: []
 };
 
 export const addQuestionAsync = createAsyncThunk(
@@ -75,6 +79,30 @@ export const getParentFlowAsync = createAsyncThunk(
     }
 );
 
+export const getMyQuestionsAsync = createAsyncThunk(
+    'test/getMyQuestions',
+    async () => {
+        const {data: questions} = await axios.get(`/api/questions/getMyQuestions`);
+        return questions;
+    }
+);
+
+export const getCategoriesAsync = createAsyncThunk(
+    'test/getCategories',
+    async () => {
+        const {data: categories} = await axios.get(`/api/questions/getCategories`);
+        return categories;
+    }
+);
+
+export const getPoolQuestionsAsync = createAsyncThunk(
+    'test/getPoolQuestions',
+    async (cid: string) => {
+        const {data: questions} = await axios.get(`/api/questions/getPoolQuestions/${cid}`);
+        return questions;
+    }
+);
+
 export const testBuilderSlice = createSlice({
     name: 'testBuilder',
     initialState,
@@ -110,6 +138,15 @@ export const testBuilderSlice = createSlice({
                 const { questions } = state.currentTest;
                 const index = questions.findIndex(question => question._id === action.payload);
                 state.currentTest.questions.splice(index, 1);
+            })    
+            .addCase(getMyQuestionsAsync.fulfilled, (state, action) => {
+                state.questions = action.payload;
+            })
+            .addCase(getCategoriesAsync.fulfilled, (state, action) => {
+                state.categories = action.payload;
+            })
+            .addCase(getPoolQuestionsAsync.fulfilled, (state, action) => {
+                state.questions = action.payload;
             });
     }
 });
@@ -120,5 +157,7 @@ export const isLeftPanelOpen = (state: AppState) => state.testBuilder.ui.leftPan
 export const getCurrentTest = (state: AppState) => state.testBuilder.currentTest;
 export const getRightPanelStatus = (state: AppState) => state.testBuilder.ui.rightPanelStatus;
 export const getIsActive = (state: AppState) => state.testBuilder.isActive;
+export const getQuestions = (state: AppState) => state.testBuilder.questions;
+export const getCategories = (state: AppState) => state.testBuilder.categories;
 
 export default testBuilderSlice.reducer;
