@@ -15,8 +15,14 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
     const flowURL = (flow.stages[0] && (typeof window !== 'undefined')) ? `${window?.location?.origin}/fill/${flow._id}/${flow.stages[0]._id}` : ''
     const [inviteMail, setInviteMail] = useState('');
     const [isOpen, setOpen] = useState(false);
+    const [copyLinkClicked, setCopyLinkClicked] = useState(false);
+    const [sendInviteClicked, setSendInviteClicked] = useState(false);
 
-    const close = () => setOpen(false);
+    const close = () => {
+        setOpen(false);
+        setCopyLinkClicked(false);
+        setSendInviteClicked(false);
+    }
     const open = () => {
         setOpen(true);
     }
@@ -29,6 +35,8 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                 const res = await axios.post(`/api/flows/${flow._id}/inviteMail`, {
                     mail: inviteMail
                 });
+                setSendInviteClicked(true);
+                setTimeout(setSendInviteClicked, 3000);
             } catch ({ response: { data }}: any) {
                 const res = data as string;
             }
@@ -36,6 +44,12 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
             alert('You should enter an email address');
         }
     };
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(flowURL);
+        setCopyLinkClicked(true);
+        setTimeout(setCopyLinkClicked, 3000);
+    }
 
     return isOpen ?
         <EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
@@ -51,9 +65,12 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                         fullWidth
                     />
                 </EuiFormRow>
-                <div className={styles.shareLinkButtons}>                        
+                <div className={styles.shareButtons}>
+                    <EuiFormRow>  
+                        <p className={styles.feedbackText}>{copyLinkClicked && translate('Link Copied!')}</p>
+                    </EuiFormRow>
                     <EuiFormRow>
-                        <EuiButton onClick={() => {navigator.clipboard.writeText(flowURL);}} fill>
+                        <EuiButton onClick={handleCopyLink} fill>
                         Copy Link
                         </EuiButton>
                     </EuiFormRow>
@@ -71,11 +88,16 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                         onChange={event => {setInviteMail(event.target.value)}}
                     />
                 </EuiFormRow>
-                <EuiFormRow fullWidth>  
-                    <EuiButton onClick={handleSendInvite} style={{float: 'right'}} fill>
+                <div className={styles.shareButtons}>
+                    <EuiFormRow>  
+                        <p className={styles.feedbackText}>{sendInviteClicked && translate('Email was sent!')}</p>
+                    </EuiFormRow>
+                    <EuiFormRow>  
+                        <EuiButton onClick={handleSendInvite} fill>
                         Send Invite
-                    </EuiButton>
-                </EuiFormRow>
+                        </EuiButton>
+                    </EuiFormRow>
+                </div>
             </EuiModalBody>
         </EuiModal> : null;
 });
