@@ -1,7 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { EuiFormRow, EuiTextArea } from '@elastic/eui';
+import { EuiTextArea } from '@elastic/eui';
 import { translate } from '../../../../utils';
 import { Component } from '../../../../types/models';
+import styles from './TitleEditor.module.scss';
 
 const TitleEditor = forwardRef<{ value: Component['title']; }, { defaultValue: Component['title']; }>(({ defaultValue }, ref) => {
     const [value, setValue] = useState(defaultValue);
@@ -9,13 +10,15 @@ const TitleEditor = forwardRef<{ value: Component['title']; }, { defaultValue: C
     useImperativeHandle(ref, () => ({ value }));
 
     return (
-        <EuiFormRow label={translate('Title')}>
+        <div className={styles.label}>
+            {translate('Title')}
             <EuiTextArea 
+                className={styles.textArea}
                 defaultValue={defaultValue} 
                 value={value} 
                 onChange={({ target: { value: changedValue }}) => setValue(changedValue)}
             />
-        </EuiFormRow>
+        </div>
     );
 });
 

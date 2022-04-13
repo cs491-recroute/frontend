@@ -29,7 +29,7 @@ const TitlesEditor = forwardRef<{ value: Component['titles']; }, { defaultValue:
                     className={styles.label2}
                     key={index}
                 >
-                    {translate('Title ')} {index + 1} :
+                    {index === 0 ? 'Name' : 'Surname'}
                     <EuiFormRow>
                         <EuiTextArea 
                             className={styles.input}

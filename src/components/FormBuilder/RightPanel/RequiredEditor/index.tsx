@@ -1,7 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
-import { EuiFormRow, EuiSwitch } from '@elastic/eui';
+import { EuiSwitch } from '@elastic/eui';
 import { translate } from '../../../../utils';
 import { Component } from '../../../../types/models';
+import styles from './RequiredEditor.module.scss';
 
 const RequiredEditor = forwardRef<{ value: Component['required']; }, { defaultValue: Component['required']; }>(({ defaultValue }, ref) => {
     const [value, setValue] = useState(defaultValue);
@@ -9,13 +10,18 @@ const RequiredEditor = forwardRef<{ value: Component['required']; }, { defaultVa
     useImperativeHandle(ref, () => ({ value }));
 
     return (
-        <EuiFormRow label={translate('Required')}>
-            <EuiSwitch
-                label={value ? "This component is required in this form": "This component is not required in this form"}
-                checked={value}
-                onChange={e => setValue(!value)}
-            />
-        </EuiFormRow>
+        <>
+            <div className={styles.label}>
+                {translate('Required')}
+            </div>
+            <div className={styles.required}>
+                <EuiSwitch
+                    label=''
+                    checked={value}
+                    onChange={e => setValue(!value)}
+                />
+            </div>
+        </>
     );
 });
 

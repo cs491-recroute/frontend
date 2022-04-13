@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { translate } from '../../../../utils';
 import { Component } from '../../../../types/models';
 import styles from './OptionsEditor.module.scss';
+import { EuiFieldText } from '@elastic/eui';
 
 const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValue: Component['options']; }>(({ defaultValue }, ref) => {
     const [value, setValue] = useState(defaultValue);
@@ -38,8 +39,7 @@ const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValu
                 <div
                     key={option._id}
                 >
-                    {index + 1} : 
-                    <input 
+                    <EuiFieldText 
                         value={option.description}
                         className={styles.input}
                         onChange={handleDescriptionChange(index)}

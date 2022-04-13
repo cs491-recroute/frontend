@@ -29,7 +29,7 @@ const PlaceholdersEditor = forwardRef<{ value: Component['placeholders']; }, { d
                     className={styles.label2}
                     key={index}
                 >
-                    {translate('Placeholder ')} {index + 1} :
+                    {index === 0 ? 'Name' : 'Surname'}
                     <EuiFormRow>
                         <EuiTextArea
                             className={styles.input}
