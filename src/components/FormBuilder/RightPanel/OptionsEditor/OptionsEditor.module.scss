@@ -7,14 +7,24 @@
 
 .addButton {
     text-decoration: underline;
-    margin-top: 5px;
+    padding: 10px;
+}
+
+.deleteButton {
+    margin-left: 10px;
 }
 
 .input {
-    margin-top: 2px;
+    margin-top: 5px;
+    margin-bottom: 5px;
     margin-left: 4px;
+    padding-right: 10px;
     &, &:focus-visible, &:focus {
         outline: none;
         box-shadow: none;
     }
+}
+
+.th1 {
+    width:90%;
 }

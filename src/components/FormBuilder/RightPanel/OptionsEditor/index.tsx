@@ -2,7 +2,7 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { translate } from '../../../../utils';
 import { Component } from '../../../../types/models';
 import styles from './OptionsEditor.module.scss';
-import { EuiFieldText } from '@elastic/eui';
+import { EuiFieldText, EuiIcon } from '@elastic/eui';
 
 const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValue: Component['options']; }>(({ defaultValue }, ref) => {
     const [value, setValue] = useState(defaultValue);
@@ -15,6 +15,13 @@ const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValu
         newOptions[index] = { ...newOptions[index], description: newValue };
         setValue(newOptions);
     };
+
+    const handleOptionDelete = (index : number) => {
+        if (!value) return;
+        const newOptions = [...value];
+        newOptions.splice(index, 1);
+        setValue(newOptions);
+    }
 
     const handleNewOption = () => {
         const newOption = {
@@ -39,11 +46,25 @@ const OptionsEditor = forwardRef<{ value: Component['options']; }, { defaultValu
                 <div
                     key={option._id}
                 >
-                    <EuiFieldText 
-                        value={option.description}
-                        className={styles.input}
-                        onChange={handleDescriptionChange(index)}
-                    />
+                    <table>
+                        <tr>
+                            <th className={styles.th1}>
+                                <EuiFieldText 
+                                    value={option.description}
+                                    className={styles.input}
+                                    onChange={handleDescriptionChange(index)}
+                                />
+                            </th>
+                            <th>
+                                <button
+                                    className={styles.deleteButton}
+                                    onClick={() => handleOptionDelete(index)}
+                                >
+                                    <EuiIcon type='cross'></EuiIcon>
+                                </button>
+                            </th>
+                        </tr>
+                    </table>
                 </div>
             ))}
             <button className={styles.addButton} onClick={handleNewOption} >{translate('Add Option')}</button>
