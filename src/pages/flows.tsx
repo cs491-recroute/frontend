@@ -88,16 +88,16 @@ const FlowsPage: NextPage = () => {
                 </div>
 
             </div>
+            <div className={styles.searchItem}>
+                <EuiIcon className={styles.searchIcon} type="search"/>
+                <input
+                    className={styles.searchBar}
+                    type="text"
+                    placeholder='Search Flow...'
+                    onChange={event => setSearchTerm(event.target.value)}
+                />
+            </div>
             <div className={styles.flowList}>
-                <div>
-                    <EuiIcon className={styles.searchIcon} type="search"/>
-                    <input
-                        className={styles.searchBar}
-                        type="text"
-                        placeholder='Search Flow...'
-                        onChange={event => setSearchTerm(event.target.value)}
-                    />
-                </div>
                 {isReady ? flows.filter( flow => {
                     if (searchTerm === "") {
                         //if query is empty
