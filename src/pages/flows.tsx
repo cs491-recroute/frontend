@@ -126,11 +126,11 @@ const FlowsPage: NextPage = () => {
                                 <FlowsShareButton flow={flow}/>
                                 <EuiButtonEmpty>
                                     <Link href={`flowbuilder/${flow._id}`}>
-                                        <a style={{color: 'black'}}>Edit</a>
+                                        <a style={{color: 'black'}}>{translate('Edit')}</a>
                                     </Link>
                                 </EuiButtonEmpty>
-                                <EuiButtonEmpty style={{color: 'black'}}>Submissions</EuiButtonEmpty>
-                                <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>Delete</EuiButtonEmpty>
+                                <EuiButtonEmpty style={{color: 'black'}}>{translate('Submissions')}</EuiButtonEmpty>
+                                <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
                             </div>						
                         </Paper>
                     )}) : <div>Fetching</div>}

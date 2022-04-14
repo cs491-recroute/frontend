@@ -1,6 +1,7 @@
 import { EuiButtonEmpty } from '@elastic/eui';
 import React, { useRef } from 'react';
 import { Flow } from '../../types/models';
+import { translate } from '../../utils';
 import ShareFlowModal, { ShareFlowModalRef } from '../ShareFlowModal';
 
 type FlowsShareButtonProps = {
@@ -14,7 +15,7 @@ const FlowsShareButton = ({ flow }: FlowsShareButtonProps) => {
         <>
             <EuiButtonEmpty style={{color: 'black'}} isDisabled={!flow.stages[0]} isSelected={true}
                 onClick={() => shareFlowRef.current?.open()}
-            >Share</EuiButtonEmpty>
+            >{translate('Share')}</EuiButtonEmpty>
             <ShareFlowModal flow={flow} ref={shareFlowRef} />
         </>
 

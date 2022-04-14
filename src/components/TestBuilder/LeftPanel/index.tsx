@@ -15,7 +15,10 @@ const LeftPanel = () => {
     const isOpen = useAppSelector(isLeftPanelOpen);
     const questions = useAppSelector(getQuestions);
     const categories = useAppSelector(getCategories);
-    const  [selectedCategory, setSelectedCategory] = useState('');
+    const  [selectedCategory, setSelectedCategory] = useState({
+        categoryID: '',
+        name: ''
+    });
     
     const toggle = useCallback(status => () => {
         if (status !== isLeftPanelOpen) dispatch(toggleLeftPanel(status));
@@ -33,8 +36,8 @@ const LeftPanel = () => {
         dispatch(getCategoriesAsync());
     };
 
-    const getPoolQuestions = (categoryID: string) => {
-        setSelectedCategory(categoryID);
+    const getPoolQuestions = (categoryID: string, name: string) => {
+        setSelectedCategory({categoryID, name});
         dispatch(getPoolQuestionsAsync(categoryID));
     };
 
@@ -77,7 +80,7 @@ const LeftPanel = () => {
                             disablePadding 
                             divider
                         >
-                            <ListItemButton className={styles.item} onClick={() => getPoolQuestions(_id)} >{name}</ListItemButton>
+                            <ListItemButton className={styles.item} onClick={() => getPoolQuestions(_id, name)} >{name}</ListItemButton>
                         </ListItem>
                     ))}
                 </List>
@@ -124,18 +127,18 @@ const LeftPanel = () => {
             </Tabs>
             <TabContent />
         </EuiCollapsibleNav>
-        {isOpen && (activeTab === 2) && selectedCategory && <EuiCollapsibleNav
+        {isOpen && (activeTab === 2) && selectedCategory.categoryID && <EuiCollapsibleNav
             className={styles.secondLeftPanel}
             style={{ top: 168 }}
             isOpen={isOpen}
-            onClose={() => setSelectedCategory('')}
+            onClose={() => setSelectedCategory({categoryID: '', name: ''})}
             closeButtonPosition="inside"
             ownFocus={false}
             outsideClickCloses={false}
 
         >
             <EuiText className={styles.title}>
-                {translate('Category 1')}
+                {selectedCategory.name}
             </EuiText>
             <hr />
             <CategoryContent />
