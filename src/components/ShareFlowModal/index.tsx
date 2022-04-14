@@ -2,7 +2,7 @@ import { EuiButton, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHe
 import axios from 'axios';
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Flow } from '../../types/models';
-import { translate } from '../../utils';
+import { translate, validateEmail } from '../../utils';
 import styles from './ShareFlowModal.module.scss';
 
 type ShareFlowModalProps = {
@@ -17,6 +17,10 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
     const [isOpen, setOpen] = useState(false);
     const [copyLinkClicked, setCopyLinkClicked] = useState(false);
     const [sendInviteClicked, setSendInviteClicked] = useState(false);
+    const [error, setError] = useState({
+        isError: false,
+        errorMessage: 'Invalid input'
+    });
 
     const close = () => {
         setOpen(false);
@@ -30,18 +34,19 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
     useImperativeHandle(ref, () => ({ close, open }));
 
     const handleSendInvite = async () => {
-        if(inviteMail){
+        if(inviteMail && validateEmail(inviteMail)){
             try {
                 const res = await axios.post(`/api/flows/${flow._id}/inviteMail`, {
                     mail: inviteMail
                 });
                 setSendInviteClicked(true);
                 setTimeout(setSendInviteClicked, 3000);
+                setInviteMail('');
             } catch ({ response: { data }}: any) {
                 const res = data as string;
             }
         }else{
-            alert('You should enter an email address');
+            setError({ isError: true, errorMessage: 'Invalid email' });
         }
     };
 
@@ -50,6 +55,15 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
         setCopyLinkClicked(true);
         setTimeout(setCopyLinkClicked, 3000);
     }
+
+    const handleChange = ({ target: { value }}: any) => {
+        setInviteMail(value);
+        if(value && !validateEmail(value)) {
+            setError({ isError: true, errorMessage: 'Invalid email' });
+        } else {
+            setError({ isError: false, errorMessage: '' });
+        }
+    };
 
     return isOpen ?
         <EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
@@ -81,11 +95,16 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                         </EuiButton>
                     </EuiFormRow>
                 </div>
-                <EuiFormRow label={translate('INVITE BY EMAIL')}  fullWidth>
+                <EuiFormRow 
+                    isInvalid={error.isError}
+                    error={error.errorMessage} 
+                    label={translate('INVITE BY EMAIL')}  fullWidth
+                >
                     <EuiFieldText icon={'email'} value={inviteMail}
                         placeholder="info@recroute.com"
                         fullWidth
-                        onChange={event => {setInviteMail(event.target.value)}}
+                        isInvalid={!!inviteMail && !validateEmail(inviteMail)}
+                        onChange={handleChange}
                     />
                 </EuiFormRow>
                 <div className={styles.shareButtons}>
