@@ -82,3 +82,23 @@ export type Question = {
 export type Category = {
   name: string;
 } & Basic;
+
+export type User = {
+  name: string,
+  email: string,
+  company: string,
+  profileImage: Buffer,
+  roles: ROLES[],
+  availableTimes: TimeSlot[],
+  isAdmin: boolean,
+} & Basic;
+
+export enum ROLES {
+  USER = "user",
+  ADMIN = "admin"
+}
+
+export interface TimeSlot {
+  startTime: Date,
+  durationInMins: number
+}
