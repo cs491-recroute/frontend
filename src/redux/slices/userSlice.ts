@@ -12,7 +12,7 @@ const initialState: UserState = {
         name: '',
         email: '',
         company: '',
-        profileImage: Buffer.from(''),
+        //profileImage: Buffer.from(''),
         roles: [],
         availableTimes: [],
         isAdmin: false}
@@ -21,7 +21,6 @@ const initialState: UserState = {
 export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
     async ({ newProps, userID }: { newProps: Partial<User>; userID?: string; }) => {
-        console.log(newProps)
         const { data: user } = await axios.put(`/api/user/updateUser`, newProps, { params: { userID } });
         return user;
     }

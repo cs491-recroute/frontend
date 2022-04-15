@@ -21,10 +21,10 @@ const ProfilePage: NextPage = () => {
     const dispatch = useAppDispatch();
     const user = useAppSelector(getUser);
 
-    let str;
+    /*let str;
     if(user.profileImage){
         str = Buffer.from(user.profileImage).toString('base64')
-    }
+    }*/
     
     const [editable, setEditable] = useState(false);
     const [newName, setNewName] = useState(user.name);
@@ -45,12 +45,6 @@ const ProfilePage: NextPage = () => {
                 <hr />
                 {editable ?
                     <div>
-                        <h1 className={styles.title2}>{translate('Profile Image :')}</h1>
-                        {user.profileImage ? 
-                            <img src={`data:'image/';base64,${str}`} width='150' height='150'></img>
-                            : <img src='/assets/profilePhoto.jpg' width='150' height='150'/>
-                        }
-
                         <h1 className={styles.title2}>{translate('User Name :')}</h1>
                         <EuiFieldText
                             className={styles.p}
@@ -75,12 +69,6 @@ const ProfilePage: NextPage = () => {
 
                     </div>
                     : <div>
-                        <h1 className={styles.title2}>{translate('Profile Image :')}</h1>
-                        {user.profileImage ? 
-                            <img src={`data:'image/';base64,${str}`} width='150' height='150'></img>
-                            : <img src='/assets/profilePhoto.jpg' width='150' height='150'/>
-                        }
-
                         <h1 className={styles.title2}>{translate('User Name :')}</h1>
                         <p className={styles.p}>{user.name}</p>
                         

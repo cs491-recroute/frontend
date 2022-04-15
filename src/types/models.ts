@@ -87,7 +87,7 @@ export type User = {
   name: string,
   email: string,
   company: string,
-  profileImage: Buffer,
+  //profileImage: Buffer,
   roles: ROLES[],
   availableTimes: TimeSlot[],
   isAdmin: boolean,
