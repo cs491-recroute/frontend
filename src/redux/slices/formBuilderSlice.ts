@@ -104,7 +104,6 @@ export const formBuilderSlice = createSlice({
                 state.currentForm.components.splice(index,1);
             })
             .addCase(updateComponentAsync.fulfilled, (state, action) => {
-                console.log(action.payload);
                 const { components } = state.currentForm;
                 const { _id: componentID } = action.payload;
                 const index = components.findIndex(component => component._id === componentID);
