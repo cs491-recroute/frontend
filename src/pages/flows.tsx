@@ -129,7 +129,11 @@ const FlowsPage: NextPage = () => {
                                         <a style={{color: 'black'}}>{translate('Edit')}</a>
                                     </Link>
                                 </EuiButtonEmpty>
-                                <EuiButtonEmpty style={{color: 'black'}}>{translate('Submissions')}</EuiButtonEmpty>
+                                <EuiButtonEmpty>
+                                    <Link href={`submissions/${flow._id}`}>
+                                        <a style={{color: 'black'}}>{translate('Submissions')}</a>
+                                    </Link>
+                                </EuiButtonEmpty>
                                 <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
                             </div>						
                         </Paper>

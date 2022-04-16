@@ -16,6 +16,13 @@
             border-top-color: $interviewColor;
         }
     }
+
+    &.submissionMode {
+        .card {
+            cursor: default;
+        }
+        width: 270px;
+    }
     position: relative;
 
     .builderIcon {

@@ -16,6 +16,7 @@ type StageCardProps = {
     name: string;
     id: string;
     stageID: string;
+    mode: 'edit' | 'submission'
 } & Stage;
 
 const stageIcons: { [key in STAGE_TYPE]: string } = {
@@ -24,7 +25,7 @@ const stageIcons: { [key in STAGE_TYPE]: string } = {
     [STAGE_TYPE.INTERVIEW]: 'indexEdit'
 };
 
-const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
+const StageCard = ({ type, name, id, stageID, mode }: StageCardProps) => {
     const dispatch = useAppDispatch();
     const onClick = () => dispatch(toggleRightPanel({ stageType: type, _id: id, stageID: stageID }));
     const { pushWithReturn } = useRouterWithReturnBack();
@@ -43,14 +44,19 @@ const StageCard = ({ type, name, id, stageID }: StageCardProps) => {
         }
     };
 
+    const layout = mode === 'edit' ? 'horizontal' : 'vertical';
     return (
-        <div className={styles.container}>
-            <BuildCircleIcon onClick={onClick} className={styles.builderIcon} />
-            <DeleteForever onClick={deleteStage} className={styles.deleteIcon} />
+        <div className={classNames(styles.container, { [styles.editMode]: mode === 'edit', [styles.submissionMode]: mode === 'submission' })}>
+            {mode === 'edit' && (
+                <>
+                    <BuildCircleIcon onClick={onClick} className={styles.builderIcon} />
+                    <DeleteForever onClick={deleteStage} className={styles.deleteIcon} />
+                </>
+            )}
 
             <EuiCard
-                onClick={goToBuilder}
-                layout='horizontal'
+                onClick={mode === 'edit' ? goToBuilder : undefined}
+                layout={layout as any}
                 className={classNames(styles.card, styles[type.toLowerCase()])}
                 icon={<EuiIcon size="xl" type={stageIcons[type]} />}
                 title={<div>{name}</div>}

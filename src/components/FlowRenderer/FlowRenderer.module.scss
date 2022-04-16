@@ -1,0 +1,117 @@
+@import '../../styles/global.scss';
+
+.container {
+  padding: 30px 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .addFormButton {
+    background-color: white;
+    min-width: 320px;
+    width: 15%;
+    padding: 16px;
+    border: 1px dashed black;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    
+    .text {      
+      font-size: 20px;
+      font-weight: bold;
+    }
+}
+ 
+.dummyArrow {
+    background-image: url("data:image/svg+xml,%3Csvg width='24' height='154' viewBox='0 0 24 154' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M13.5 2C13.5 1.17157 12.8284 0.5 12 0.5C11.1716 0.5 10.5 1.17157 10.5 2L13.5 2ZM10.9393 153.061C11.5251 153.646 12.4749 153.646 13.0607 153.061L22.6066 143.515C23.1924 142.929 23.1924 141.979 22.6066 141.393C22.0208 140.808 21.0711 140.808 20.4853 141.393L12 149.879L3.51471 141.393C2.92893 140.808 1.97918 140.808 1.39339 141.393C0.807606 141.979 0.807606 142.929 1.39339 143.515L10.9393 153.061ZM10.5 2L10.5 152L13.5 152L13.5 2L10.5 2Z' fill='black'/%3E%3C/svg%3E%0A");
+    background-size: auto cover;
+    background-position: bottom;
+    background-repeat: no-repeat;
+    min-height: 50px;
+    width: 50px;
+  }
+
+  .newStage {
+    min-height: 60px;
+    width: 420px;
+    background-color: white;
+    display: flex;
+    align-items: stretch;
+    justify-content: space-around;
+    border-style: dashed;
+    border-radius: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    & > div {
+      padding: 10px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-color: rgb(52, 55, 65);
+
+      &:not(:last-child) {
+        border-right-style: dashed;
+      }
+
+      &.new {
+        &.form {
+          color: $formColor;
+          &:hover {
+            background-color: lighten($formColor, 20%);
+            color: white;
+          }
+        }
+
+        &.test {
+          color: $testColor;
+          &:hover {            
+            background-color: lighten($testColor, 20%);
+            color: white;
+          }
+        }
+
+        &.interview {
+          color: $interviewColor;
+          &:hover {            
+            background-color: lighten($interviewColor, 20%);
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  .applicantCount {
+    position: absolute;
+    z-index: 1000;
+    right: 20px;
+    background-color: #666;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+
+    &.top {
+      top: -15px;
+    }
+
+    &.bottom {
+      bottom: -20px;
+    }
+
+    &:hover {
+      background-color: lighten(#666, 10%);
+    }
+  }
+}
