@@ -10,7 +10,7 @@ const submitTest: NextApiHandler = async (request, response) => {
     const { testID, applicantID } = request.query;
     const answers = request.body;
 
-    const result = [];
+    const result = {} as { [key: string]: any };
     for (let index = 0; index < answers.length; index++) {
         const { questionID, answer, language } = answers[index];
         const { data: question }: AxiosResponse<Question> = await gatewayManager.useService(SERVICES.FLOW).get(`/question/${questionID}`);
@@ -63,12 +63,12 @@ const submitTest: NextApiHandler = async (request, response) => {
             }
             default:
         }
-        result.push({
+        result[questionID] = {
             questionID,
             value: answer,
             grade: Math.floor(grade),
             ...additionalProps
-        });
+        };
     }
     try {
         await gatewayManager.useService(SERVICES.FLOW).post(`/test/${testID}/submission/${applicantID}`, { questionSubmissions: result });

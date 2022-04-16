@@ -63,7 +63,10 @@ const FormContent = ({ form, editMode, userIdentifier, withEmail }: FormContentP
             })
             return;
         }
-        const formData = answers.map(({ componentID, answer, type }) => ({ componentID, value: (type !== ComponentTypes.upload) ? (answer || undefined) : undefined }));
+        const formData = answers.reduce((acc, { componentID, answer, type }) => {
+            acc[componentID] = { componentID, value: (type !== ComponentTypes.upload) ? (answer || undefined) : undefined };
+            return acc;
+        }, {} as { [key: string]: { componentID: string, value: any } });
         const filesMap = answers.filter(({ type }) => (type === ComponentTypes.upload));
         const body = new FormData();
         const formDataStr = JSON.stringify({ componentSubmissions: formData });
