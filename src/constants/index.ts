@@ -12,7 +12,7 @@ import SingleChoice from '../components/FormComponents/SingleChoice';
 import MultipleChoice from '../components/FormComponents/MultipleChoice';
 import { ReactElement } from 'react';
 
-import { ComponentTypes, Component} from '../types/models';
+import { ComponentTypes, Component } from '../types/models';
 import { translate } from '../utils';
 import { STAGE_TYPE } from './../types/enums';
 export const MAIN_PAGE = '/flows';
@@ -31,7 +31,7 @@ export const STAGE_PROPS = {
     [STAGE_TYPE.INTERVIEW]: {} as any
 }
 
-export type ComponentRef = { answer: any; invalid: boolean, triggerError: () => void };
+export type ComponentRef = { answer: any, invalid: boolean, triggerError: () => void, type?: ComponentTypes };
 
 export const COMPONENT_MAPPINGS: Record<any, {
     text: string;
