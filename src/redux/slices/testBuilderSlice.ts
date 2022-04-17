@@ -103,6 +103,14 @@ export const getPoolQuestionsAsync = createAsyncThunk(
     }
 );
 
+export const saveAsTemplateAsync = createAsyncThunk(
+    'test/saveAsTemplate',
+    async (questionData: Partial<Question>) => {
+        const { data: question } = await axios.post(`/api/questions/saveAsTemplate`, questionData);
+        return question;
+    }
+);
+
 export const testBuilderSlice = createSlice({
     name: 'testBuilder',
     initialState,
@@ -147,6 +155,9 @@ export const testBuilderSlice = createSlice({
             })
             .addCase(getPoolQuestionsAsync.fulfilled, (state, action) => {
                 state.questions = action.payload;
+            })
+            .addCase(saveAsTemplateAsync.fulfilled, (state, action) => {
+                state.questions.push(action.payload);
             });
     }
 });

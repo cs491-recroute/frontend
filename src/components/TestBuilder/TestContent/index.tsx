@@ -16,6 +16,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import SuccessIcon from '@mui/icons-material/CheckCircle';
 import { EuiText } from '@elastic/eui';
 import DeleteIcon from '@mui/icons-material/Delete';
+import SaveAsTemplateButton from '../../SaveAsTemplateButton';
 
 type TestContentProps = {
     test: Test;
@@ -120,6 +121,7 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
                     {editMode && <IconButton  className={styles.deleteButton} onClick={() => handleQuestionDelete(question._id)}>
                         <DeleteIcon />
                     </IconButton>}
+                    {editMode && <SaveAsTemplateButton question={question}/>}
                     <hr />
                 </div>;
             })}

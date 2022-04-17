@@ -77,6 +77,7 @@ export type Question = {
   options?: ({ description: string; isCorrect: boolean; } & Partial<Basic>)[];
   testCases?: ({ input: string; output: string; points: number } & Partial<Basic>)[],
   points?: number;
+  categoryID: string;
 } & Basic;
 
 export type Category = {
