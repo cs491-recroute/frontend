@@ -1,6 +1,6 @@
 import { EuiButton, EuiCollapsibleNav, EuiText } from '@elastic/eui';
-import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
-import React, { useCallback, useRef, useState } from 'react';
+import { List, ListItem, ListItemButton } from '@mui/material';
+import React, { useCallback, useState } from 'react';
 import { addQuestionAsync, isLeftPanelOpen, toggleLeftPanel, getMyQuestionsAsync, getQuestions, getCategoriesAsync, getCategories, getPoolQuestionsAsync} from '../../../redux/slices/testBuilderSlice';
 import { translate } from '../../../utils';
 import { useAppSelector, useAppDispatch } from '../../../utils/hooks';
@@ -8,11 +8,9 @@ import styles from './LeftPanel.module.scss';
 import { QUESTION_MAPPINGS } from '../Questions/constants';
 import { Question } from './../../../types/models';
 import { Tabs, Tab } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import PreviewQuestionModal, { PreviewQuestionModalRef } from '../../PreviewQuestionModal';
+import PreviewQuestionButton from '../../PreviewQuestionButton';
 
 const LeftPanel = () => {
-    const previewQuestionRef = useRef<PreviewQuestionModalRef>(null);
     const [activeTab, setActiveTab] = useState(0);
     const dispatch = useAppDispatch();
     const isOpen = useAppSelector(isLeftPanelOpen);
@@ -71,11 +69,7 @@ const LeftPanel = () => {
                             disablePadding 
                             divider
                         >
-                            <ListItemButton className={styles.item} >
-                                <ListItemText onClick={handleBasicSelect(question)} primary={question.description}/>
-                                <VisibilityIcon onClick={() => previewQuestionRef.current?.open()}/>
-                            </ListItemButton>
-                            <PreviewQuestionModal question={question} ref={previewQuestionRef} />
+                            <PreviewQuestionButton question={question}/>
                         </ListItem>
                     ))}
                 </List>            }
@@ -104,11 +98,7 @@ const LeftPanel = () => {
                     disablePadding 
                     divider
                 >
-                    <ListItemButton className={styles.item}  >
-                        <ListItemText onClick={handleBasicSelect(question)} primary={question.description}/>
-                        <VisibilityIcon onClick={() => previewQuestionRef.current?.open()}/>
-                    </ListItemButton>
-                    <PreviewQuestionModal question={question} ref={previewQuestionRef} />
+                    <PreviewQuestionButton question={question}/>
                 </ListItem>
             ))}
         </List> 
