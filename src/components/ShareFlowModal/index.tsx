@@ -16,7 +16,11 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
     const [inviteMail, setInviteMail] = useState('');
     const [isOpen, setOpen] = useState(false);
     const [copyLinkClicked, setCopyLinkClicked] = useState(false);
-    const [sendInviteClicked, setSendInviteClicked] = useState(false);
+    const [sendInviteClicked, setSendInviteClicked] = useState({
+        finished: false,
+        success: false,
+        message: ''
+    });
     const [error, setError] = useState({
         isError: false,
         errorMessage: 'Invalid input'
@@ -25,7 +29,11 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
     const close = () => {
         setOpen(false);
         setCopyLinkClicked(false);
-        setSendInviteClicked(false);
+        setSendInviteClicked({
+            finished: false,
+            success: false,
+            message: ''
+        });
     }
     const open = () => {
         setOpen(true);
@@ -39,12 +47,24 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                 const res = await axios.post(`/api/flows/${flow._id}/inviteMail`, {
                     mail: inviteMail
                 });
-                setSendInviteClicked(true);
-                setTimeout(setSendInviteClicked, 3000);
-                setInviteMail('');
+                setSendInviteClicked({
+                    finished: true,
+                    success: true,
+                    message: 'Email was sent successfully'
+                });
             } catch ({ response: { data }}: any) {
-                const res = data as string;
+                setSendInviteClicked({
+                    finished: true,
+                    success: false,
+                    message: data as any
+                });
             }
+            setTimeout(() => setSendInviteClicked({
+                finished: false,
+                success: false,
+                message: ''
+            }), 3000);
+            setInviteMail('');
         }else{
             setError({ isError: true, errorMessage: 'Invalid email' });
         }
@@ -81,7 +101,7 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                 </EuiFormRow>
                 <div className={styles.shareButtons}>
                     <EuiFormRow>  
-                        <p className={styles.feedbackText}>{copyLinkClicked && translate('Link Copied!')}</p>
+                        <p className={styles.successFeedbackText}>{copyLinkClicked && translate('Link Copied!')}</p>
                     </EuiFormRow>
                     <EuiFormRow>
                         <EuiButton onClick={handleCopyLink} fill>
@@ -109,7 +129,7 @@ const ShareFlowModal = forwardRef<ShareFlowModalRef, ShareFlowModalProps>(({flow
                 </EuiFormRow>
                 <div className={styles.shareButtons}>
                     <EuiFormRow>  
-                        <p className={styles.feedbackText}>{sendInviteClicked && translate('Email was sent!')}</p>
+                        <p className={sendInviteClicked.success ? styles.successFeedbackText : styles.unsuccessFeedbackText}>{sendInviteClicked.finished && sendInviteClicked.message}</p>
                     </EuiFormRow>
                     <EuiFormRow>  
                         <EuiButton onClick={handleSendInvite} fill>
