@@ -1,4 +1,4 @@
-import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle} from '@elastic/eui';
+import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
 import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { getCategories, saveAsTemplateAsync } from '../../redux/slices/testBuilderSlice';
 import { Question } from '../../types/models';
@@ -10,11 +10,11 @@ type SaveAsTemplateModalProps = {
     question: Question;
 }
 
-type CategoryOption = EuiComboBoxOptionOption<{name: string; categoryID: string;}>;
+type CategoryOption = EuiComboBoxOptionOption<{ name: string; categoryID: string; }>;
 
 export type SaveAsTemplateModalRef = { close: () => void, open: () => void };
 
-const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateModalProps>(({question}, ref)  => {
+const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateModalProps>(({ question }, ref) => {
     const dispatch = useAppDispatch();
     const categoryOptions = useAppSelector(getCategories);
     const [options, setOptions] = useState([] as CategoryOption[]);
@@ -35,34 +35,34 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
     useEffect(() => {
         const newOptions = categoryOptions.map<CategoryOption>(({ _id, name }) => ({
             label: name,
-            name,
-            categoryID: _id}));
+            value: { name: name, categoryID: _id }
+        }));
         setOptions(newOptions);
     }, [categoryOptions]);
 
     const onChange = (selectedOpts: CategoryOption[]) => {
         setSelectedOptions(selectedOpts as CategoryOption[]);
     };
-    
-    const handleSaveButton = async() => {
-        if(!questionName && !(selectedOptions.length === 1)){
+
+    const handleSaveButton = async () => {
+        if (!questionName && !(selectedOptions.length === 1)) {
             setNameError({ isError: true, errorMessage: 'Please enter the name' });
             setCategoryError({ isError: true, errorMessage: 'Please select the category' });
-        }else if(!questionName){
+        } else if (!questionName) {
             setNameError({ isError: true, errorMessage: 'Please enter the name' });
             setCategoryError({ isError: false, errorMessage: '' });
-        }else if(!(selectedOptions.length === 1)){
+        } else if (!(selectedOptions.length === 1)) {
             setCategoryError({ isError: true, errorMessage: 'Please select the category' });
             setNameError({ isError: false, errorMessage: '' });
-        }else{
+        } else {
             setNameError({ isError: false, errorMessage: '' });
             setCategoryError({ isError: false, errorMessage: '' });
-            const newQ = {...question};
-            newQ.categoryID = selectedOptions[0].categoryID;
+            const newQ = { ...question };
+            newQ.categoryID = selectedOptions[0].value?.categoryID ? selectedOptions[0].value?.categoryID : '';
             const response = await dispatch(saveAsTemplateAsync(newQ));
             setSendButtonClicked(true);
             setTimeout(setSendButtonClicked, 2000);
-            if(response.type.search('fulfilled') === -1){
+            if (response.type.search('fulfilled') === -1) {
                 //rejected
                 setSendSuccessful(false);
             } else {
@@ -92,22 +92,22 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
             </EuiModalHeader>
 
             <EuiModalBody>
-                <EuiFormRow 
+                <EuiFormRow
                     isInvalid={nameError.isError}
-                    error={nameError.errorMessage}   
-                    label={translate('QUESTION NAME')} 
+                    error={nameError.errorMessage}
+                    label={translate('QUESTION NAME')}
                     fullWidth
                 >
-                    <EuiFieldText 
+                    <EuiFieldText
                         value={questionName}
-                        placeholder="Enter the question name" 
+                        placeholder="Enter the question name"
                         fullWidth
                         onChange={event => setQuestionName(event.target.value)}
                     />
                 </EuiFormRow>
                 <EuiFormRow
                     isInvalid={categoryError.isError}
-                    error={categoryError.errorMessage}                       
+                    error={categoryError.errorMessage}
                     label={translate('CATEGORY')}
                     fullWidth
                 >
@@ -119,14 +119,14 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
                         options={options}
                         selectedOptions={selectedOptions}
                         onChange={onChange}
-                        
+
                     />
                 </EuiFormRow>
                 <div className={styles.saveButton}>
-                    <EuiFormRow>  
+                    <EuiFormRow>
                         <p className={styles.successfulFeedbackText}>{sendButtonClicked && sendSuccessful && translate('Saved Succesfully')}</p>
                     </EuiFormRow>
-                    <EuiFormRow>  
+                    <EuiFormRow>
                         <p className={styles.feedbackText}>{sendButtonClicked && !sendSuccessful && translate('Unseccessful Save')}</p>
                     </EuiFormRow>
                     <EuiFormRow fullWidth>
