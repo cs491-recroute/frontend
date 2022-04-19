@@ -121,7 +121,7 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
                     {editMode && <IconButton  className={styles.deleteButton} onClick={() => handleQuestionDelete(question._id)}>
                         <DeleteIcon />
                     </IconButton>}
-                    {editMode && <SaveAsTemplateButton question={question}/>}
+                    {editMode && <SaveAsTemplateButton question={question} className={styles.saveButton}/>}
                     <hr />
                 </div>;
             })}

@@ -1,4 +1,3 @@
-import { EuiButtonEmpty } from '@elastic/eui';
 import { IconButton } from '@mui/material';
 import React, { useRef } from 'react';
 import { getCategoriesAsync } from '../../redux/slices/testBuilderSlice';
@@ -6,13 +5,13 @@ import { Question } from '../../types/models';
 import { useAppDispatch } from '../../utils/hooks';
 import SaveAsTemplateModal, { SaveAsTemplateModalRef } from '../SaveAsTemplateModal';
 import SaveIcon from '@mui/icons-material/Save';
-import styles from './SaveAsTemplateButton.module.scss';
 
 type SaveAsTemplateButtonProps = {
-    question: Question
+    question: Question,
+    className: string;
 };
 
-const SaveAsTemplateButton = ({ question }: SaveAsTemplateButtonProps) => {
+const SaveAsTemplateButton = ({ question, className }: SaveAsTemplateButtonProps) => {
     const saveAsTemplateRef = useRef<SaveAsTemplateModalRef>(null);
     const dispatch = useAppDispatch();
 
@@ -23,7 +22,7 @@ const SaveAsTemplateButton = ({ question }: SaveAsTemplateButtonProps) => {
 
     return (
         <>
-            <IconButton className={styles.saveButton} onClick={handleSaveClick}>
+            <IconButton className={className} onClick={handleSaveClick}>
                 <SaveIcon />
             </IconButton>
             <SaveAsTemplateModal question={question} ref={saveAsTemplateRef}/>
