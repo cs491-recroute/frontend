@@ -87,11 +87,10 @@ export type Category = {
 export type User = {
   name: string,
   email: string,
-  company: string,
+  company: { name: string, isLinked: boolean },
   //profileImage: Buffer,
   roles: ROLES[],
-  availableTimes: TimeSlot[],
-  isAdmin: boolean,
+  availableTimes: TimeSlot[]
 } & Basic;
 
 export enum ROLES {
