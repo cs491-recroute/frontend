@@ -12,8 +12,8 @@ let useServiceInterceptor: number;
 gatewayManager.useService = (service: SERVICES): GatewayManager => {
     if (useServiceInterceptor) gatewayManager.interceptors.request.eject(useServiceInterceptor);
     useServiceInterceptor = gatewayManager.interceptors.request.use(req => {
-        const endpoint = process.env[`${SERVICES[service]}_RUNNING`] ? 'localhost' : '92.205.57.121';
-        const prefix = `http://${endpoint}:${service}`;
+        const endpoint = process.env[`${SERVICES[service]}_RUNNING`] ? 'localhost' : 'recroute.co';
+        const prefix = `https://${endpoint}:${service}`;
         if (!req.url?.startsWith(prefix)) req.url = prefix + req.url;
         return req;
     });
@@ -26,7 +26,7 @@ gatewayManager.addUser = (request: NextApiRequest, response: NextApiResponse): G
     if (addUserInterceptor) gatewayManager.interceptors.request.eject(addUserInterceptor);
     addUserInterceptor = gatewayManager.interceptors.request.use(req => {
         if (user) {
-            req.params = { ...req.params, userID: getUserID(user)};
+            req.params = { ...req.params, userID: getUserID(user) };
         }
         return req;
     });
