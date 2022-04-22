@@ -29,6 +29,7 @@ export const ALLOWED_EDITORS = {
     [ComponentTypes.fullName]: ['titles', 'placeholders', 'required'],
     [ComponentTypes.multipleChoice]: ['title', 'options', 'required'],
     [ComponentTypes.phone]: ['title', 'placeholder', 'required'],
+    [ComponentTypes.number]: ['title', 'placeholder', 'required'],
     [ComponentTypes.singleChoice]: ['title', 'options', 'required'],
     [ComponentTypes.upload]: ['title', 'placeholder', 'required'],
     [ComponentTypes.email]: ['title', 'placeholder', 'required']

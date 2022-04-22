@@ -1,5 +1,6 @@
 .leftPanel {
   padding: 4px 0;
+  overflow-y: auto;
   .title {
   margin-left: 14px;
   font-size: 20px;
@@ -7,11 +8,11 @@
   }
 
   hr {
-      margin: 14px;
+      margin-top: 14px;
   }
 
   .item {
-    height: 43px;
+    height: 41px;
   }
   
 }

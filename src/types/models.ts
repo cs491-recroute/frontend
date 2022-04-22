@@ -42,7 +42,8 @@ export enum ComponentTypes {
   shortText = "shortText",
   singleChoice = "singleChoice",
   upload = "upload",
-  email = "email"
+  email = "email",
+  number = "number"
 }
 
 export type Option = {
@@ -91,6 +92,10 @@ export type User = {
   //profileImage: Buffer,
   roles: ROLES[],
   availableTimes: TimeSlot[]
+} & Basic;
+
+export type Interviewer ={
+  name: string
 } & Basic;
 
 export enum ROLES {

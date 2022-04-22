@@ -5,6 +5,7 @@ import DatePicker from '../components/FormComponents/DatePicker';
 import DropDown from '../components/FormComponents/DropDown';
 import FullName from '../components/FormComponents/FullName';
 import Header from '../components/FormComponents/Header';
+import Number from '../components/FormComponents/Number';
 import Phone from '../components/FormComponents/Phone';
 import Upload from '../components/FormComponents/Upload';
 import Email from '../components/FormComponents/Email';
@@ -59,6 +60,17 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.longText,
             required: false,
             title: 'Please enter',
+            placeholder: 'Enter your answer'
+        }
+    },
+    [ComponentTypes.number]: {
+        text: translate('Number'),
+        type: ComponentTypes.number,
+        Renderer: Number,
+        defaultProps: {
+            type: ComponentTypes.number,
+            required: false,
+            title: 'Please enter a number',
             placeholder: 'Enter your answer'
         }
     },
