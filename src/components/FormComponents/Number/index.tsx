@@ -34,7 +34,7 @@ const Number = forwardRef(({ required, title, placeholder, editMode }: NumberPro
     >
         <EuiFieldText 
             fullWidth
-            disabled={false} 
+            disabled={editMode} 
             required={required} 
             placeholder={placeholder}
             value={answer}
