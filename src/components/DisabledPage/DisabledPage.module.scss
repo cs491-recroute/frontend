@@ -6,18 +6,25 @@
     height: calc(100%);
     
     .disableDiv{
-        background-color: lightgray;
+        background: rgba(128,128,128,0.7);
         z-index: 10;
         position: absolute;
         top:0px;
         right:0px;
         bottom:0px;
         left:0px;
-        opacity: 0.8;
+        opacity: 1;
         overflow-y: hidden;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         .container{
+            margin-top: 65px;
             width: 500px;
             .card {
+                border-width: 3px;
+                border-color: red;
+                border-style: groove;
                 border-color: red;
                 z-index: 10;
                 position: relative;
