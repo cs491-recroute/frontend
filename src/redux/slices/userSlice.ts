@@ -24,8 +24,8 @@ const initialState: UserState = {
 
 export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
-    async ({ newProps, userID }: { newProps: Partial<User>; userID?: string; }) => {
-        const { data: user } = await axios.put(`/api/user/updateUser`, newProps, { params: { userID } });
+    async  (newProps: {name: string, value: string} )  => {
+        const { data: user } = await axios.put(`/api/user/updateUser`, newProps);
         return user;
     }
 );
@@ -49,11 +49,9 @@ export const userSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(updateUserAsync.fulfilled, (state, action) => {
-                console.log(action.payload);
-                state.user = action.payload;
+                state.user.name = action.payload.name;
             })
             .addCase(getUserAsync.fulfilled, (state, action) => {
-                console.log(action.payload);
                 state.user = action.payload;
             });
     }

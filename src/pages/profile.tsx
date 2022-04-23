@@ -32,7 +32,7 @@ const ProfilePage: NextPage = () => {
             name: 'name',
             value: newName
         }
-        dispatch(updateUserAsync({ newProps, userID: user._id }));
+        dispatch(updateUserAsync( newProps ));
         setEditable(false);
     }
 
@@ -59,9 +59,9 @@ const ProfilePage: NextPage = () => {
 
                         <h1 className={styles.title2}>{translate('User Roles :')}</h1>
                         {user.roles.length === 0 ? <p className={styles.p}>{translate('No Roles Assigned')}</p>
-                            : user.roles.map((role: string) => {
-                                <p className={styles.p}>{role}</p>
-                            })}
+                            : user.roles.map((role: string) => (
+                                <p key={role} className={styles.p}>{role}</p>
+                            ))}
 
                         <EuiButton className={styles.button} onClick={() => handleSave()}>{translate('Save')}</EuiButton>
 
@@ -74,13 +74,15 @@ const ProfilePage: NextPage = () => {
                         <p className={styles.p}>{user.email}</p>
 
                         <h1 className={styles.title2}>{translate('Company :')}</h1>
-                        <p className={styles.p}>{user.company}</p>
+                        <p className={styles.p}>{user.company.name}</p>
 
                         <h1 className={styles.title2}>{translate('User Roles :')}</h1>
                         {user.roles.length === 0 ? <p className={styles.p}>{translate('No Roles Assigned')}</p>
-                            : user.roles.map((role: string) => {
-                                <p className={styles.p}>{role}</p>
-                            })}
+                            : user.roles.map((role: string) => (
+                                <p key={role} className={styles.p}>{role}</p>
+                            ))}
+
+                        <h1 className={styles.title2}>{translate('User Available Times :')}</h1>
 
                         <EuiButton className={styles.button} onClick={() => setEditable(true)}>{translate('Edit')}</EuiButton>
                     </div>
@@ -89,6 +91,7 @@ const ProfilePage: NextPage = () => {
         )
     }
     return null;
+    
 };
 
 export default ProfilePage;

@@ -193,7 +193,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                             <tbody>
                                 <tr>
                                     <th className={styles.th1}>
-                                        <p className={styles.input}>{interviewerName}</p>
+                                        <p key={interviewerName} className={styles.input}>{interviewerName}</p>
                                     </th>
                                     <th>
                                         <button
