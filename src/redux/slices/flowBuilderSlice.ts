@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { STAGE_TYPE } from '../../types/enums';
-import { Flow } from '../../types/models';
+import { Flow, Interviewer } from '../../types/models';
 import type { AppState } from '../store';
 
 export interface FlowBuilderState {
@@ -75,7 +75,7 @@ export const updateFlowTitleAsync = createAsyncThunk(
 
 export const updateInterviewAsync = createAsyncThunk(
     'flow/updateInterview',
-    async (interviewData: { interviewLengthInMins: number }, { getState }) => {
+    async (interviewData: { interviewLengthInMins: number, interviewers: Interviewer[] }, { getState }) => {
         const { flowBuilder: { ui: { rightPanelStatus: { stageID: interviewID } = {} } } } = getState() as AppState;
         const { data: interview } = await axios.put(`/api/interviews/${interviewID}`, {
             ...interviewData

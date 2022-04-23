@@ -8,6 +8,7 @@ import testBuilderSlice from './slices/testBuilderSlice';
 import globalSlice from './slices/globalSlice';
 import userSlice from './slices/userSlice';
 import submissionsSlice from './slices/submissionsSlice';
+import interviewersSlice from './slices/interviewersSlice';
 
 const combinedReducer = combineReducers({
     formBuilder: formBuilderSlice,
@@ -16,7 +17,8 @@ const combinedReducer = combineReducers({
     testBuilder: testBuilderSlice,
     global: globalSlice,
     user: userSlice,
-    submissions: submissionsSlice
+    submissions: submissionsSlice,
+    interviewers: interviewersSlice
 });
 
 const reducer = (state: ReturnType<typeof combinedReducer> | undefined, action: AnyAction) => {
