@@ -87,8 +87,26 @@ export const submissionsSlice = createSlice({
                 state.loading = true;
             })
             .addCase(applicantNextStageAsync.fulfilled, (state, action) => {
-                const id = action.payload;
                 state.loading = false;
+                const id = action.payload;
+
+                const movedStageIndex = state.applicants.find(e => e.id === id)?.stageIndex;
+                state.metadata.stageCounts = state.metadata.stageCounts.map((info: any) => {
+                    const { stageIndex, completed, count } = info;
+                    if (stageIndex === movedStageIndex && completed) {
+                        return {
+                            ...info,
+                            count: count - 1
+                        }
+                    } else if (stageIndex === movedStageIndex + 1 && !completed) {
+                        return {
+                            ...info,
+                            count: count + 1
+                        }
+                    }
+                    return info;
+                })
+
                 if (state.queries.stageIndex !== undefined) {
                     state.applicants = state.applicants.filter(e => e.id !== id);
                 } else {
