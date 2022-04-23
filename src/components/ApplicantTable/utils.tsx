@@ -5,6 +5,13 @@ import { Button } from '@mui/material';
 import TaskIcon from '@mui/icons-material/Task';
 import SendIcon from '@mui/icons-material/Send';
 import { translate } from '../../utils';
+import styled from 'styled-components';
+
+const Cell = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+`;
 
 const getQuestionCell = (questionType: QUESTION_TYPES, props: any) => {
     switch (questionType) {
@@ -44,9 +51,9 @@ const getCellRenderer = (stageType: STAGE_TYPE, cellType: QUESTION_TYPES | Compo
                 break;
             }
         }
-        return <div title={text}>
+        return <Cell title={text}>
             {text}
-        </div>;
+        </Cell>;
     };
     Component.displayName = 'CellRenderer';
     return Component;
@@ -65,35 +72,38 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, onNextClick }: ge
             accessor: 'id',
             Cell: ({ value: id, row: { original } }: any) => {
                 if (!original?.stageCompleted) return null;
+                const finishingState = original?.stageIndex + 1 === flow.stages.length;
                 return <Button 
-                    variant="outlined" 
+                    variant="outlined"
+                    color={finishingState ? 'success' : 'info'}
                     endIcon={<SendIcon />}
                     onClick={() => {
                         onNextClick(id);
                     }}
                     fullWidth
                 >
-                    {translate('NEXT')}
+                    {translate(finishingState ? 'APPROVE' : 'NEXT')}
                 </Button>;
             }
         },
         {
             Header: 'Primary Email',
-            accessor: 'email'
+            accessor: 'email',
+            Cell: ({ value: email }: any) => <Cell title={email}>{email}</Cell>
         },
         {
             Header: 'Current Stage',
             accessor: 'stageIndex',
             Cell: ({ row: { original } }: any) => {
-                if (original.stageIndex === flow.stages.length) return <div>
-                    <b style={{ color: 'green' }}>{translate('Finished')}</b>
-                </div>;
+                if (original.stageIndex === flow.stages.length) return <Cell>
+                    <b style={{ color: 'green' }}>{translate('Approved')}</b>
+                </Cell>;
                 const { stageProps } = flow.stages[original.stageIndex];
-                return <div style={{ display: 'flex', alignItems: 'center' }} title={`${stageProps.name}${original.stageCompleted ? ' (Completed)' : ''}`}>
+                return <Cell style={{ display: 'flex', alignItems: 'center' }} title={`${stageProps.name}${original.stageCompleted ? ' (Completed)' : ''}`}>
                     {stageProps.name}
                     <span style={{ width: 5 }} />
                     {original.stageCompleted && <TaskIcon />}
-                </div>
+                </Cell>
             }
         }
     ];
