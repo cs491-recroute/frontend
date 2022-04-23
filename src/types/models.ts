@@ -72,6 +72,12 @@ export type Test = {
   flowID: string;
 } & Basic;
 
+export type Interview = {
+  name: string;
+  interviewLengthInMins: number;
+  breakLengthInMins: number;
+} & Basic;
+
 export type Question = {
   description: string;
   type: QUESTION_TYPES;

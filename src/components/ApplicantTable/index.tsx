@@ -1,46 +1,50 @@
-import React from 'react';
-import { useTable } from 'react-table';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper } from '@mui/material';
+/* eslint-disable react/jsx-key */
+import React, { useEffect, useMemo } from 'react';
+import { useTable, useSortBy } from 'react-table';
+import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, IconButton } from '@mui/material';
+import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries} from '../../redux/slices/submissionsSlice';
+import { useAppDispatch, useAppSelector } from '../../utils/hooks';
+import { getColumns } from './utils';
+import ArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import ArrowUp from '@mui/icons-material/KeyboardArrowUp';
+import ClearIcon from '@mui/icons-material/Clear';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}, &.${tableCellClasses.body}`]: {
+        maxWidth: 150,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+    }
+}));
 
 const ApplicantTable = () => {
-    const data = React.useMemo(() => [
-        {
-            col1: 'Hello',
-            col2: 'World'
-        },
-        {
-            col1: 'react-table',
-            col2: 'rocks'
-        },
-        {
-            col1: 'whatever',
-            col2: 'you want'
-        }
-    ], []);
+    const dispatch = useAppDispatch();
+    const currentFlow = useAppSelector(getCurrentFlow);
+    const data = useAppSelector(getApplicants);
+    const queries = useAppSelector(getQueries);
 
-    const columns = React.useMemo(() => [
-        {
-            Header: 'Column 2',
-            accessor: 'col1'
-        },
-        {
-            Header: 'Column 2',
-            accessor: 'col2'
-        }
-    ] as const, []);
+    useEffect(() => {
+        dispatch(fetchSubmissionsAsync());
+    }, [queries]);
+
+    const columns: any[] = useMemo(() => getColumns(currentFlow), [currentFlow]);
 
     const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
 
     return <TableContainer component={Paper} style={{ margin: 20 }}>
         <Table {...getTableProps()}>
             <TableHead>
-                {headerGroups.map(headerGroup => (
+                {headerGroups.map((headerGroup, index) => (
                     <TableRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                        {headerGroup.headers.map(column => (
-                            <TableCell {...column.getHeaderProps()} key={column.id}>
+                        {headerGroup.headers.map(column => {
+                            return <StyledTableCell {...column.getHeaderProps()} key={column.id}>
                                 {column.render('Header')}
-                            </TableCell>
-                        ))}
+                                {!!index && <IconButton size='small' disabled>
+                                    <ArrowUp/>    
+                                </IconButton>}
+                            </StyledTableCell>
+                        })}     
                     </TableRow>
                 ))}
             </TableHead>
@@ -51,9 +55,9 @@ const ApplicantTable = () => {
                         <TableRow {...row.getRowProps()} key={row.id}>
                             {row.cells.map(cell => {
                                 return (
-                                    <TableCell {...cell.getCellProps()} key={cell.toString()}>
+                                    <StyledTableCell {...cell.getCellProps()}>
                                         {cell.render('Cell')}
-                                    </TableCell>
+                                    </StyledTableCell>
                                 );
                             })}
                         </TableRow>

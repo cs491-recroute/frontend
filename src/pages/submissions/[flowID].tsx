@@ -11,22 +11,34 @@ import { MAIN_PAGE } from '../../constants';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import {
     getCurrentFlow,
-    setCurrentFlow
+    setCurrentFlow,
+    getStageCounts,
+    setStageFilter,
+    resetStageFilter,
+    getActiveStageFilter,
+    getLoading
 } from '../../redux/slices/submissionsSlice';
 import { wrapper } from '../../redux/store';
 import FlowRenderer from '../../components/FlowRenderer';
 import styles from '../../styles/Submissions.module.scss';
 import ApplicantTable from '../../components/ApplicantTable';
+import { Box, LinearProgress } from '@mui/material';
 
 const SubmissionsPage: NextPage = () => {
     const dispatch = useAppDispatch();
+    const activeStageFilter = useAppSelector(getActiveStageFilter);
+    const loading = useAppSelector(getLoading);
     const { stages, conditions, name } = useAppSelector(getCurrentFlow);
+    const stageCounts = useAppSelector(getStageCounts);
 
     return (
         <>
             <Head>
                 <title>{`${translate('Submissions')} | ${name}`}</title>
             </Head>
+            {loading && <Box style={{ position: 'fixed', width: '100%', top: 60 }}>
+                <LinearProgress/>
+            </Box>}
             <div className={styles.container}>
                 <FlowRenderer
                     stages={stages}
@@ -34,22 +46,10 @@ const SubmissionsPage: NextPage = () => {
                     className={styles.flowRenderer}
                     mode='submission'
                     additionalProps={{
-                        applicantCounts: [{
-                            stageIndex: 0,
-                            completed: false,
-                            count: 5
-                        },
-                        {
-                            stageIndex: 0,
-                            completed: true,
-                            count: 3
-                        },
-                        {
-                            stageIndex: 1,
-                            completed: true,
-                            count: 1
-                        }
-                        ]
+                        applicantCounts: stageCounts,
+                        setStageFilter: (stageIndex, stageCompleted) => dispatch(setStageFilter({stageIndex, stageCompleted})),
+                        resetStageFilter: () => dispatch(resetStageFilter()),
+                        activeStageFilter
                     }}
                 />
                 <ApplicantTable />

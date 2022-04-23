@@ -17,7 +17,13 @@ type AdditionalProps<T> = T extends 'edit' ? {
         stageIndex: number,
         completed: boolean,
         count: number
-    }[]
+    }[],
+    setStageFilter: (stageIndex: number, stageCompleted: boolean) => void,
+    resetStageFilter: () => void,
+    activeStageFilter: {
+        stageIndex: number,
+        stageCompleted: boolean
+    }
 };
 type FlowRendererProps<T> = {
     stages: Stage[];
@@ -35,6 +41,9 @@ function FlowRenderer<T extends mode>({
     additionalProps
 }: FlowRendererProps<T>): JSX.Element {
     const applicantCounts = useMemo(() => (additionalProps as AdditionalProps<'submission'>).applicantCounts || [], [additionalProps]);
+    const setStageFilter = useMemo(() => (additionalProps as AdditionalProps<'submission'>).setStageFilter || [], [additionalProps]);
+    const resetStageFilter = useMemo(() => (additionalProps as AdditionalProps<'submission'>).resetStageFilter || [], [additionalProps]);
+    const activeStageFilter = useMemo(() => (additionalProps as AdditionalProps<'submission'>).activeStageFilter || [], [additionalProps]);
     const onAddStartFormClick = (additionalProps as AdditionalProps<'edit'>).onAddStartFormClick;
     const handleNewStageClick = (stageType: STAGE_TYPE) => () => {
         (additionalProps as AdditionalProps<'edit'>).onNewStageClick(stageType)
@@ -42,9 +51,22 @@ function FlowRenderer<T extends mode>({
 
     const stagesAndConditions = useMemo(() => stages.reduce((acc: JSX.Element[], stage, index, stageArray) => {
         const notCompletedCount = applicantCounts.find(({ stageIndex, completed }) => !completed && stageIndex === index)?.count;
+        const notCompletedIsActiveFilter = activeStageFilter.stageIndex === index && !activeStageFilter.stageCompleted;
         const completedCount = applicantCounts.find(({ stageIndex, completed }) => completed && stageIndex === index)?.count;
+        const completedIsActiveFilter = activeStageFilter.stageIndex === index && activeStageFilter.stageCompleted;
         const stageElement = <div style={{ position: 'relative' }}>
-            {notCompletedCount && <div className={classNames(styles.applicantCount, styles.top)}>{notCompletedCount}</div>}
+            {notCompletedCount && <div 
+                className={classNames(styles.applicantCount, styles.top, { [styles.active]: notCompletedIsActiveFilter })}
+                onClick={() => {
+                    if (notCompletedIsActiveFilter) {
+                        resetStageFilter();
+                    } else {
+                        setStageFilter(index, false);
+                    }
+                }}
+            >
+                {notCompletedCount}
+            </div>}
             <StageCard
                 {...stage}
                 name={stage.stageProps.name} 
@@ -52,7 +74,18 @@ function FlowRenderer<T extends mode>({
                 id={stage._id}
                 mode={mode}
             />
-            {completedCount && <div className={classNames(styles.applicantCount, styles.bottom)}>{completedCount}</div>}
+            {completedCount && <div 
+                className={classNames(styles.applicantCount, styles.bottom, { [styles.active]: completedIsActiveFilter })}
+                onClick={() => {
+                    if (completedIsActiveFilter) {
+                        resetStageFilter();
+                    } else {
+                        setStageFilter(index, true);
+                    }
+                }}
+            >
+                {completedCount}
+            </div>}
         </div>;
         const condition = conditions.find(e => e.from === stageArray[index]._id && e.to === stageArray[index + 1]._id);
         const conditionElement = <ConditionElement key={condition?._id || index} {...condition} />;
