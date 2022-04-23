@@ -1,0 +1,9 @@
+.filterRow {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 31px;
+    & > div {
+        height: unset;
+    }
+}

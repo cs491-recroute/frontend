@@ -42,6 +42,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
     viewComponent?: boolean;
     sortKey: string;
     sortable?: boolean;
+    filterable?: boolean;
 }> = {
     [ComponentTypes.shortText]: {
         text: translate('Short Text'),
@@ -101,7 +102,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             title: 'Select Date',
             placeholder: 'Select Date'
         },
-        sortKey: 'date'
+        sortKey: 'date',
+        filterable: false
     },
     [ComponentTypes.dropDown]: {
         text: translate('Drop Down'),
@@ -111,10 +113,11 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.dropDown,
             required: false,
             title: 'Select Options',
-            options: ['option 1', 'option 2']
+            options: ['Option 1', 'Option 2']
         },
         sortKey: 'selection',
-        sortable: false
+        sortable: false,
+        filterable: false
     },
     [ComponentTypes.fullName]: {
         text: translate('Full Name'),
@@ -162,7 +165,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
             title: 'Please upload files here',
             placeholder: 'Select or drag and drop files'
         },
-        sortKey: 'upload'
+        sortKey: 'upload',
+        sortable: false,
+        filterable: false
     },
     [ComponentTypes.email]: {
         text: translate('Email'),
@@ -187,7 +192,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             options: ['option 1', 'option 2']
         },
         sortable: false,
-        sortKey: 'selection'
+        sortKey: 'selection',
+        filterable: false
     },
     [ComponentTypes.multipleChoice]: {
         text: translate('Multiple Choice'),
@@ -200,6 +206,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             options: ['option 1', 'option 2']
         },
         sortable: false,
-        sortKey: 'selections'
+        sortKey: 'selections',
+        filterable: false
     }
 }

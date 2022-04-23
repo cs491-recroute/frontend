@@ -15,6 +15,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
     defaultProps: Partial<Question>;
     sortKey: string;
     sortable?: boolean;
+    filterable?: boolean;
 }> = {
     [QUESTION_TYPES.OPEN_ENDED]: {
         text: translate('Open Ended'),
@@ -40,7 +41,8 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
                 { description: 'Option 3', isCorrect: false }
             ]
         },
-        sortKey: 'grade'
+        sortKey: 'grade',
+        filterable: false
     },
     [QUESTION_TYPES.CODING]: {
         text: translate('Coding'),
@@ -51,6 +53,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
             type: QUESTION_TYPES.CODING,
             testCases: []
         },
-        sortKey: 'grade'
+        sortKey: 'grade',
+        filterable: false
     }
 }

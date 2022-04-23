@@ -1,25 +1,28 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useTable } from 'react-table';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, tableRowClasses, IconButton } from '@mui/material';
-import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, getLoading } from '../../redux/slices/submissionsSlice';
+import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, tableRowClasses, IconButton, TextField } from '@mui/material';
+import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, setFilterQuery } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
 import ArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import ArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import debounce from 'lodash.debounce';
+import { translate } from '../../utils';
+import { EuiFieldText } from '@elastic/eui';
+import styles from './ApplicantTable.module.scss';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.root}`]: {
+        padding: 8
+    },
     [`&.${tableCellClasses.head}, &.${tableCellClasses.body}`]: {
         maxWidth: 150,
+        minWidth: 150,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         borderRight: `1px solid ${theme.palette.grey[200]}`
-    },
-    [`&.${tableCellClasses.head}`]: {
-        position: 'relative',
-        padding: '16px 24px 16px 16px'
     },
     [`&.${tableCellClasses.body}:nth-child(-n+3), &.${tableCellClasses.head}:nth-child(-n+3)`]: {
         position: 'sticky',
@@ -70,7 +73,7 @@ const HeaderRow = styled(TableRow)(({ theme }) => ({
         top: 0
     },
     [`&.${tableRowClasses.root}:nth-child(2)`]: {
-        top: 54,
+        top: 38,
         [`&::after`]: {
             content: '" "',
             position: 'absolute',
@@ -103,12 +106,16 @@ const ApplicantTable = () => {
         dispatch(applicantNextStageAsync(id))
     }, []);
 
-    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data: [...data, ...data, ...data] });
+    const debouncedFilterChange = useCallback(sortByKey => debounce(e => {
+        dispatch(setFilterQuery({ filter_by: sortByKey, filter_text: e.target.value }))
+    }, 500), []);
+
+    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
 
     return <TableContainer component={Paper} style={{ margin: 20 }}>
         <Table {...getTableProps()} style={{ borderCollapse: 'separate' }} stickyHeader>
             <TableHead>
-                {headerGroups.map(headerGroup => (
+                {headerGroups.map((headerGroup, rowIndex) => (
                     <HeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                         {headerGroup.headers.map(({
                             getHeaderProps,
@@ -116,26 +123,29 @@ const ApplicantTable = () => {
                             render,
                             sortable,
                             order_by,
-                            sortByKey
+                            sortByKey,
+                            filterable
                         }: any) => {
                             return <StyledTableCell {...getHeaderProps()} key={id}>
                                 {render('Header')}
-                                {sortable && <IconButton
-                                    size='small'
-                                    style={{ 
-                                        position: 'absolute',
-                                        right: 0,
-                                        marginTop: -5
-                                    }}
-                                    onClick={() => {
-                                        let direction;
-                                        if (!order_by) direction = 'desc';
-                                        else if (order_by === 'desc') direction = 'asc';
-                                        dispatch(setSortQuery({ sort_by: sortByKey, order_by: direction }));
-                                    }}
-                                >
-                                    {order_by === 'asc' ? <ArrowUp color='info' /> : <ArrowDown color={order_by ? 'info' : 'disabled'} />}
-                                </IconButton>}
+                                {!!rowIndex && <div className={styles.filterRow}>
+                                    {filterable && <EuiFieldText 
+                                        style={{ height: 31 }} 
+                                        placeholder={translate('Filter')}
+                                        onChange={debouncedFilterChange(sortByKey)}
+                                    />}
+                                    {sortable && <IconButton
+                                        size='small'
+                                        onClick={() => {
+                                            let direction;
+                                            if (!order_by) direction = 'desc';
+                                            else if (order_by === 'desc') direction = 'asc';
+                                            dispatch(setSortQuery({ sort_by: sortByKey, order_by: direction }));
+                                        }}
+                                    >
+                                        {order_by === 'asc' ? <ArrowUp color='info' /> : <ArrowDown color={order_by ? 'info' : 'disabled'} />}
+                                    </IconButton>}
+                                </div>}
                             </StyledTableCell>
                         })}     
                     </HeaderRow>
@@ -161,4 +171,4 @@ const ApplicantTable = () => {
     </TableContainer>
 };
 
-export default ApplicantTable;
+export default React.memo(ApplicantTable);

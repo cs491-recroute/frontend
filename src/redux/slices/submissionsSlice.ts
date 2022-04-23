@@ -18,7 +18,7 @@ const initialState: SubmissionsState = {
         _id: '', name: '', stages: [], active: false, conditions: []
     },
     applicants: [],
-    queries: {},
+    queries: { filters: {} },
     metadata: {},
     loading: true
 };
@@ -27,7 +27,7 @@ export const fetchSubmissionsAsync = createAsyncThunk(
     'submissions/fetch',
     async (_, { getState }) => {
         const { submissions: { queries = {}, currentFlow: { _id } } } = getState() as AppState;
-        const { data: result } = await axios.get(`/api/submissions/${_id}`, { params: queries });
+        const { data: result } = await axios.post(`/api/submissions/${_id}`, queries);
         return result;
     }
 );
@@ -75,6 +75,14 @@ export const submissionsSlice = createSlice({
                 state.queries.order_by = undefined;
             } else {
                 state.queries = { ...state.queries, sort_by, order_by };
+            }
+        },
+        setFilterQuery: (state, action: { payload: { filter_text: string, filter_by: string } }) => {
+            const { filter_text, filter_by } = action.payload;
+            if (!filter_text) {
+                state.queries.filters[filter_by] = undefined;
+            } else {
+                state.queries = { ...state.queries, filters: { ...state.queries.filters, [filter_by]: filter_text } };
             }
         }
     },
@@ -128,7 +136,7 @@ export const submissionsSlice = createSlice({
     }
 });
 
-export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery } = submissionsSlice.actions;
+export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery, setFilterQuery } = submissionsSlice.actions;
 
 export const getCurrentFlow = (state: AppState) => state.submissions.currentFlow;
 export const getStageCounts = (state: AppState) => state.submissions.metadata.stageCounts;

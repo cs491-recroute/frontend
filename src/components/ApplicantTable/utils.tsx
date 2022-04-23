@@ -79,6 +79,7 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                 accessor: 'email',
                 Cell: ({ value: email }: any) => <Cell title={email}>{email}</Cell>,
                 sortable: true,
+                filterable: true,
                 sortByKey: 'email'
             },
             {
@@ -131,12 +132,13 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                 return {
                     Header: name || '',
                     columns: components.filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent).map(({ title, _id: componentID, type: componentType, titles }) => {
-                        const { sortKey, sortable = true } = COMPONENT_MAPPINGS[componentType];
+                        const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
                         return {
                             Header: title || (titles && titles[0]) || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
                             Cell: getCellRenderer(stageType, componentType),
                             sortable,
+                            filterable,
                             sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
                         }
                     })
@@ -147,12 +149,13 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                 return {
                     Header: name || '',
                     columns: questions.map(({ description, _id: questionID, type: questionType }) => {
-                        const { sortable = true, sortKey } = QUESTION_MAPPINGS[questionType];
+                        const { sortable = true, sortKey, filterable = true } = QUESTION_MAPPINGS[questionType];
                         return {
                             Header: description || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
                             Cell: getCellRenderer(stageType, questionType),
                             sortable,
+                            filterable,
                             sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`
                         }
                     })
