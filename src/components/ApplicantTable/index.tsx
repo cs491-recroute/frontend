@@ -1,7 +1,7 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useTable } from 'react-table';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, IconButton } from '@mui/material';
+import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, tableRowClasses, IconButton } from '@mui/material';
 import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, getLoading } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
@@ -14,11 +14,73 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         maxWidth: 150,
         overflow: 'hidden',
         textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
+        whiteSpace: 'nowrap',
+        borderRight: `1px solid ${theme.palette.grey[200]}`
     },
     [`&.${tableCellClasses.head}`]: {
         position: 'relative',
         padding: '16px 24px 16px 16px'
+    },
+    [`&.${tableCellClasses.body}:nth-child(-n+3), &.${tableCellClasses.head}:nth-child(-n+3)`]: {
+        position: 'sticky',
+        background: 'white',
+        zIndex: 10,
+        minWidth: 150,
+        textOverflow: 'clip'
+    },
+    [`&.${tableCellClasses.body}:nth-child(1), &.${tableCellClasses.head}:nth-child(1)`]: {
+        left: 0
+    },
+    [`&.${tableCellClasses.body}:nth-child(2), &.${tableCellClasses.head}:nth-child(2)`]: {
+        left: 150
+    },    
+    [`&.${tableCellClasses.body}:nth-child(3), tr:nth-child(2) &.${tableCellClasses.head}:nth-child(3)`]: {
+        left: 300,
+        [`&::after`]: {
+            content: '" "',
+            position: 'absolute',
+            top: '50%',
+            left: '100%',
+            transform: 'translate(-50%, -50%)',
+            height: '100%',
+            borderRight: `3px solid ${theme.palette.grey[400]}`
+        }
+    },
+    [`tr:nth-child(1) &.${tableCellClasses.head}:nth-child(1)`]: {
+        zIndex: 20,
+        [`&::after`]: {
+            content: '" "',
+            position: 'absolute',
+            top: '50%',
+            left: '100%',
+            transform: 'translate(-50%, -50%)',
+            height: '100%',
+            borderRight: `3px solid ${theme.palette.grey[400]}`
+        }
+    }
+}));
+
+const HeaderRow = styled(TableRow)(({ theme }) => ({
+    [`&.${tableRowClasses.root}`]: {
+        position: 'sticky',
+        background: 'white',
+        zIndex: 100
+    },
+    [`&.${tableRowClasses.root}:nth-child(1)`]: {
+        top: 0
+    },
+    [`&.${tableRowClasses.root}:nth-child(2)`]: {
+        top: 54,
+        [`&::after`]: {
+            content: '" "',
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%',
+            borderBottom: `2px solid ${theme.palette.grey[400]}`,
+            zIndex: 1000
+        }
     }
 }));
 
@@ -41,13 +103,13 @@ const ApplicantTable = () => {
         dispatch(applicantNextStageAsync(id))
     }, []);
 
-    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
+    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data: [...data, ...data, ...data] });
 
     return <TableContainer component={Paper} style={{ margin: 20 }}>
-        <Table {...getTableProps()}>
+        <Table {...getTableProps()} style={{ borderCollapse: 'separate' }} stickyHeader>
             <TableHead>
                 {headerGroups.map(headerGroup => (
-                    <TableRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                    <HeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                         {headerGroup.headers.map(({
                             getHeaderProps,
                             id,
@@ -76,7 +138,7 @@ const ApplicantTable = () => {
                                 </IconButton>}
                             </StyledTableCell>
                         })}     
-                    </TableRow>
+                    </HeaderRow>
                 ))}
             </TableHead>
             <TableBody {...getTableBodyProps()}>

@@ -69,50 +69,55 @@ type getColumnsParams = {
     order_by?: 'asc' | 'desc',
 };
 export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by }: getColumnsParams) => {
-    const initialColumns = [
-        {
-            Header: 'Primary Email',
-            accessor: 'email',
-            Cell: ({ value: email }: any) => <Cell title={email}>{email}</Cell>,
-            sortable: true,
-            sortByKey: 'email'
-        },
-        {
-            Header: 'Current Stage',
-            accessor: 'stageIndex',
-            Cell: ({ row: { original } }: any) => {
-                if (original.stageIndex === flow.stages.length) return <Cell>
-                    <b style={{ color: 'green' }}>{translate('Approved')}</b>
-                </Cell>;
-                const { stageProps } = flow.stages[original.stageIndex];
-                return <Cell style={{ display: 'flex', alignItems: 'center' }} title={`${stageProps.name}${original.stageCompleted ? ' (Completed)' : ''}`}>
-                    {stageProps.name}
-                    <span style={{ width: 5 }} />
-                    {original.stageCompleted && <TaskIcon />}
-                </Cell>
+    const initialColumn = {
+        Header: 'Applicant Information',
+        accessor: '',
+        stickyColumn: true,
+        columns: [
+            {
+                Header: 'Primary Email',
+                accessor: 'email',
+                Cell: ({ value: email }: any) => <Cell title={email}>{email}</Cell>,
+                sortable: true,
+                sortByKey: 'email'
+            },
+            {
+                Header: 'Current Stage',
+                accessor: 'stageIndex',
+                Cell: ({ row: { original } }: any) => {
+                    if (original.stageIndex === flow.stages.length) return <Cell>
+                        <b style={{ color: 'green' }}>{translate('Approved')}</b>
+                    </Cell>;
+                    const { stageProps } = flow.stages[original.stageIndex];
+                    return <Cell style={{ display: 'flex', alignItems: 'center' }} title={`${stageProps.name}${original.stageCompleted ? ' (Completed)' : ''}`}>
+                        {original.stageCompleted && <TaskIcon />}
+                        <span style={{ width: 5 }} />
+                        {stageProps.name}
+                    </Cell>
+                }
+            },
+            {
+                Header: 'Move to Next Stage',
+                accessor: 'id',
+                Cell: ({ value: id, row: { original }, onNextClick }: any) => {
+                    if (!original?.stageCompleted) return <div style={{ height: 28 }}/>;
+                    const finishingState = original?.stageIndex + 1 === flow.stages.length;
+                    return <Button 
+                        variant="outlined"
+                        color={finishingState ? 'success' : 'info'}
+                        endIcon={<SendIcon />}
+                        onClick={() => {
+                            onNextClick(id);
+                        }}
+                        fullWidth
+                        size="small"
+                    >
+                        {translate(finishingState ? 'APPROVE' : 'NEXT')}
+                    </Button>;
+                }
             }
-        },
-        {
-            Header: 'Move to Next Stage',
-            accessor: 'id',
-            Cell: ({ value: id, row: { original }, onNextClick }: any) => {
-                if (!original?.stageCompleted) return <div style={{ height: 28 }}/>;
-                const finishingState = original?.stageIndex + 1 === flow.stages.length;
-                return <Button 
-                    variant="outlined"
-                    color={finishingState ? 'success' : 'info'}
-                    endIcon={<SendIcon />}
-                    onClick={() => {
-                        onNextClick(id);
-                    }}
-                    fullWidth
-                    size="small"
-                >
-                    {translate(finishingState ? 'APPROVE' : 'NEXT')}
-                </Button>;
-            }
-        }
-    ];
+        ]
+    };
     let stages;
     if (stageIndex !== undefined && stageCompleted !== undefined) {
         stages = flow.stages.slice(0, stageIndex + (stageCompleted ? 1 : 0));
@@ -162,7 +167,7 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
             }
         }
     }).filter(e => e);
-    const allColumns = [...initialColumns, ...stageColumns];
+    const allColumns = [initialColumn, ...stageColumns];
     if (sort_by && order_by) {
         return allColumns.map(column => {
             const { columns, sortByKey } = column as any;
