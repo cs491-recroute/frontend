@@ -105,7 +105,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     
     const interviewerNames: string[] = []
 
-    interviewers.map((interviewer: string) => {
+    interviewers?.map((interviewer: string) => {
         for(let i = 0; i < allInterviewers.length; i++){
             if(interviewer === allInterviewers[i]._id){
                 interviewerNames.push(allInterviewers[i].name)
