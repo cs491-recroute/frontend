@@ -13,6 +13,8 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
     type: QUESTION_TYPES;
     Renderer: (props: RendererProps) => ReactElement | null;
     defaultProps: Partial<Question>;
+    sortKey: string;
+    sortable?: boolean;
 }> = {
     [QUESTION_TYPES.OPEN_ENDED]: {
         text: translate('Open Ended'),
@@ -21,7 +23,9 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
         defaultProps: {
             description: 'Please answer the question',
             type: QUESTION_TYPES.OPEN_ENDED
-        }
+        },
+        sortable: false,
+        sortKey: 'text'
     },
     [QUESTION_TYPES.MULTIPLE_CHOICE]: {
         text: translate('Multiple Choice'),
@@ -35,7 +39,8 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
                 { description: 'Option 2', isCorrect: true },
                 { description: 'Option 3', isCorrect: false }
             ]
-        }
+        },
+        sortKey: 'grade'
     },
     [QUESTION_TYPES.CODING]: {
         text: translate('Coding'),
@@ -45,6 +50,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
             description: 'Please write the code',
             type: QUESTION_TYPES.CODING,
             testCases: []
-        }
+        },
+        sortKey: 'grade'
     }
 }

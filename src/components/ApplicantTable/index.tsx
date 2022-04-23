@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useMemo, useCallback } from 'react';
-import { useTable, useSortBy } from 'react-table';
+import { useTable } from 'react-table';
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, IconButton } from '@mui/material';
-import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync } from '../../redux/slices/submissionsSlice';
+import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, getLoading } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
 import ArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import ArrowUp from '@mui/icons-material/KeyboardArrowUp';
-import ClearIcon from '@mui/icons-material/Clear';
+import debounce from 'lodash.debounce';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}, &.${tableCellClasses.body}`]: {
@@ -15,6 +15,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap'
+    },
+    [`&.${tableCellClasses.head}`]: {
+        position: 'relative',
+        padding: '16px 24px 16px 16px'
     }
 }));
 
@@ -23,29 +27,52 @@ const ApplicantTable = () => {
     const currentFlow = useAppSelector(getCurrentFlow);
     const data = useAppSelector(getApplicants);
     const queries = useAppSelector(getQueries);
+    const columns = useMemo(() => getColumns({ flow: currentFlow, ...queries }), [currentFlow, queries]);
+
+    const debouncedFetch = useCallback(debounce(() => {
+        dispatch(fetchSubmissionsAsync());
+    }, 250), []);
 
     useEffect(() => {
-        dispatch(fetchSubmissionsAsync());
+        debouncedFetch();
     }, [queries]);
 
     const onNextClick = useCallback(id => {
         dispatch(applicantNextStageAsync(id))
     }, []);
 
-    const columns: any[] = useMemo(() => getColumns({ flow: currentFlow, onNextClick, ...queries }), [currentFlow, queries?.stageIndex, queries?.stageCompleted, onNextClick]);
-
     const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
 
     return <TableContainer component={Paper} style={{ margin: 20 }}>
         <Table {...getTableProps()}>
             <TableHead>
-                {headerGroups.map((headerGroup, i) => (
+                {headerGroups.map(headerGroup => (
                     <TableRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                        {headerGroup.headers.map((column, colI) => {
-                            return <StyledTableCell {...column.getHeaderProps()} key={column.id}>
-                                {column.render('Header')}
-                                {!!i && !!colI && <IconButton size='small' disabled>
-                                    <ArrowUp/>    
+                        {headerGroup.headers.map(({
+                            getHeaderProps,
+                            id,
+                            render,
+                            sortable,
+                            order_by,
+                            sortByKey
+                        }: any) => {
+                            return <StyledTableCell {...getHeaderProps()} key={id}>
+                                {render('Header')}
+                                {sortable && <IconButton
+                                    size='small'
+                                    style={{ 
+                                        position: 'absolute',
+                                        right: 0,
+                                        marginTop: -5
+                                    }}
+                                    onClick={() => {
+                                        let direction;
+                                        if (!order_by) direction = 'desc';
+                                        else if (order_by === 'desc') direction = 'asc';
+                                        dispatch(setSortQuery({ sort_by: sortByKey, order_by: direction }));
+                                    }}
+                                >
+                                    {order_by === 'asc' ? <ArrowUp color='info' /> : <ArrowDown color={order_by ? 'info' : 'disabled'} />}
                                 </IconButton>}
                             </StyledTableCell>
                         })}     
@@ -60,7 +87,7 @@ const ApplicantTable = () => {
                             {row.cells.map(cell => {
                                 return (
                                     <StyledTableCell {...cell.getCellProps()}>
-                                        {cell.render('Cell')}
+                                        {cell.render('Cell', { onNextClick })}
                                     </StyledTableCell>
                                 );
                             })}

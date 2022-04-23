@@ -1,5 +1,3 @@
-import { Form } from './../../types/models';
-import { STAGE_TYPE } from './../../types/enums';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Flow } from '../../types/models';
 import type { AppState } from '../store';
@@ -64,12 +62,20 @@ export const submissionsSlice = createSlice({
         },
         setStageFilter: (state, action: { payload: { stageIndex: number, stageCompleted: boolean } }) => {
             const { stageIndex, stageCompleted } = action.payload;
-            console.log(action.payload);
             state.queries = { ...state.queries, stageIndex, stageCompleted };
         },
         resetStageFilter: state => {
             state.queries.stageIndex = undefined;
             state.queries.stageCompleted = undefined;
+        },
+        setSortQuery: (state, action: { payload: { sort_by: string, order_by?: string } }) => {
+            const { sort_by, order_by } = action.payload;
+            if (!order_by) {
+                state.queries.sort_by = undefined;
+                state.queries.order_by = undefined;
+            } else {
+                state.queries = { ...state.queries, sort_by, order_by };
+            }
         }
     },
     extraReducers: builder => {
@@ -122,7 +128,7 @@ export const submissionsSlice = createSlice({
     }
 });
 
-export const { setCurrentFlow, setStageFilter, resetStageFilter } = submissionsSlice.actions;
+export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery } = submissionsSlice.actions;
 
 export const getCurrentFlow = (state: AppState) => state.submissions.currentFlow;
 export const getStageCounts = (state: AppState) => state.submissions.metadata.stageCounts;

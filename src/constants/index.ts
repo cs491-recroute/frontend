@@ -40,6 +40,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
     Renderer: (props: Partial<Component> & { editMode?: boolean; ref?: React.RefObject<ComponentRef>; }) => ReactElement | null;
     defaultProps: Record<any, any>;
     viewComponent?: boolean;
+    sortKey: string;
+    sortable?: boolean;
 }> = {
     [ComponentTypes.shortText]: {
         text: translate('Short Text'),
@@ -50,7 +52,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter',
             placeholder: 'Enter your answer'
-        }
+        },
+        sortKey: 'text'
     },
     [ComponentTypes.longText]: {
         text: translate('Long Text'),
@@ -61,7 +64,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter',
             placeholder: 'Enter your answer'
-        }
+        },
+        sortKey: 'text'
     },
     [ComponentTypes.number]: {
         text: translate('Number'),
@@ -72,7 +76,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter a number',
             placeholder: 'Enter your answer'
-        }
+        },
+        sortKey: 'number'
     },
     [ComponentTypes.address]: {
         text: translate('Address'),
@@ -83,7 +88,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter your address',
             placeholder: 'Enter your address'
-        }
+        },
+        sortKey: 'address'
     },
     [ComponentTypes.datePicker]: {
         text: translate('Date Picker'),
@@ -94,7 +100,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Select Date',
             placeholder: 'Select Date'
-        }
+        },
+        sortKey: 'date'
     },
     [ComponentTypes.dropDown]: {
         text: translate('Drop Down'),
@@ -105,7 +112,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Select Options',
             options: ['option 1', 'option 2']
-        }
+        },
+        sortKey: 'selection',
+        sortable: false
     },
     [ComponentTypes.fullName]: {
         text: translate('Full Name'),
@@ -116,7 +125,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             titles: ['Please enter your name', 'Please enter your surname'],
             placeholders: ['Enter your name', 'Enter your surname']
-        }
+        },
+        sortKey: 'name'
     },
     [ComponentTypes.header]: {
         text: translate('Header'),
@@ -127,7 +137,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             title: 'Heading',
             required: false
         },
-        viewComponent: true
+        viewComponent: true,
+        sortKey: 'text'
     },
     [ComponentTypes.phone]: {
         text: translate('Phone'),
@@ -138,7 +149,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter you phone number',
             placeholder: 'Enter your phone number'
-        }
+        },
+        sortKey: 'phoneNumber'
     },
     [ComponentTypes.upload]: {
         text: translate('Upload'),
@@ -149,7 +161,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please upload files here',
             placeholder: 'Select or drag and drop files'
-        }
+        },
+        sortKey: 'upload'
     },
     [ComponentTypes.email]: {
         text: translate('Email'),
@@ -160,7 +173,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Please enter your Email',
             placeholder: 'Enter your Email'
-        }
+        },
+        sortKey: 'email'
     },
     [ComponentTypes.singleChoice]: {
         text: translate('Single Choice'),
@@ -171,7 +185,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Single select',
             options: ['option 1', 'option 2']
-        }
+        },
+        sortable: false,
+        sortKey: 'selection'
     },
     [ComponentTypes.multipleChoice]: {
         text: translate('Multiple Choice'),
@@ -182,6 +198,8 @@ export const COMPONENT_MAPPINGS: Record<any, {
             required: false,
             title: 'Multiple select',
             options: ['option 1', 'option 2']
-        }
+        },
+        sortable: false,
+        sortKey: 'selections'
     }
 }
