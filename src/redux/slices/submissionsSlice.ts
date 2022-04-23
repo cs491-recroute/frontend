@@ -4,6 +4,8 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { Flow } from '../../types/models';
 import type { AppState } from '../store';
 import axios from 'axios';
+import { toast } from 'react-toastify';
+import { translate } from '../../utils';
 
 export interface SubmissionsState {
     currentFlow: Flow,
@@ -29,6 +31,27 @@ export const fetchSubmissionsAsync = createAsyncThunk(
         const { submissions: { queries = {}, currentFlow: { _id } } } = getState() as AppState;
         const { data: result } = await axios.get(`/api/submissions/${_id}`, { params: queries });
         return result;
+    }
+);
+
+export const applicantNextStageAsync = createAsyncThunk(
+    'submissions/applicantNextStage',
+    async (id: string) => {
+        try {
+            await axios.get(`/api/submissions/next/${id}`);
+            toast(translate('Successful'), {
+                type: 'success',
+                position: 'bottom-right',
+                hideProgressBar: true
+            });
+            return id;
+        } catch (error: any) {
+            toast(translate(error?.response?.data || 'Error occured!'), {
+                type: 'error',
+                position: 'bottom-right',
+                hideProgressBar: true
+            });
+        }
     }
 );
 
@@ -60,6 +83,24 @@ export const submissionsSlice = createSlice({
             .addCase(fetchSubmissionsAsync.pending, state => {
                 state.loading = true;
             })
+            .addCase(applicantNextStageAsync.pending, state => {
+                state.loading = true;
+            })
+            .addCase(applicantNextStageAsync.fulfilled, (state, action) => {
+                const id = action.payload;
+                state.loading = false;
+                if (state.queries.stageIndex !== undefined) {
+                    state.applicants = state.applicants.filter(e => e.id !== id);
+                } else {
+                    state.applicants = state.applicants.map(e => {
+                        if (e.id === id) {
+                            e.stageIndex = e.stageIndex + 1;
+                            e.stageCompleted = false;
+                        }
+                        return e;
+                    });
+                }
+            });
     }
 });
 

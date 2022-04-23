@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key */
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useCallback } from 'react';
 import { useTable, useSortBy } from 'react-table';
 import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, IconButton } from '@mui/material';
-import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries} from '../../redux/slices/submissionsSlice';
+import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
 import ArrowDown from '@mui/icons-material/KeyboardArrowDown';
@@ -28,19 +28,23 @@ const ApplicantTable = () => {
         dispatch(fetchSubmissionsAsync());
     }, [queries]);
 
-    const columns: any[] = useMemo(() => getColumns(currentFlow), [currentFlow]);
+    const onNextClick = useCallback(id => {
+        dispatch(applicantNextStageAsync(id))
+    }, []);
+
+    const columns: any[] = useMemo(() => getColumns({ flow: currentFlow, onNextClick, ...queries }), [currentFlow, queries?.stageIndex, queries?.stageCompleted, onNextClick]);
 
     const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
 
     return <TableContainer component={Paper} style={{ margin: 20 }}>
         <Table {...getTableProps()}>
             <TableHead>
-                {headerGroups.map((headerGroup, index) => (
+                {headerGroups.map((headerGroup, i) => (
                     <TableRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                        {headerGroup.headers.map(column => {
+                        {headerGroup.headers.map((column, colI) => {
                             return <StyledTableCell {...column.getHeaderProps()} key={column.id}>
                                 {column.render('Header')}
-                                {!!index && <IconButton size='small' disabled>
+                                {!!i && !!colI && <IconButton size='small' disabled>
                                     <ArrowUp/>    
                                 </IconButton>}
                             </StyledTableCell>
