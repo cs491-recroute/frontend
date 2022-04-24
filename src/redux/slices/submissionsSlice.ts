@@ -97,10 +97,16 @@ export const submissionsSlice = createSlice({
     extraReducers: builder => {
         builder
             .addCase(fetchSubmissionsAsync.fulfilled, (state, action) => {
-                const { docs: applicants, ...metadata } = action.payload;
+                const { docs: applicants, stageCounts, ...metadata } = action.payload;
                 state.applicants = applicants;
                 state.metadata = metadata;
                 state.loading = false;
+                state.metadata.stageCounts = state.currentFlow.stages.reduce((acc, stage, index) => {
+                    const notCompletedInfo = stageCounts.find(({ stageIndex, completed }: any) => (stageIndex === index && !completed)) || { stageIndex: index, completed: false, count: 0 };
+                    const completedInfo = stageCounts.find(({ stageIndex, completed }: any) => (stageIndex === index && completed)) || { stageIndex: index, completed: true, count: 0 };
+                    acc.push(notCompletedInfo, completedInfo);
+                    return acc;
+                }, [] as any[]);
             })
             .addCase(fetchSubmissionsAsync.pending, state => {
                 state.loading = true;
