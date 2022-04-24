@@ -8,6 +8,7 @@ import { translate } from '../../utils';
 import styled from 'styled-components';
 import { COMPONENT_MAPPINGS } from '../../constants';
 import { QUESTION_MAPPINGS } from '../TestBuilder/Questions/constants';
+import moment from 'moment';
 
 const Cell = styled.div`
     overflow: hidden;
@@ -17,13 +18,55 @@ const Cell = styled.div`
 
 const getQuestionCell = (questionType: QUESTION_TYPES, props: any) => {
     switch (questionType) {
+        case QUESTION_TYPES.OPEN_ENDED: {
+            return props?.text;
+        }
         default:
             return props?.grade;
     }
 };
 
-const getComponentCell = (componentType: ComponentTypes, props: any) => {
+const getComponentCell = (componentType: ComponentTypes, props: any, applicantID: string, stageID: string, userID: string) => {
     switch (componentType) {
+        case ComponentTypes.upload: {
+            const { originalName } = props?.value || {};
+            if (!originalName) return null;
+            return <a
+                href={`https://recroute.co:3501/applicant/${applicantID}/stage/${stageID}/component/${props.componentID}/file?userID=${userID}`}
+                download
+            >
+                <div
+                    style={{ 
+                        marginRight: '5px',
+                        backgroundColor: '#ccc',
+                        padding: '5px',
+                        borderRadius: '5px',
+                        fontSize: '12px',
+                        overflow: 'hidden'
+                    }}
+                >
+                    {originalName}
+                </div>
+            </a>;
+        }
+        case ComponentTypes.datePicker: {
+            if (!props?.value) return '';
+            return moment(props?.value).format('DD/MM/YYYY');
+        }
+        case ComponentTypes.multipleChoice: {
+            const options = props?.value || [];
+            return <>
+                {[...options, ...options].map((option: string) => <span key={option} style={{ 
+                    marginRight: '5px',
+                    backgroundColor: '#ccc',
+                    padding: '5px',
+                    borderRadius: '5px',
+                    fontSize: '12px',
+                    overflow: 'hidden'
+                }}
+                >{option}</span>)}
+            </>
+        }
         case ComponentTypes.fullName: {
             const { name = '', surname = '' } = props?.value || {};
             return `${name} ${surname}`;
@@ -34,14 +77,14 @@ const getComponentCell = (componentType: ComponentTypes, props: any) => {
     }
 };
 
-const getCellRenderer = (stageType: STAGE_TYPE, cellType: QUESTION_TYPES | ComponentTypes) => {
+const getCellRenderer = (stageType: STAGE_TYPE, cellType: QUESTION_TYPES | ComponentTypes, stageID: string, userID: string) => {
     // eslint-disable-next-line react/prop-types
-    const Component = ({ value: props }: { value: any }) => {
+    const Component = ({ value: props, row: { original: { id: applicantID } } }: any) => {
         if (!props) return '';
         let text;
         switch (stageType) {
             case STAGE_TYPE.FORM: {
-                text = getComponentCell(cellType as ComponentTypes, props);
+                text = getComponentCell(cellType as ComponentTypes, props, applicantID, stageID, userID);
                 break;
             }
             case STAGE_TYPE.TEST: {
@@ -63,12 +106,13 @@ const getCellRenderer = (stageType: STAGE_TYPE, cellType: QUESTION_TYPES | Compo
 
 type getColumnsParams = {
     flow: Flow,
+    userID: string,
     stageIndex?: number,
     stageCompleted?: boolean,
     sort_by?: string,
     order_by?: 'asc' | 'desc',
 };
-export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by }: getColumnsParams) => {
+export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, order_by }: getColumnsParams) => {
     const initialColumn = {
         Header: 'Applicant Information',
         accessor: '',
@@ -138,7 +182,7 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                         return {
                             Header: title || (titles && titles[0]) || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
-                            Cell: getCellRenderer(stageType, componentType),
+                            Cell: getCellRenderer(stageType, componentType, stageID, userID),
                             sortable,
                             filterable,
                             sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
@@ -155,7 +199,7 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                         return {
                             Header: description || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
-                            Cell: getCellRenderer(stageType, questionType),
+                            Cell: getCellRenderer(stageType, questionType, stageID, userID),
                             sortable,
                             filterable,
                             sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`

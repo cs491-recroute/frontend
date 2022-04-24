@@ -8,6 +8,8 @@ import { getColumns } from './utils';
 import debounce from 'lodash.debounce';
 import TableHeader from './TableHeader';
 import HeaderCell from './HeaderCell'; 
+import { useUser } from '@auth0/nextjs-auth0';
+import { getUserID } from '../../utils';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.root}`]: {
@@ -76,11 +78,14 @@ const HeaderRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const ApplicantTable = () => {
+    const { user, isLoading } = useUser();
+    if (isLoading || !user) return null;
+
     const dispatch = useAppDispatch();
     const currentFlow = useAppSelector(getCurrentFlow);
     const data = useAppSelector(getApplicants);
     const queries = useAppSelector(getQueries);
-    const columns = useMemo(() => getColumns({ flow: currentFlow, ...queries }), [currentFlow, queries]);
+    const columns = useMemo(() => getColumns({ flow: currentFlow, userID: getUserID(user), ...queries }), [currentFlow, queries, user]);
 
     const debouncedFetch = useCallback(debounce(() => {
         dispatch(fetchSubmissionsAsync());
