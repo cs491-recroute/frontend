@@ -74,9 +74,7 @@ const FormContent = ({ form, editMode, userIdentifier, withEmail }: FormContentP
             for (const fileMap of filesMap) {
                 for (const index in fileMap.answer) {
                     const file = fileMap.answer[parseInt(index)];
-                    const fileformat = file.name.substring(file.name.lastIndexOf('.'));
-                    const filename = `form-${form._id}-${fileMap.componentID}-${index}${fileformat}`;
-                    body.append(fileMap.componentID, file, filename);
+                    body.append(fileMap.componentID, file, file.name);
                 }
             }
         }
