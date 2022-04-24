@@ -55,7 +55,7 @@ function FlowRenderer<T extends mode>({
         const completedCount = applicantCounts.find(({ stageIndex, completed }) => completed && stageIndex === index)?.count;
         const completedIsActiveFilter = activeStageFilter.stageIndex === index && activeStageFilter.stageCompleted;
         const stageElement = <div style={{ position: 'relative' }}>
-            <div 
+            {mode === 'submission' &&<div 
                 className={classNames(styles.applicantCount, styles.top, { [styles.active]: notCompletedIsActiveFilter })}
                 onClick={() => {
                     if (notCompletedIsActiveFilter) {
@@ -66,7 +66,7 @@ function FlowRenderer<T extends mode>({
                 }}
             >
                 {notCompletedCount || '0'}
-            </div>
+            </div>}
             <StageCard
                 {...stage}
                 name={stage.stageProps.name} 
@@ -74,7 +74,7 @@ function FlowRenderer<T extends mode>({
                 id={stage._id}
                 mode={mode}
             />
-            <div 
+            {mode === 'submission' && <div 
                 className={classNames(styles.applicantCount, styles.bottom, { [styles.active]: completedIsActiveFilter })}
                 onClick={() => {
                     if (completedIsActiveFilter) {
@@ -85,7 +85,7 @@ function FlowRenderer<T extends mode>({
                 }}
             >
                 {completedCount || '0'}
-            </div>
+            </div>}
         </div>;
         const condition = conditions.find(e => e.from === stageArray[index]._id && e.to === stageArray[index + 1]._id);
         const conditionElement = <ConditionElement key={condition?._id || index} {...condition} />;
