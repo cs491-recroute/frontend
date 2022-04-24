@@ -7,3 +7,11 @@
         height: unset;
     }
 }
+
+.header {
+    margin-bottom: 10px;
+    
+    & > *:not(:first-child) {
+        margin-left: 10px;
+    }
+}

@@ -91,14 +91,16 @@ export const getColumns = ({ flow, stageIndex, stageCompleted, sort_by, order_by
                     </Cell>;
                     const { stageProps } = flow.stages[original.stageIndex];
                     return <Cell style={{ display: 'flex', alignItems: 'center' }} title={`${stageProps.name}${original.stageCompleted ? ' (Completed)' : ''}`}>
-                        {original.stageCompleted && <TaskIcon />}
-                        <span style={{ width: 5 }} />
+                        {original.stageCompleted && <>
+                            <TaskIcon />
+                            <span style={{ width: 5 }} />
+                        </>}
                         {stageProps.name}
                     </Cell>
                 }
             },
             {
-                Header: 'Move to Next Stage',
+                Header: 'Action',
                 accessor: 'id',
                 Cell: ({ value: id, row: { original }, onNextClick }: any) => {
                     if (!original?.stageCompleted) return <div style={{ height: 28 }}/>;

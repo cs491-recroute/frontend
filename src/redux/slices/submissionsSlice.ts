@@ -84,6 +84,9 @@ export const submissionsSlice = createSlice({
             } else {
                 state.queries = { ...state.queries, filters: { ...state.queries.filters, [filter_by]: filter_text } };
             }
+        },
+        clearFilters: state => {
+            state.queries.filters = {};
         }
     },
     extraReducers: builder => {
@@ -136,7 +139,7 @@ export const submissionsSlice = createSlice({
     }
 });
 
-export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery, setFilterQuery } = submissionsSlice.actions;
+export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery, setFilterQuery, clearFilters } = submissionsSlice.actions;
 
 export const getCurrentFlow = (state: AppState) => state.submissions.currentFlow;
 export const getStageCounts = (state: AppState) => state.submissions.metadata.stageCounts;

@@ -5,12 +5,9 @@ import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper
 import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, setFilterQuery } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
-import ArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import ArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import debounce from 'lodash.debounce';
-import { translate } from '../../utils';
-import { EuiFieldText } from '@elastic/eui';
-import styles from './ApplicantTable.module.scss';
+import TableHeader from './TableHeader';
+import HeaderCell from './HeaderCell'; 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.root}`]: {
@@ -50,16 +47,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
         }
     },
     [`tr:nth-child(1) &.${tableCellClasses.head}:nth-child(1)`]: {
-        zIndex: 20,
-        [`&::after`]: {
-            content: '" "',
-            position: 'absolute',
-            top: '50%',
-            left: '100%',
-            transform: 'translate(-50%, -50%)',
-            height: '100%',
-            borderRight: `3px solid ${theme.palette.grey[400]}`
-        }
+        zIndex: 20
     }
 }));
 
@@ -106,69 +94,53 @@ const ApplicantTable = () => {
         dispatch(applicantNextStageAsync(id))
     }, []);
 
-    const debouncedFilterChange = useCallback(sortByKey => debounce(e => {
-        dispatch(setFilterQuery({ filter_by: sortByKey, filter_text: e.target.value }))
-    }, 500), []);
+    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps, allColumns } = useTable({ columns, data, autoResetHiddenColumns: false });
 
-    const { getTableProps, headerGroups, rows, prepareRow, getTableBodyProps } = useTable({ columns, data });
+    if (typeof window === 'undefined') {
+        // EuiPopover is not available in SSR
+        return null;
+    }
 
-    return <TableContainer component={Paper} style={{ margin: 20 }}>
-        <Table {...getTableProps()} style={{ borderCollapse: 'separate' }} stickyHeader>
-            <TableHead>
-                {headerGroups.map((headerGroup, rowIndex) => (
-                    <HeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
-                        {headerGroup.headers.map(({
-                            getHeaderProps,
-                            id,
-                            render,
-                            sortable,
-                            order_by,
-                            sortByKey,
-                            filterable
-                        }: any) => {
-                            return <StyledTableCell {...getHeaderProps()} key={id}>
-                                {render('Header')}
-                                {!!rowIndex && <div className={styles.filterRow}>
-                                    {filterable && <EuiFieldText 
-                                        style={{ height: 31 }} 
-                                        placeholder={translate('Filter')}
-                                        onChange={debouncedFilterChange(sortByKey)}
-                                    />}
-                                    {sortable && <IconButton
-                                        size='small'
-                                        onClick={() => {
-                                            let direction;
-                                            if (!order_by) direction = 'desc';
-                                            else if (order_by === 'desc') direction = 'asc';
-                                            dispatch(setSortQuery({ sort_by: sortByKey, order_by: direction }));
-                                        }}
-                                    >
-                                        {order_by === 'asc' ? <ArrowUp color='info' /> : <ArrowDown color={order_by ? 'info' : 'disabled'} />}
-                                    </IconButton>}
-                                </div>}
-                            </StyledTableCell>
-                        })}     
-                    </HeaderRow>
-                ))}
-            </TableHead>
-            <TableBody {...getTableBodyProps()}>
-                {rows.map((row, i) => {
-                    prepareRow(row);
-                    return (
-                        <TableRow {...row.getRowProps()} key={row.id}>
-                            {row.cells.map(cell => {
-                                return (
-                                    <StyledTableCell {...cell.getCellProps()}>
-                                        {cell.render('Cell', { onNextClick })}
-                                    </StyledTableCell>
-                                );
-                            })}
-                        </TableRow>
-                    );
-                })}
-            </TableBody>
-        </Table>
-    </TableContainer>
+    return <div style={{ margin: 20 }}>
+        <TableHeader allColumns={allColumns} />
+        <TableContainer 
+            component={Paper} 
+            style={{
+                height: 'calc(100vh - 140px)',
+                width: 'calc(100vw - 280px)'
+            }}
+        >
+            <Table {...getTableProps()} style={{ borderCollapse: 'separate' }} stickyHeader>
+                <TableHead>
+                    {headerGroups.map((headerGroup, rowIndex) => (
+                        <HeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
+                            {headerGroup.headers.map(column => {
+                                return <StyledTableCell {...column.getHeaderProps()} key={column.id}>
+                                    <HeaderCell column={column} rowIndex={rowIndex} />
+                                </StyledTableCell>
+                            })}     
+                        </HeaderRow>
+                    ))}
+                </TableHead>
+                <TableBody {...getTableBodyProps()}>
+                    {rows.map((row, i) => {
+                        prepareRow(row);
+                        return (
+                            <TableRow {...row.getRowProps()} key={row.id}>
+                                {row.cells.map(cell => {
+                                    return (
+                                        <StyledTableCell {...cell.getCellProps()}>
+                                            {cell.render('Cell', { onNextClick })}
+                                        </StyledTableCell>
+                                    );
+                                })}
+                            </TableRow>
+                        );
+                    })}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    </div>
 };
 
 export default React.memo(ApplicantTable);
