@@ -88,7 +88,7 @@ function FlowRenderer<T extends mode>({
             </div>}
         </div>;
         const condition = conditions.find(e => e.from === stageArray[index]._id && e.to === stageArray[index + 1]._id);
-        const conditionElement = <ConditionElement key={condition?._id || index} {...condition} />;
+        const conditionElement = <ConditionElement key={condition?._id || index} condition={condition} stage={stage} />;
         if (index + 1 === stageArray.length) {
             return [...acc, stageElement];
         }

@@ -16,5 +16,26 @@
     border-radius: 20px;
     height: 40px;
     min-width: 40px;
+    cursor: pointer;
+  }
+}
+
+.saveButton {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-bottom: 10px;
+
+  .feedbackText {
+    color: red;
+    margin-bottom: 10px;
+  }
+  .successfulFeedbackText {
+      color: green;
+      margin-bottom: 10px;
+    }
+  
+  & > *:not(:first-child) {
+    margin-left: 10px;
   }
 }
