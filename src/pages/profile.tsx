@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import React, { useState } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
-import { getUser, updateUserAsync } from '../redux/slices/userSlice';
+import { getUser, updateUserAsync, updateTimeSlotsAsync } from '../redux/slices/userSlice';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
 import styles from '../styles/Profile.module.scss';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
@@ -10,10 +10,11 @@ import { MAIN_PAGE } from '../constants';
 import { SERVICES } from '../constants/services';
 import { setCurrentUser } from '../redux/slices/userSlice';
 import { wrapper } from '../redux/store';
-import { User } from '../types/models';
+import { User, TimeSlot } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
-import { EuiButton, EuiFieldText } from '@elastic/eui';
+import { EuiButton, EuiDatePicker, EuiFieldText, EuiFormRow, EuiIcon } from '@elastic/eui';
 import { translate } from '../utils';
+import moment from 'moment';
 
 const ProfilePage: NextPage = () => {
     const dispatch = useAppDispatch();
@@ -26,6 +27,67 @@ const ProfilePage: NextPage = () => {
 
     const [editable, setEditable] = useState(false);
     const [newName, setNewName] = useState(user.name);
+    const [timeSlots, setTimeSlots] = useState(user.availableTimes);
+    const [isOpen, setIsOpen] = useState(false);
+
+    const togglePopup = () => {
+        setIsOpen(!isOpen);
+    }
+
+    // This is an inline component because it uses page state
+    const Popup = (props: any) => {
+        // for popup screen
+        const [startDate, setStartDate] = useState(moment());
+        const [duration, setDuration] = useState(60);
+
+        const addTimeSlot = () => {
+            const newTimeSlot: TimeSlot = {
+                startTime: startDate.toDate().toString(),
+                durationInMins: duration
+            }
+
+            const newTimeSlots = [...timeSlots];
+            newTimeSlots.push(newTimeSlot);
+            setTimeSlots(newTimeSlots);
+            props.handleClose();
+        };
+
+        const handleDateChange = (date: any) => {
+            setStartDate(date);
+        };
+
+        const handleDurationChange = ({ target: { value } }: any) => {
+            if(!isNaN(value)){
+                setDuration(parseInt(value));
+            }
+        }
+
+        return (
+            <div className={styles.popupBox}>
+                <div className={styles.box}>
+                    <span className={styles.closeIcon} onClick={props.handleClose}>x</span>
+                    <h1 className={styles.title2}>Add a Time Slot</h1>
+                    <hr/>
+                    <EuiFormRow label='Enter Duration in Minutes'>
+                        <EuiFieldText
+                            id='popupDuration'
+                            value={duration}
+                            onChange={handleDurationChange}
+                        />
+                    </EuiFormRow>
+                    <EuiFormRow label='Select Start Date'>
+                        <EuiDatePicker 
+                            id='popupStartDate' 
+                            showTimeSelect
+                            selected={startDate} 
+                            onChange={handleDateChange} 
+                        />
+                    </EuiFormRow>
+                    <EuiButton onClick={addTimeSlot}>Add Time Slot</EuiButton>
+                </div>
+            </div>
+        );
+    };
 
     const handleSave = () => {
         const newProps = {
@@ -33,7 +95,20 @@ const ProfilePage: NextPage = () => {
             value: newName
         }
         dispatch(updateUserAsync( newProps ));
+        const newTimeSlots = [...timeSlots]
+        dispatch(updateTimeSlotsAsync( newTimeSlots ));
         setEditable(false);
+    }
+
+    const deleteTimeslot = (startTimeDel: string, durationDel: number) =>{
+        for(let i = 0; i < timeSlots.length; i++){
+            if(durationDel === timeSlots[i].durationInMins && startTimeDel === timeSlots[i].startTime){
+                const temp = [...timeSlots];
+                temp.splice(i,1);
+                setTimeSlots(temp);
+                break;
+            }
+        }
     }
 
     if (user) {
@@ -63,8 +138,52 @@ const ProfilePage: NextPage = () => {
                                 <p key={role} className={styles.p}>{role}</p>
                             ))}
 
+                        <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
+                        <table>
+                            <tbody>
+                                {timeSlots.length === 0 ? <tr><td><p className={styles.p}>{translate('No Available Time Specified')}</p></td></tr>
+                                    : timeSlots.map((availableTime: TimeSlot) => (
+                                        <tr key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                        new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                        new Date(availableTime.startTime).getUTCSeconds()  
+                                        }
+                                        >
+                                            <td>
+                                                <div>
+                                                    <p className={styles.p}>Start Date : {new Date(availableTime.startTime).getDate() + '/' +
+                                                    new Date(availableTime.startTime).getMonth() + '/' +
+                                                    new Date(availableTime.startTime).getFullYear()
+                                                    }
+                                                    </p>
+                                                    <p className={styles.p}>Start Time in UTC : {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                    new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                                    new Date(availableTime.startTime).getUTCSeconds()  
+                                                    }
+                                                    </p>
+                                                    <p className={styles.p}>Duration in Minutes : {availableTime.durationInMins}</p>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className={styles.deleteButton}
+                                                    onClick={() => deleteTimeslot(availableTime.startTime, availableTime.durationInMins)}
+                                                >
+                                                    <EuiIcon type='cross'></EuiIcon>
+                                                </button>
+                                            </td>                                      
+                                        </tr>
+                                    ))}
+                            </tbody>
+                        </table>
+
+                        <button onClick={togglePopup} className={styles.addButton}>Add Time Slot</button>
+                        <hr />
+
                         <EuiButton className={styles.button} onClick={() => handleSave()}>{translate('Save')}</EuiButton>
 
+                        {isOpen && <Popup
+                            handleClose={togglePopup}
+                        />}
                     </div>
                     : <div>
                         <h1 className={styles.title2}>{translate('User Name :')}</h1>
@@ -82,7 +201,29 @@ const ProfilePage: NextPage = () => {
                                 <p key={role} className={styles.p}>{role}</p>
                             ))}
 
-                        <h1 className={styles.title2}>{translate('User Available Times :')}</h1>
+                        <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
+                        {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
+                            : timeSlots.map((availableTime: TimeSlot) => (
+                                <div key={new Date(availableTime.startTime).getUTCHours() + ':' +
+                                new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                new Date(availableTime.startTime).getUTCSeconds()  
+                                }
+                                >
+                                    <div>
+                                        <p className={styles.p}>Start Date : {new Date(availableTime.startTime).getDate() + '/' +
+                                            new Date(availableTime.startTime).getMonth() + '/' +
+                                            new Date(availableTime.startTime).getFullYear()
+                                        }
+                                        </p>
+                                        <p className={styles.p}>Start Time in UTC : {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                            new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                            new Date(availableTime.startTime).getUTCSeconds()  
+                                        }
+                                        </p>
+                                        <p className={styles.p}>Duration in Minutes : {availableTime.durationInMins}</p>
+                                    </div>
+                                </div>
+                            ))}
 
                         <EuiButton className={styles.button} onClick={() => setEditable(true)}>{translate('Edit')}</EuiButton>
                     </div>

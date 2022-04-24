@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { User } from '../../types/models';
+import { TimeSlot, User } from '../../types/models';
 import type { AppState } from '../store';
 
 export interface UserState {
@@ -24,7 +24,7 @@ const initialState: UserState = {
 
 export const updateUserAsync = createAsyncThunk(
     'user/updateUser',
-    async  (newProps: {name: string, value: string} )  => {
+    async (newProps: {name: string, value: string} )  => {
         const { data: user } = await axios.put(`/api/user/updateUser`, newProps);
         return user;
     }
@@ -34,6 +34,14 @@ export const getUserAsync = createAsyncThunk(
     'user/getUser',
     async () => {
         const { data: user } = await axios.get(`/api/user/getUser`);
+        return user;
+    }
+);
+
+export const updateTimeSlotsAsync = createAsyncThunk(
+    'user/updateTimeSlots',
+    async (timeSlots : TimeSlot[]) => {
+        const { data: user } = await axios.put(`/api/user/updateTimeSlots`, timeSlots);
         return user;
     }
 );
@@ -50,6 +58,9 @@ export const userSlice = createSlice({
         builder
             .addCase(updateUserAsync.fulfilled, (state, action) => {
                 state.user.name = action.payload.name;
+            })
+            .addCase(updateTimeSlotsAsync.fulfilled, (state, action) => {
+                state.user.availableTimes = action.payload.availableTimes;
             })
             .addCase(getUserAsync.fulfilled, (state, action) => {
                 state.user = action.payload;

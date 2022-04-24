@@ -110,6 +110,6 @@ export enum ROLES {
 }
 
 export interface TimeSlot {
-  startTime: Date,
+  startTime: string,
   durationInMins: number
 }
