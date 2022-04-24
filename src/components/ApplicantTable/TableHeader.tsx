@@ -4,6 +4,7 @@ import { Checkbox, FormControlLabel } from '@mui/material';
 import { useAppSelector, useAppDispatch } from '../../utils/hooks';
 import { getQueries, clearFilters, setSortQuery, fetchSubmissionsAsync } from '../../redux/slices/submissionsSlice';
 import styles from './ApplicantTable.module.scss';
+import Pagination from './Pagination';
 
 type TableHeaderProps = {
     allColumns: any[];
@@ -37,12 +38,28 @@ const TableHeader = ({ allColumns }: TableHeaderProps) => {
     }
 
     return <div className={styles.header}>
+        <Pagination />
+        <div style={{ flex: 1 }}/>
+        {Object.values(queries.filters).filter(e => e).length > 0 && <EuiButton
+            size="s"
+            color='text'
+            onClick={() => dispatch(clearFilters())}
+        >
+            Clear Filters
+        </EuiButton>}
+        {queries.sort_by && <EuiButton
+            size="s"
+            color='text'
+            onClick={() => dispatch(setSortQuery({ sort_by: '', order_by: '' }))}
+        >
+            Clear Sorting
+        </EuiButton>}
         <EuiPopover
             button={
                 <EuiButton
                     iconType="arrowDown"
                     iconSide="right"
-                    onClick={() => setHideColumnsPopoverIsOpen(true)}
+                    onClick={() => setHideColumnsPopoverIsOpen(e => !e)}
                     size="s"
                     color='text'
                 >
@@ -89,25 +106,10 @@ const TableHeader = ({ allColumns }: TableHeaderProps) => {
                 })}
             </div>
         </EuiPopover>
-        {Object.values(queries.filters).filter(e => e).length > 0 && <EuiButton
-            size="s"
-            color='text'
-            onClick={() => dispatch(clearFilters())}
-        >
-            Clear Filters
-        </EuiButton>}
-        {queries.sort_by && <EuiButton
-            size="s"
-            color='text'
-            onClick={() => dispatch(setSortQuery({ sort_by: '', order_by: '' }))}
-        >
-            Clear Sorting
-        </EuiButton>}
         <EuiButton
             size="s"
             color='text'
             onClick={() => dispatch(fetchSubmissionsAsync())}
-            style={{ float: 'right' }}
         >
             Refresh
         </EuiButton>

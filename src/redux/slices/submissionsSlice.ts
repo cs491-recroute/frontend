@@ -62,6 +62,7 @@ export const submissionsSlice = createSlice({
         },
         setStageFilter: (state, action: { payload: { stageIndex: number, stageCompleted: boolean } }) => {
             const { stageIndex, stageCompleted } = action.payload;
+            state.queries.page = 1;
             state.queries = { ...state.queries, stageIndex, stageCompleted };
         },
         resetStageFilter: state => {
@@ -87,6 +88,10 @@ export const submissionsSlice = createSlice({
         },
         clearFilters: state => {
             state.queries.filters = {};
+        },
+        setPaginationQuery: (state, action: { payload: { page: number, limit: number } }) => {
+            const { page, limit } = action.payload;
+            state.queries = { ...state.queries, page, limit };
         }
     },
     extraReducers: builder => {
@@ -139,7 +144,7 @@ export const submissionsSlice = createSlice({
     }
 });
 
-export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery, setFilterQuery, clearFilters } = submissionsSlice.actions;
+export const { setCurrentFlow, setStageFilter, resetStageFilter, setSortQuery, setFilterQuery, clearFilters, setPaginationQuery } = submissionsSlice.actions;
 
 export const getCurrentFlow = (state: AppState) => state.submissions.currentFlow;
 export const getStageCounts = (state: AppState) => state.submissions.metadata.stageCounts;
@@ -150,5 +155,6 @@ export const getActiveStageFilter = (state: AppState) => {
     return { stageIndex, stageCompleted };
 };
 export const getLoading = (state: AppState) => state.submissions.loading;
+export const getMetadata = (state: AppState) => state.submissions.metadata;
 
 export default submissionsSlice.reducer;
