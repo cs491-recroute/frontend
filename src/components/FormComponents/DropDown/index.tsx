@@ -21,7 +21,7 @@ const DropDown = forwardRef(({ required, title, placeholder, editMode, options }
     
     const handleChange = ({ target: { value }}: any) => {
         setError(!!required && !value);
-        setSelectedOption(value);
+        setSelectedOption(options?.find(option => option.description === value)?._id || '');
     };
 
     const newArray = options?.map(option => {
