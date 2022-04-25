@@ -1,5 +1,5 @@
-import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
-import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle, EuiSwitch } from '@elastic/eui';
+import React, { ChangeEventHandler, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { getCategories, saveAsTemplateAsync } from '../../redux/slices/testBuilderSlice';
 import { Question } from '../../types/models';
 import { translate } from '../../utils';
@@ -31,6 +31,7 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
         isError: false,
         errorMessage: ''
     });
+    const [checked, setChecked] = useState(false);
 
     useEffect(() => {
         const newOptions = categoryOptions.map<CategoryOption>(({ _id, name }) => ({
@@ -57,9 +58,10 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
         } else {
             setNameError({ isError: false, errorMessage: '' });
             setCategoryError({ isError: false, errorMessage: '' });
-            const newQ = { ...question };
-            newQ.categoryID = selectedOptions[0].value?.categoryID ? selectedOptions[0].value?.categoryID : '';
-            const response = await dispatch(saveAsTemplateAsync(newQ));
+            const questionData = {...question};
+            questionData.categoryID = selectedOptions[0].value?.categoryID ? selectedOptions[0].value?.categoryID : '';
+            const allData = {'questionData': questionData,'accessModifier': (checked ? 'public' : 'private')};
+            const response = await dispatch(saveAsTemplateAsync(allData));
             setSendButtonClicked(true);
             setTimeout(setSendButtonClicked, 2000);
             if (response.type.search('fulfilled') === -1) {
@@ -120,6 +122,13 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
                         selectedOptions={selectedOptions}
                         onChange={onChange}
 
+                    />
+                </EuiFormRow>
+                <EuiFormRow>
+                    <EuiSwitch
+                        label={checked ? "public" : "private"}
+                        checked={checked}
+                        onChange={e => setChecked(e.target.checked)}
                     />
                 </EuiFormRow>
                 <div className={styles.saveButton}>

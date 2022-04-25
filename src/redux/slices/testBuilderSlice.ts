@@ -105,8 +105,8 @@ export const getPoolQuestionsAsync = createAsyncThunk(
 
 export const saveAsTemplateAsync = createAsyncThunk(
     'test/saveAsTemplate',
-    async (questionData: Partial<Question>) => {
-        const { data: question } = await axios.post(`/api/questions/saveAsTemplate`, questionData);
+    async (allData : {questionData: Partial<Question>, accessModifier: string}) => {
+        const { data: question } = await axios.post(`/api/questions/saveAsTemplate`, allData);
         return question;
     }
 );
