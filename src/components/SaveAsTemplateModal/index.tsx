@@ -20,7 +20,7 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
     const [options, setOptions] = useState([] as CategoryOption[]);
     const [selectedOptions, setSelectedOptions] = useState([] as CategoryOption[]);
     const [isOpen, setOpen] = useState(false);
-    const [questionName, setQuestionName] = useState(question.description);
+    const [questionName, setQuestionName] = useState(question.name);
     const [sendSuccessful, setSendSuccessful] = useState(false);
     const [sendButtonClicked, setSendButtonClicked] = useState(false);
     const [nameError, setNameError] = useState({
@@ -59,6 +59,7 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
             setNameError({ isError: false, errorMessage: '' });
             setCategoryError({ isError: false, errorMessage: '' });
             const questionData = {...question};
+            questionData.name = questionName;
             questionData.categoryID = selectedOptions[0].value?.categoryID ? selectedOptions[0].value?.categoryID : '';
             const allData = {'questionData': questionData,'accessModifier': (checked ? 'public' : 'private')};
             const response = await dispatch(saveAsTemplateAsync(allData));
@@ -77,7 +78,7 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
     const close = () => {
         setNameError({ isError: false, errorMessage: '' });
         setCategoryError({ isError: false, errorMessage: '' });
-        setQuestionName(question.description);
+        setQuestionName(question.name);
         setSendSuccessful(false);
         setOpen(false);
     }

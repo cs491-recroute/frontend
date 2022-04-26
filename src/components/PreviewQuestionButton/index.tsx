@@ -21,7 +21,7 @@ const PreviewQuestionButton = ({ question }: PreviewQuestionButtonProps) => {
     return (
         <>
             <ListItemButton style={{height: '50px'}}>
-                <ListItemText onClick={handleBasicSelect(question)} primary={question.description}/>
+                <ListItemText onClick={handleBasicSelect(question)} primary={question.name}/>
                 <VisibilityIcon onClick={() => previewQuestionRef.current?.open()}/>
             </ListItemButton>
             <PreviewQuestionModal question={question} ref={previewQuestionRef} />
