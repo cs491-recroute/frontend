@@ -6,8 +6,10 @@ import OptionsEditor from './OptionsEditor';
 import TestCasesEditor from './TestCasesEditor';
 import PointsEditor from './PointsEditor';
 import { ForwardRefExoticComponent, RefObject } from 'react';
+import NameEditor from './NameEditor';
 
 export const PROP_EDITORS: PartialRecord<keyof Question, (props: { defaultValue: any; ref: RefObject<{ value: any; }>; }) => ReturnType<ForwardRefExoticComponent<{ value: string; }>>> = {
+    name: NameEditor,
     description: DescriptionEditor,
     options: OptionsEditor,
     testCases: TestCasesEditor,
@@ -15,7 +17,7 @@ export const PROP_EDITORS: PartialRecord<keyof Question, (props: { defaultValue:
 };
 
 export const ALLOWED_EDITORS = {
-    [QUESTION_TYPES.OPEN_ENDED]: ['description'],
-    [QUESTION_TYPES.MULTIPLE_CHOICE]: ['description', 'options', 'points'],
-    [QUESTION_TYPES.CODING]: ['description', 'testCases']
+    [QUESTION_TYPES.OPEN_ENDED]: ['name', 'description'],
+    [QUESTION_TYPES.MULTIPLE_CHOICE]: ['name', 'description', 'options', 'points'],
+    [QUESTION_TYPES.CODING]: ['name', 'description', 'testCases']
 }

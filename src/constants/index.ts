@@ -52,6 +52,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.shortText,
             required: false,
             title: 'Please enter',
+            name: 'Short Text',
             placeholder: 'Enter your answer'
         },
         sortKey: 'text'
@@ -64,6 +65,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.longText,
             required: false,
             title: 'Please enter',
+            name: 'Long Text',
             placeholder: 'Enter your answer'
         },
         sortKey: 'text'
@@ -76,6 +78,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.number,
             required: false,
             title: 'Please enter a number',
+            name: 'Number',
             placeholder: 'Enter your answer'
         },
         sortKey: 'number'
@@ -88,6 +91,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.address,
             required: false,
             title: 'Please enter your address',
+            name: 'Address',
             placeholder: 'Enter your address'
         },
         sortKey: 'address'
@@ -100,6 +104,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.datePicker,
             required: false,
             title: 'Select Date',
+            name: 'Date',
             placeholder: 'Select Date'
         },
         sortKey: 'date',
@@ -113,6 +118,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.dropDown,
             required: false,
             title: 'Select Options',
+            name: 'Drop Down',
             options: ['Option 1', 'Option 2']
         },
         sortKey: 'selection',
@@ -127,6 +133,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.fullName,
             required: false,
             titles: ['Please enter your name', 'Please enter your surname'],
+            name: 'Full Name',
             placeholders: ['Enter your name', 'Enter your surname']
         },
         sortKey: 'name'
@@ -138,6 +145,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.header,
             title: 'Heading',
+            name: 'Header',
             required: false
         },
         viewComponent: true,
@@ -151,6 +159,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.phone,
             required: false,
             title: 'Please enter you phone number',
+            name: 'Phone Number',
             placeholder: 'Enter your phone number'
         },
         sortKey: 'phoneNumber'
@@ -163,6 +172,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.upload,
             required: false,
             title: 'Please upload files here',
+            name: 'File Upload',
             placeholder: 'Select or drag and drop files'
         },
         sortKey: 'upload',
@@ -177,6 +187,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.email,
             required: false,
             title: 'Please enter your Email',
+            name: 'Email',
             placeholder: 'Enter your Email'
         },
         sortKey: 'email'
@@ -189,6 +200,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.singleChoice,
             required: false,
             title: 'Single select',
+            name: 'Single Choice Question',
             options: ['option 1', 'option 2']
         },
         sortable: false,
@@ -203,6 +215,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
             type: ComponentTypes.multipleChoice,
             required: false,
             title: 'Multiple select',
+            name: 'Multiple Choice Question',
             options: ['option 1', 'option 2']
         },
         sortable: false,

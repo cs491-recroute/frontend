@@ -22,6 +22,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
         type: QUESTION_TYPES.OPEN_ENDED,
         Renderer: OpenEnded,
         defaultProps: {
+            name: 'Open Ended Question',
             description: 'Please answer the question',
             type: QUESTION_TYPES.OPEN_ENDED
         },
@@ -33,6 +34,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
         type: QUESTION_TYPES.MULTIPLE_CHOICE,
         Renderer: MultipleChoice,
         defaultProps: {
+            name: 'Multiple Choice Question',
             description: 'Please select the correct option',
             type: QUESTION_TYPES.MULTIPLE_CHOICE,
             options: [
@@ -49,6 +51,7 @@ export const QUESTION_MAPPINGS: Record<QUESTION_TYPES, {
         type: QUESTION_TYPES.CODING,
         Renderer: Coding,
         defaultProps: {
+            name: 'Coding Question',
             description: 'Please write the code',
             type: QUESTION_TYPES.CODING,
             testCases: []

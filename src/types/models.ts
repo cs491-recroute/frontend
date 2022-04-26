@@ -51,6 +51,7 @@ export type Option = {
 } & Partial<Basic>;
 
 export type Component = {
+  name: string;
   type: ComponentTypes;
   required: boolean;
   title: string;
@@ -79,6 +80,7 @@ export type Interview = {
 } & Basic;
 
 export type Question = {
+  name: string;
   description: string;
   type: QUESTION_TYPES;
   options?: ({ description: string; isCorrect: boolean; } & Partial<Basic>)[];
@@ -100,7 +102,7 @@ export type User = {
   availableTimes: TimeSlot[]
 } & Basic;
 
-export type Interviewer ={
+export type Interviewer = {
   name: string
 } & Basic;
 

@@ -12,7 +12,7 @@ const RightPanel = () => {
     const dispatch = useAppDispatch();
     const { status: isOpen, question } = useAppSelector(getRightPanelStatus);
     const editorRefs: PartialRecord<keyof Question, RefObject<{ value: any; }>> = {};
-    
+
     const close = useCallback(() => {
         dispatch(toggleRightPanel({ status: false }));
     }, []);
@@ -22,7 +22,7 @@ const RightPanel = () => {
             return { ...acc, [ref]: editorRefs[ref]?.current?.value };
         }, {});
 
-        dispatch(updateQuestionAsync({ newProps, questionID: question?._id}));
+        dispatch(updateQuestionAsync({ newProps, questionID: question?._id }));
     }
 
     if (!question) return null;
@@ -41,7 +41,7 @@ const RightPanel = () => {
                 {translate('Question Settings')}
             </EuiText>
             <hr />
-            {(Object.keys(question) as Array<keyof Question>).sort().map(key => {
+            {(Object.keys(question) as Array<keyof Question>).map(key => {
                 const Renderer = PROP_EDITORS[key];
 
                 if (!Renderer || !ALLOWED_EDITORS[question.type].includes(key)) return null;
@@ -49,7 +49,7 @@ const RightPanel = () => {
                 const newRef = createRef<{ value: any; }>();
                 editorRefs[key] = newRef;
                 return <div className={styles.propEditor} key={key}>
-                    <Renderer ref={newRef} defaultValue={question[key]}/>
+                    <Renderer ref={newRef} defaultValue={question[key]} />
                 </div>;
             })}
             <EuiButton onClick={handleSave} className={styles.saveButton}>{translate('Save')}</EuiButton>
