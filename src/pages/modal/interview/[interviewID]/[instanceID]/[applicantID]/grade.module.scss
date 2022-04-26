@@ -1,0 +1,19 @@
+.shareButtons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    margin-bottom: 10px;
+
+    .successFeedbackText {
+      color: green;
+      margin-bottom: 10px;
+    }
+    .unsuccessFeedbackText {
+      color: red;
+      margin-bottom: 10px;
+    }
+    
+    & > *:not(:first-child) {
+      margin-left: 10px;
+    }
+}
