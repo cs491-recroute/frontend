@@ -121,7 +121,7 @@ const ProfilePage: NextPage = () => {
                     {editable ?
                         <table>
                             <tbody>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User Name :')}</h1>
                                     </td>
@@ -134,8 +134,7 @@ const ProfilePage: NextPage = () => {
                                         </EuiFieldText>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('Email :')}</h1>
                                     </td>
@@ -143,8 +142,7 @@ const ProfilePage: NextPage = () => {
                                         <p className={styles.p}>{user.email}</p>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('Company :')}</h1>
                                     </td>
@@ -152,8 +150,7 @@ const ProfilePage: NextPage = () => {
                                         <p className={styles.p}>{user.company.name}</p>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User Roles :')}</h1>
                                     </td>
@@ -164,8 +161,7 @@ const ProfilePage: NextPage = () => {
                                             ))}
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
                                         <button onClick={togglePopup} className={styles.addButton}>Add Time Slot</button>
@@ -194,6 +190,7 @@ const ProfilePage: NextPage = () => {
                                                                     </p>
                                                                     <p className={styles.p}>Duration in Minutes : {availableTime.durationInMins}</p>
                                                                 </div>
+                                                                <hr className={styles.tablehr}></hr> 
                                                             </td>
                                                             <td>
                                                                 <button
@@ -202,7 +199,7 @@ const ProfilePage: NextPage = () => {
                                                                 >
                                                                     <EuiIcon type='cross'></EuiIcon>
                                                                 </button>
-                                                            </td>                                      
+                                                            </td> 
                                                         </tr>
                                                     ))}
                                             </tbody>
@@ -216,7 +213,7 @@ const ProfilePage: NextPage = () => {
                         </table>
                         : <table>
                             <tbody>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User Name :')}</h1>
                                     </td>
@@ -224,8 +221,7 @@ const ProfilePage: NextPage = () => {
                                         <p className={styles.p}>{user.name}</p>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('Email :')}</h1>
                                     </td>
@@ -233,8 +229,7 @@ const ProfilePage: NextPage = () => {
                                         <p className={styles.p}>{user.email}</p>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('Company :')}</h1>
                                     </td>
@@ -242,8 +237,7 @@ const ProfilePage: NextPage = () => {
                                         <p className={styles.p}>{user.company.name}</p>
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User Roles :')}</h1>
                                     </td>
@@ -254,8 +248,7 @@ const ProfilePage: NextPage = () => {
                                             ))}
                                     </td>
                                 </tr>
-                                <hr className={styles.tablehr}></hr>
-                                <tr>
+                                <tr className={styles.tr}>
                                     <td>
                                         <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
                                     </td>
