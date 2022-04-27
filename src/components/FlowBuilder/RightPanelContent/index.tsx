@@ -35,6 +35,10 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
         };
     });
 
+    //for save button feedback
+    const [saveButtonClicked, setSaveButtonClicked] = useState(false);
+    const [isFulfilled, setIsFulfilled] = useState(false);
+
     useEffect(() => {
         const newStage = flow.stages.find(e => e._id === _id);
         setSpecifyDuration(newStage?.startDate !== null);
@@ -46,16 +50,25 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
         setInterviewers(newStage?.stageProps.interviewers)
     }, [flow, _id]);
 
-    const handleSaveButton = () => {
+    const handleSaveButton = async() => {
         //if check yap state yoksa direkt hata ver
         if (stage) {
-            dispatch(updateStageAsync({
+            const response = await dispatch(updateStageAsync({
                 type: stage.type,
                 stageID: stage.stageID,
                 ...(testDuration && { testDuration }),
                 ...(specifyDuration && { startDate: startDate.toString() }),
                 ...(specifyDuration && { endDate: endDate.toString() })
             }));
+            setSaveButtonClicked(true);
+            setTimeout(setSaveButtonClicked, 2000);
+            if(response.type.search('fulfilled') === -1){
+                //rejected
+                setIsFulfilled(false);
+            } else {
+                //succesfull
+                setIsFulfilled(true);
+            }
         } else {
             alert('Changes are not saved!')
         }
@@ -211,9 +224,21 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
             </div>}
             <EuiSpacer />
             <EuiFormRow>
-                <EuiButton onClick={handleSaveButton}>
-                    Save
-                </EuiButton>
+                <table>
+                    <tr>
+                        <th className={styles.th}>
+                            <EuiFormRow>  
+                                <p className={styles.feedbackText1}> {saveButtonClicked && isFulfilled && translate('Saved Succesfully')}</p>
+                            </EuiFormRow>
+                            <EuiFormRow> 
+                                <p className={styles.feedbackText2}> {saveButtonClicked && !isFulfilled && translate('Unseccessful Save')}</p>
+                            </EuiFormRow>
+                        </th>
+                        <th> 
+                            <EuiButton onClick={handleSaveButton} className={styles.saveButton}>{translate('Save')}</EuiButton>
+                        </th>
+                    </tr>
+                </table>
             </EuiFormRow>
         </div>
     );
