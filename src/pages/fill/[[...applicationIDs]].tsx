@@ -23,9 +23,10 @@ type FillingPageProps = {
     error?: string;
     flowName?: string;
     requestMail?: boolean;
+    prefilledEmail?: string;
 }
 
-const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, requestMail }: FillingPageProps) => {
+const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, requestMail, prefilledEmail }: FillingPageProps) => {
     const router = useRouter();
     const { applicationIDs } = router.query;
     const [flowID, stageID, applicantID] = applicationIDs as string[];
@@ -34,7 +35,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
         <title>{flowName}</title>
     </Head> : null;
     const [started, setStarted] = useState(false);
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(prefilledEmail || '');
     const [errorText, setError] = useState('');
     if (!stage) {
         return <Paper elevation={10} className={styles.container}>
@@ -108,7 +109,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
             </>
         }
         case STAGE_TYPE.FORM: {
-            if (!started && requestMail) {
+            if (!started && requestMail && !prefilledEmail) {
                 return <Paper elevation={10} className={styles.container} >
                     {HeadTitle}
                     <EuiText textAlign='center'>
@@ -143,8 +144,8 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
                 <FormContent 
                     form={stage.stageProps as Form} 
                     editMode={false} 
-                    userIdentifier={requestMail ? email : applicantID} 
-                    withEmail={requestMail} 
+                    userIdentifier={email || applicantID} 
+                    withEmail={!!email} 
                 />
             </>
         }
@@ -155,7 +156,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
 };
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(({ dispatch }) => async (context): Promise<any> => {
-    const { applicationIDs } = context.query;
+    const { applicationIDs, email } = context.query;
     if (!applicationIDs || !Array.isArray(applicationIDs)) {
         return {
             redirect: {
@@ -186,6 +187,16 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
         if (stage.type === STAGE_TYPE.TEST) {       
             return { props: { error: 'You don\'t have permission to view this stage', flowName }}
         } else if (stage.type === STAGE_TYPE.FORM) {
+            const queryEmail = email?.toString();
+
+            if (queryEmail) {
+                try {
+                    await gatewayManager.useService(SERVICES.FLOW).get(`/${flowID}/${stageID}/${queryEmail}/access`, { params: { withEmail: true }});
+                    return { props: { stage, flowName, requestMail: true, prefilledEmail: queryEmail } };
+                } catch ({ response: { data: { message }}}: any) {
+                    return { props: { error: message, flowName } };
+                }
+            }
             return { props: { stage, flowName, requestMail: true }};
         }
     }
