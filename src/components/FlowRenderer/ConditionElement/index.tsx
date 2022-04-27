@@ -217,7 +217,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                             />
                         </EuiFormRow>}
 
-                        {selectedOptions[0] && <EuiFormRow
+                        {(selectedOptions[0] || (stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW)) && <EuiFormRow
                             isInvalid={error.operationError}
                             error={error.operationErrorMessage}
                             label={translate('Operation')}
