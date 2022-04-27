@@ -51,9 +51,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.shortText,
             required: false,
-            title: 'Please enter',
+            title: 'Please Enter Your Text',
             name: 'Short Text',
-            placeholder: 'Enter your answer'
+            placeholder: 'Enter your text'
         },
         sortKey: 'text'
     },
@@ -64,9 +64,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.longText,
             required: false,
-            title: 'Please enter',
+            title: 'Please Enter Your Text',
             name: 'Long Text',
-            placeholder: 'Enter your answer'
+            placeholder: 'Enter your text'
         },
         sortKey: 'text'
     },
@@ -77,9 +77,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.number,
             required: false,
-            title: 'Please enter a number',
+            title: 'Please Enter a Number',
             name: 'Number',
-            placeholder: 'Enter your answer'
+            placeholder: 'Enter a number'
         },
         sortKey: 'number'
     },
@@ -90,7 +90,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.address,
             required: false,
-            title: 'Please enter your address',
+            title: 'Please Enter Your Address',
             name: 'Address',
             placeholder: 'Enter your address'
         },
@@ -103,9 +103,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.datePicker,
             required: false,
-            title: 'Select Date',
+            title: 'Please Select a Date',
             name: 'Date',
-            placeholder: 'Select Date'
+            placeholder: 'Select date'
         },
         sortKey: 'date',
         filterable: false
@@ -117,9 +117,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.dropDown,
             required: false,
-            title: 'Select Options',
+            title: 'Please Select an Option',
             name: 'Drop Down',
-            options: ['Option 1', 'Option 2']
+            options: ['Default Option 1', 'Default Option 2']
         },
         sortKey: 'selection',
         sortable: false,
@@ -132,7 +132,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.fullName,
             required: false,
-            titles: ['Please enter your name', 'Please enter your surname'],
+            titles: ['Please Enter Your Name', 'Please Enter Your Surname'],
             name: 'Full Name',
             placeholders: ['Enter your name', 'Enter your surname']
         },
@@ -144,7 +144,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         Renderer: Header,
         defaultProps: {
             type: ComponentTypes.header,
-            title: 'Heading',
+            title: 'This is a Header',
             name: 'Header',
             required: false
         },
@@ -158,7 +158,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.phone,
             required: false,
-            title: 'Please enter you phone number',
+            title: 'Please Enter Your Phone Number',
             name: 'Phone Number',
             placeholder: 'Enter your phone number'
         },
@@ -171,7 +171,7 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.upload,
             required: false,
-            title: 'Please upload files here',
+            title: 'Please Upload Files Here',
             name: 'File Upload',
             placeholder: 'Select or drag and drop files'
         },
@@ -186,9 +186,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.email,
             required: false,
-            title: 'Please enter your Email',
+            title: 'Please Enter Your Email',
             name: 'Email',
-            placeholder: 'Enter your Email'
+            placeholder: 'Enter your email'
         },
         sortKey: 'email'
     },
@@ -199,9 +199,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.singleChoice,
             required: false,
-            title: 'Single select',
-            name: 'Single Choice Question',
-            options: ['option 1', 'option 2']
+            title: 'Please Select an Option',
+            name: 'Single Choice Component',
+            options: ['Default Option 1', 'Default Option 2']
         },
         sortable: false,
         sortKey: 'selection',
@@ -214,9 +214,9 @@ export const COMPONENT_MAPPINGS: Record<any, {
         defaultProps: {
             type: ComponentTypes.multipleChoice,
             required: false,
-            title: 'Multiple select',
+            title: 'Please Select Option(s)',
             name: 'Multiple Choice Question',
-            options: ['option 1', 'option 2']
+            options: ['Default Option 1', 'Default Option 2']
         },
         sortable: false,
         sortKey: 'selections',

@@ -12,14 +12,10 @@ const NameEditor = forwardRef<{ value: Component['name']; }, { defaultValue: Com
     return (
         <div className={styles.label}>
             {translate('Name')}
-            <EuiTextArea
-                resize='none'
-                rows={1}
+            <p
                 className={styles.textArea}
                 defaultValue={defaultValue}
-                value={value}
-                onChange={({ target: { value: changedValue } }) => setValue(changedValue)}
-            />
+            >{value}</p>
         </div>
     );
 });

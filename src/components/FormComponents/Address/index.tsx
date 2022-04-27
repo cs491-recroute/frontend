@@ -1,4 +1,4 @@
-import { EuiTextArea, EuiFormRow } from '@elastic/eui';
+import { EuiFormRow, EuiFieldText } from '@elastic/eui';
 import React, { forwardRef, useState, useImperativeHandle } from 'react';
 import { translate } from '../../../utils';
 
@@ -28,7 +28,7 @@ const Address = forwardRef(({ required, title, placeholder, editMode }: AddressP
         isInvalid={error} 
         error={translate('This field is required')}
     >
-        <EuiTextArea
+        <EuiFieldText
             fullWidth
             disabled={editMode}
             placeholder={placeholder}

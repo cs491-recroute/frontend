@@ -31,6 +31,7 @@ const MultipleChoice = forwardRef(({ required, title, editMode, options = [] }: 
         <EuiCheckboxGroup 
             options={options.map(e => ({ id: e._id || '', label: e.description }))}
             idToSelectedMap={selectedOptions}
+            disabled={editMode}
             onChange={id => {
                 setSelectedOptions({ ...selectedOptions, [id]: !selectedOptions[id] });
                 setError(false);
