@@ -12,7 +12,7 @@ import { setCurrentUser } from '../redux/slices/userSlice';
 import { wrapper } from '../redux/store';
 import { User, TimeSlot } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
-import { EuiButton, EuiDatePicker, EuiFieldText, EuiFormRow, EuiIcon } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiDatePicker, EuiFieldText, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiOverlayMask } from '@elastic/eui';
 import { translate } from '../utils';
 import moment from 'moment';
 import { Paper } from '@mui/material';
@@ -39,11 +39,11 @@ const ProfilePage: NextPage = () => {
     const Popup = (props: any) => {
         // for popup screen
         const [startDate, setStartDate] = useState(moment());
-        const [duration, setDuration] = useState(60);
+        const [duration, setDuration] = useState(30);
 
         const addTimeSlot = () => {
             const newTimeSlot: TimeSlot = {
-                startTime: startDate.toDate().toString(),
+                startTime: startDate?.toDate().toString(),
                 durationInMins: duration
             }
 
@@ -57,36 +57,48 @@ const ProfilePage: NextPage = () => {
             setStartDate(date);
         };
 
+        /*
         const handleDurationChange = ({ target: { value } }: any) => {
             if(!isNaN(value)){
                 setDuration(parseInt(value));
             }
-        }
+        }*/
 
         return (
-            <div className={styles.popupBox}>
-                <div className={styles.box}>
-                    <span className={styles.closeIcon} onClick={props.handleClose}>x</span>
-                    <h1 className={styles.title2}>Add a Time Slot</h1>
-                    <hr/>
-                    <EuiFormRow label='Enter Duration in Minutes'>
-                        <EuiFieldText
-                            id='popupDuration'
-                            value={duration}
-                            onChange={handleDurationChange}
-                        />
-                    </EuiFormRow>
-                    <EuiFormRow label='Select Start Date'>
-                        <EuiDatePicker 
-                            id='popupStartDate' 
-                            showTimeSelect
-                            selected={startDate} 
-                            onChange={handleDateChange} 
-                        />
-                    </EuiFormRow>
-                    <EuiButton onClick={addTimeSlot}>Add Time Slot</EuiButton>
-                </div>
-            </div>
+            <EuiOverlayMask>
+                <EuiModal onClose={togglePopup}>
+                    <EuiModalHeader>
+                        <EuiModalHeaderTitle>Add a Time Slot</EuiModalHeaderTitle>
+                    </EuiModalHeader>
+
+                    <EuiModalBody>
+                        {<div>
+                            <EuiFormRow label='Fixed Duration in Minutes'>
+                                <p
+                                    id='popupDuration'
+                                >{duration}</p>
+                            </EuiFormRow>
+                            <EuiFormRow label='Select Start Date'>
+                                <EuiDatePicker 
+                                    id='popupStartDate' 
+                                    showTimeSelect
+                                    selected={startDate}
+                                    placeholder='Select Date and Hour'
+                                    onChange={handleDateChange} 
+                                />
+                            </EuiFormRow>
+                        </div>}
+                    </EuiModalBody>
+
+                    <EuiModalFooter>
+                        <EuiButtonEmpty onClick={() => togglePopup()}>Cancel</EuiButtonEmpty>
+
+                        <EuiButton onClick={addTimeSlot} fill>
+                        Add Time Slot
+                        </EuiButton>
+                    </EuiModalFooter>
+                </EuiModal>
+            </EuiOverlayMask>
         );
     };
 
