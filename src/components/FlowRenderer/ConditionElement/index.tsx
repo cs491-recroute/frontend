@@ -5,13 +5,13 @@ import { ComponentTypes, Condition, Form, Stage, Option } from '../../../types/m
 import { translate } from '../../../utils';
 import styles from './Condition.module.scss';
 
-type FieldOption = EuiComboBoxOptionOption<{ name: string; componentID: string; componentType: ComponentTypes; componentOptions: Option[];}>;
+type FieldOption = EuiComboBoxOptionOption<{ name: string; componentID: string; componentType: ComponentTypes; componentOptions: Option[]; }>;
 const stringComponents = ["address", "fullName", "header", "longText", "phone", "shortText", "email"];
 const dropDownComponents = ["dropDown", "multipleChoice", "singleChoice"];
 
 type ConditionalElementProps = {
     stage: Stage,
-    condition?: Condition 
+    condition?: Condition
 }
 
 const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
@@ -28,14 +28,14 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
         operationErrorMessage: '',
         valueErrorMessage: ''
     });
-    
+
     //States for interview and test stage types
-    const testOrInterviewOptions = [{label: 'Total Score'}];
+    const testOrInterviewOptions = [{ label: 'Total Score' }];
 
     //Set the selected operation
     const handleOperationSelect = (selectedOpts: EuiComboBoxOptionOption[]) => {
         setSelectedOperations(selectedOpts);
-        if(selectedOpts.length !== 0){
+        if (selectedOpts.length !== 0) {
             setError(prevState => ({
                 ...prevState,
                 operationError: false,
@@ -54,16 +54,17 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     const onChange = (selectedOpts: FieldOption[]) => {
         setSelectedOptions(selectedOpts as FieldOption[]);
         const componentType = selectedOpts[0]?.value?.componentType ? selectedOpts[0].value.componentType : '';
-        if(componentType){
+        if (componentType) {
             const arr = FORM_FIELDS[componentType];
             const newOptions = arr.map(e => ({
                 label: e
             }));
             setAllOperations(newOptions);
-            if(dropDownComponents.includes(selectedOpts[0]?.value?.componentType || '')){
-                const optArray =  selectedOpts[0]?.value?.componentOptions ? selectedOpts[0].value.componentOptions : [];
+            if (dropDownComponents.includes(selectedOpts[0]?.value?.componentType || '')) {
+                const optArray = selectedOpts[0]?.value?.componentOptions ? selectedOpts[0].value.componentOptions : [];
                 const componentOptions = optArray.map(e => ({
-                    label: e.description
+                    label: e.description,
+                    _id: e._id
                 }));
                 setDropDownOptions(componentOptions);
                 setSelectedDropDownOptions([]);
@@ -73,13 +74,13 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 fieldError: false,
                 fieldErrorMessage: ''
             }));
-        }else {
+        } else {
             setAllOperations([]);
         }
         setSelectedOperations([]);
     };
 
-    const handleComponentOptionSelect = ( selectedOpts: EuiComboBoxOptionOption[] ) => {
+    const handleComponentOptionSelect = (selectedOpts: EuiComboBoxOptionOption[]) => {
         setSelectedDropDownOptions(selectedOpts);
         setError(prevState => ({
             ...prevState,
@@ -89,7 +90,8 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     }
 
     const handleSaveButton = async () => {
-        if((selectedOptions.length === 1) && (selectedOperations.length === 1) && value){
+        console.log(selectedOptions[0].value?.componentOptions?.[0]?._id);
+        if ((selectedOptions.length === 1) && (selectedOperations.length === 1) && value) {
             setError({
                 fieldError: false,
                 operationError: false,
@@ -99,8 +101,8 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 valueErrorMessage: ''
             });
         }
-        if(stage.type === STAGE_TYPE.FORM){
-            if(!(selectedOptions.length === 1)){
+        if (stage.type === STAGE_TYPE.FORM) {
+            if (!(selectedOptions.length === 1)) {
                 setError(prevState => ({
                     ...prevState,
                     fieldError: true,
@@ -108,14 +110,14 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 }));
             }
         }
-        if(!(selectedOperations.length === 1)){
+        if (!(selectedOperations.length === 1)) {
             setError(prevState => ({
                 ...prevState,
                 operationError: true,
                 operationErrorMessage: 'Please select operation'
             }));
         }
-        if(!value){
+        if (!value) {
             setError(prevState => ({
                 ...prevState,
                 valueError: true,
@@ -153,15 +155,15 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     }
 
     useEffect(() => {
-        if(stage.type === STAGE_TYPE.FORM) {
+        if (stage.type === STAGE_TYPE.FORM) {
             const stageAttributes = stage.stageProps as Form;
-            const newOptions = stageAttributes.components?.map<FieldOption>(({ title, _id, type, options }) => ({
-                label: title,
-                value: { name: title, componentID: _id, componentType: type, componentOptions: options},
+            const newOptions = stageAttributes.components?.map<FieldOption>(({ name, _id, type, options }) => ({
+                label: name,
+                value: { name: name, componentID: _id, componentType: type, componentOptions: options },
                 disabled: (type === ComponentTypes.datePicker || type === ComponentTypes.upload)
             }));
             setFieldOptions(newOptions);
-        }else {
+        } else {
             const arr = FORM_OPERATIONS.NUMBER
             const newOperations = arr.map(e => ({
                 label: e
@@ -173,7 +175,6 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     return (
         <div className={styles.container}>
             <div className={styles.conditionBox} onClick={() => setIsOpen(true)}>
-                {condition}
             </div>
             {isOpen ?
                 <EuiModal onClose={closeModel} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
@@ -182,40 +183,40 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                     </EuiModalHeader>
 
                     <EuiModalBody>
-                        {(stage.type === STAGE_TYPE.FORM) && 
-                        <EuiFormRow
-                            isInvalid={error.fieldError}
-                            error={error.fieldErrorMessage}
-                            label={translate('Form Field')}
-                            fullWidth
-                        >
-                            <EuiComboBox
+                        {(stage.type === STAGE_TYPE.FORM) &&
+                            <EuiFormRow
+                                isInvalid={error.fieldError}
+                                error={error.fieldErrorMessage}
+                                label={translate('Form Field')}
                                 fullWidth
-                                aria-label="Accessible screen reader label"
-                                placeholder="Select a single option"
-                                singleSelection={{ asPlainText: true }}
-                                options={fieldOptions}
-                                selectedOptions={selectedOptions}
-                                onChange={onChange}
-                            />
-                        </EuiFormRow>
+                            >
+                                <EuiComboBox
+                                    fullWidth
+                                    aria-label="Accessible screen reader label"
+                                    placeholder="Select a single option"
+                                    singleSelection={{ asPlainText: true }}
+                                    options={fieldOptions}
+                                    selectedOptions={selectedOptions}
+                                    onChange={onChange}
+                                />
+                            </EuiFormRow>
                         }
-                        {(stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW) && 
-                        <EuiFormRow                         
-                            label={translate('Total Score')}
-                            fullWidth
-                        >
-                            <EuiComboBox
+                        {(stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW) &&
+                            <EuiFormRow
+                                label={translate('Total Score')}
                                 fullWidth
-                                aria-label="Accessible screen reader label"
-                                placeholder="Select a single option"
-                                singleSelection={{ asPlainText: true }}
-                                options={testOrInterviewOptions}
-                                selectedOptions={testOrInterviewOptions}
-                                onChange={() => console.log('test option tiklandi')}
-                                isDisabled={true}
-                            />
-                        </EuiFormRow>}
+                            >
+                                <EuiComboBox
+                                    fullWidth
+                                    aria-label="Accessible screen reader label"
+                                    placeholder="Select a single option"
+                                    singleSelection={{ asPlainText: true }}
+                                    options={testOrInterviewOptions}
+                                    selectedOptions={testOrInterviewOptions}
+                                    onChange={() => console.log('test option tiklandi')}
+                                    isDisabled={true}
+                                />
+                            </EuiFormRow>}
 
                         {(selectedOptions[0] || (stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW)) && <EuiFormRow
                             isInvalid={error.operationError}
@@ -234,58 +235,58 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                             />
                         </EuiFormRow>}
 
-                        {(stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW || (stage.type === STAGE_TYPE.FORM && (selectedOptions[0]?.value?.componentType === "number"))) && 
-                        <EuiFormRow
-                            isInvalid={error.valueError}
-                            error={error.valueErrorMessage}
-                            label={translate('Comparison Value')}
-                            fullWidth
-                        >
-                            <EuiFieldNumber
+                        {(stage.type === STAGE_TYPE.TEST || stage.type === STAGE_TYPE.INTERVIEW || (stage.type === STAGE_TYPE.FORM && (selectedOptions[0]?.value?.componentType === "number"))) &&
+                            <EuiFormRow
+                                isInvalid={error.valueError}
+                                error={error.valueErrorMessage}
+                                label={translate('Comparison Value')}
                                 fullWidth
-                                placeholder="Enter the comparison value"
-                                value={value}
-                                onChange={handleNumberOrTextField}
-                                aria-label="Use aria labels when no actual label is in use"
-                            />
-                        </EuiFormRow>                        
+                            >
+                                <EuiFieldNumber
+                                    fullWidth
+                                    placeholder="Enter the comparison value"
+                                    value={value}
+                                    onChange={handleNumberOrTextField}
+                                    aria-label="Use aria labels when no actual label is in use"
+                                />
+                            </EuiFormRow>
                         }
 
                         {stage.type === STAGE_TYPE.FORM && stringComponents.includes(selectedOptions[0]?.value?.componentType || '') &&
-                        <EuiFormRow
-                            isInvalid={error.valueError}
-                            error={error.valueErrorMessage}
-                            label={translate('Comparison Value')}
-                            fullWidth
-                        >
-                            <EuiFieldText
+                            <EuiFormRow
+                                isInvalid={error.valueError}
+                                error={error.valueErrorMessage}
+                                label={translate('Comparison Value')}
                                 fullWidth
-                                placeholder="Enter the comparison value"
-                                value={value}
-                                onChange={handleNumberOrTextField}
-                                aria-label="Use aria labels when no actual label is in use"
-                            />
-                        </EuiFormRow> 
+                            >
+                                <EuiFieldText
+                                    fullWidth
+                                    placeholder="Enter the comparison value"
+                                    value={value}
+                                    onChange={handleNumberOrTextField}
+                                    aria-label="Use aria labels when no actual label is in use"
+                                />
+                            </EuiFormRow>
                         }
 
                         {stage.type === STAGE_TYPE.FORM && dropDownComponents.includes(selectedOptions[0]?.value?.componentType || '') &&
-                        <EuiFormRow
-                            isInvalid={error.valueError}
-                            error={error.valueErrorMessage}
-                            label={translate('Comparison Value')}
-                            fullWidth
-                        >
-                            <EuiComboBox
+                            <EuiFormRow
+                                isInvalid={error.valueError}
+                                error={error.valueErrorMessage}
+                                label={translate('Comparison Value')}
                                 fullWidth
-                                aria-label="Accessible screen reader label"
-                                placeholder="Select a single option"
-                                singleSelection={(selectedOptions[0].value?.componentType !== ComponentTypes.multipleChoice) && { asPlainText: true }}
-                                options={dropDownOptions}
-                                selectedOptions={selectedDropDownOptions}
-                                isClearable={true}
-                                onChange={handleComponentOptionSelect}
-                            />
-                        </EuiFormRow> 
+                            >
+                                <EuiComboBox
+                                    fullWidth
+                                    aria-label="Accessible screen reader label"
+                                    placeholder="Select a single option"
+                                    singleSelection={(selectedOptions[0].value?.componentType !== ComponentTypes.multipleChoice) && { asPlainText: true }}
+                                    options={dropDownOptions}
+                                    selectedOptions={selectedDropDownOptions}
+                                    isClearable={true}
+                                    onChange={handleComponentOptionSelect}
+                                />
+                            </EuiFormRow>
                         }
 
                         <div className={styles.saveButton}>
@@ -296,7 +297,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                                 <p className={styles.feedbackText}></p>
                             </EuiFormRow>
                             <EuiFormRow fullWidth>
-                                <EuiButton onClick={handleSaveButton}  fill>
+                                <EuiButton onClick={handleSaveButton} fill>
                                     {translate('Save')}
                                 </EuiButton>
                             </EuiFormRow>

@@ -55,7 +55,7 @@ function FlowRenderer<T extends mode>({
         const completedCount = applicantCounts.find(({ stageIndex, completed }) => completed && stageIndex === index)?.count;
         const completedIsActiveFilter = activeStageFilter.stageIndex === index && activeStageFilter.stageCompleted;
         const stageElement = <div style={{ position: 'relative' }}>
-            {mode === 'submission' &&<div 
+            {mode === 'submission' && <div
                 className={classNames(styles.applicantCount, styles.top, { [styles.active]: notCompletedIsActiveFilter })}
                 onClick={() => {
                     if (notCompletedIsActiveFilter) {
@@ -69,12 +69,12 @@ function FlowRenderer<T extends mode>({
             </div>}
             <StageCard
                 {...stage}
-                name={stage.stageProps.name} 
+                name={stage.stageProps.name}
                 key={stage._id}
                 id={stage._id}
                 mode={mode}
             />
-            {mode === 'submission' && <div 
+            {mode === 'submission' && <div
                 className={classNames(styles.applicantCount, styles.bottom, { [styles.active]: completedIsActiveFilter })}
                 onClick={() => {
                     if (completedIsActiveFilter) {
@@ -87,7 +87,7 @@ function FlowRenderer<T extends mode>({
                 {completedCount || '0'}
             </div>}
         </div>;
-        const condition = conditions.find(e => e.from === stageArray[index]._id && e.to === stageArray[index + 1]._id);
+        const condition = conditions.find(e => e.from === stageArray[index]._id);
         const conditionElement = <ConditionElement key={condition?._id || index} condition={condition} stage={stage} />;
         if (index + 1 === stageArray.length) {
             return [...acc, stageElement];
@@ -98,7 +98,7 @@ function FlowRenderer<T extends mode>({
     return (
         <div className={classNames(styles.container, className)}>
             {stagesAndConditions}
-            {mode === 'edit' && (stages.length === 0 ? <div 
+            {mode === 'edit' && (stages.length === 0 ? <div
                 className={styles.addFormButton}
                 onClick={onAddStartFormClick}
             >
@@ -106,21 +106,21 @@ function FlowRenderer<T extends mode>({
                     {translate('Add Start Form')}
                 </EuiText>
             </div> : <>
-                <div className={styles.dummyArrow}/>
+                <div className={styles.dummyArrow} />
                 <div className={styles.newStage}>
-                    <div 
+                    <div
                         onClick={handleNewStageClick(STAGE_TYPE.FORM)}
                         className={classNames(styles.new, styles.form)}
                     >
                         {translate('Form')}
                     </div>
-                    <div 
+                    <div
                         onClick={handleNewStageClick(STAGE_TYPE.TEST)}
                         className={classNames(styles.new, styles.test)}
                     >
                         {translate('Test')}
                     </div>
-                    <div 
+                    <div
                         onClick={handleNewStageClick(STAGE_TYPE.INTERVIEW)}
                         className={classNames(styles.new, styles.interview)}
                     >
