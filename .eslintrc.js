@@ -4,6 +4,7 @@ module.exports = {
         browser: true,
         es2021: true
     },
+    ignorePatterns: ['public/landing*'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
