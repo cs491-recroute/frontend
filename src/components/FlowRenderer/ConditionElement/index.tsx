@@ -172,6 +172,42 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
         }
     }, [stage, isOpen]);
 
+    useEffect(() => {
+        if (stage.type === STAGE_TYPE.FORM) {
+            const stageAttributes = stage.stageProps as Form;
+            const fieldComponent = stageAttributes.components.find(component => component._id === condition?.field);
+            if (!fieldComponent) return;
+            setSelectedOptions([fieldComponent].map<FieldOption>(({ name, _id, type, options }) => ({
+                label: name,
+                value: { name: name, componentID: _id, componentType: type, componentOptions: options },
+                disabled: (type === ComponentTypes.datePicker || type === ComponentTypes.upload)
+            })));
+            setSelectedOperations([{ label: (condition?.operation) || "" }]);
+
+            if (fieldComponent.type === ComponentTypes.dropDown || fieldComponent.type === ComponentTypes.singleChoice) {
+                const valueOption = fieldComponent.options.find(option => option._id === value);
+                if (!valueOption) return;
+                setSelectedDropDownOptions([valueOption].map(e => ({
+                    label: e.description,
+                    _id: e._id
+                })));
+            }
+            else if (fieldComponent.type === ComponentTypes.multipleChoice) {
+                const valueOptions = fieldComponent.options.filter(option => { if (option._id) value.includes(option._id) });
+                setSelectedDropDownOptions(valueOptions.map(e => ({
+                    label: e.description,
+                    _id: e._id
+                })));
+            }
+            else {
+                setValue(condition?.value);
+            }
+        } else {
+            setSelectedOperations([{ label: (condition?.operation) || "" }]);
+            setValue(condition?.value);
+        }
+    }, [condition]);
+
     return (
         <div className={styles.container}>
             <div className={styles.conditionBox} onClick={() => setIsOpen(true)}>
