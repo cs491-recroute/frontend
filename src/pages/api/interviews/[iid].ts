@@ -8,6 +8,8 @@ const handler: NextApiHandler = async (request, response) => {
 
     switch (request.method) {
         case 'GET': {
+            const {data: interview} = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get(`/interview/${iid}`);
+            response.status(200).send(interview);
             break;
         }
         case 'PUT': {
