@@ -12,7 +12,7 @@ const initialState: InterviewerState = {
 };
 
 export const getInterviewersAsync = createAsyncThunk(
-    'interviewers/getInterviewersAsync',
+    'interview/getInterviewers',
     async () => {
         const { data } = await axios.get(`/api/interviews/getInterviewers`);
         return data;

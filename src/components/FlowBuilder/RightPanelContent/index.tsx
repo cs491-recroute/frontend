@@ -7,7 +7,7 @@ import { EuiButton, EuiDatePicker, EuiFormRow, EuiSpacer, EuiSwitch, EuiFieldNum
 import { translate } from '../../../utils';
 import { STAGE_TYPE } from '../../../types/enums';
 import moment from 'moment';
-import {getInterviewers} from '../../../redux/slices/interviewersSlice';
+import { getInterviewers } from '../../../redux/slices/interviewersSlice';
 
 type RightPanelProps = {
     stageType: STAGE_TYPE | false;
@@ -27,13 +27,27 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     const [testDuration, setTestDuration] = useState(stage?.testDuration);
     const [interviewLengthInMins, setInterviewLengthInMins] = useState(stage?.stageProps.interviewLengthInMins)
     const [interviewers, setInterviewers] = useState(stage?.stageProps.interviewers)
+    const [activeInterviewers, setActiveInterviewers] = useState(stage?.stageProps.interviewers);
+    const [interviewerOptions, setInterviewerOptions] = useState([{ key: '', text: '' }])
 
-    const newArray = allInterviewers?.map(interviewer => {
-        return {
-            key: interviewer._id,
-            text: interviewer.name
-        };
-    });
+    useEffect(() => {
+        setInterviewerOptions(
+            allInterviewers?.map(interviewer => {
+                return {
+                    key: interviewer._id,
+                    text: interviewer.name
+                };
+            })
+        );
+    }, [allInterviewers]);
+
+    useEffect(() => {
+        setActiveInterviewers(
+            allInterviewers.filter(x => interviewers.includes(x._id)).map(interviewer =>
+                interviewer.name
+            )
+        );
+    }, [allInterviewers, interviewers]);
 
     //for save button feedback
     const [saveButtonClicked, setSaveButtonClicked] = useState(false);
@@ -83,15 +97,15 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     const handleInterviewerAdd = (value: string) => {
         // value is interviewer name convert to interview _id first
         let idNo
-        for(let i = 0; i < allInterviewers.length; i++){
-            if(value === allInterviewers[i].name){
+        for (let i = 0; i < allInterviewers.length; i++) {
+            if (value === allInterviewers[i].name) {
                 idNo = allInterviewers[i]._id;
             }
         }
 
         // if idno is not already added to this interview add it
-        for(let i = 0; i < interviewers.length; i++){
-            if(idNo === interviewers[i]){
+        for (let i = 0; i < interviewers.length; i++) {
+            if (idNo === interviewers[i]) {
                 return;
             }
         }
@@ -101,31 +115,21 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     const handleInterviewerDelete = (interviewerName: string) => {
         // find the interview id with given name
         let idNo
-        for(let i = 0; i < allInterviewers.length; i++){
-            if(interviewerName === allInterviewers[i].name){
+        for (let i = 0; i < allInterviewers.length; i++) {
+            if (interviewerName === allInterviewers[i].name) {
                 idNo = allInterviewers[i]._id;
             }
         }
         // remove the id from interviewers array
-        for(let i = 0; i < interviewers.length; i++){
-            if(idNo === interviewers[i]){
+        for (let i = 0; i < interviewers.length; i++) {
+            if (idNo === interviewers[i]) {
                 const temp = [...interviewers];
-                temp.splice(i,1);
+                temp.splice(i, 1);
                 setInterviewers(temp);
             }
         }
     }
-    
-    const interviewerNames: string[] = []
 
-    interviewers?.map((interviewer: string) => {
-        for(let i = 0; i < allInterviewers.length; i++){
-            if(interviewer === allInterviewers[i]._id){
-                interviewerNames.push(allInterviewers[i].name)
-            }
-        }
-    })
-    
     return (
         <div className={styles.contentContainer}>
             <EuiFormRow label={translate('Specify Duration')} >
@@ -194,11 +198,11 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                 <EuiFormRow label={translate('Interviewers')}>
                     <EuiSelect
                         fullWidth
-                        options={newArray}
+                        options={interviewerOptions}
                         onChange={({ target: { value } }) => handleInterviewerAdd(value)}
                     />
                 </EuiFormRow>
-                {interviewerNames.map((interviewerName: string) => (
+                {activeInterviewers.map((interviewerName: string) => (
                     <div
                         key={interviewerName}
                     >

@@ -1,7 +1,7 @@
 import { EuiCard, EuiIcon } from '@elastic/eui';
 import classNames from 'classnames';
 import React from 'react';
-import { deleteStageAsync, toggleRightPanel} from '../../../redux/slices/flowBuilderSlice';
+import { deleteStageAsync, toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
 import { STAGE_TYPE } from '../../../types/enums';
 import { useAppDispatch } from '../../../utils/hooks';
 import styles from './StageCard.module.scss';
@@ -30,7 +30,7 @@ const StageCard = ({ type, name, id, stageID, mode }: StageCardProps) => {
     const dispatch = useAppDispatch();
     const onClick = () => {
         dispatch(toggleRightPanel({ stageType: type, _id: id, stageID: stageID }));
-        dispatch(getInterviewersAsync());
+        if (type === STAGE_TYPE.INTERVIEW) dispatch(getInterviewersAsync());
     }
     const { pushWithReturn } = useRouterWithReturnBack();
 
