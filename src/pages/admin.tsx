@@ -13,7 +13,7 @@ import { wrapper } from '../redux/store';
 import { User } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
 import { translate } from '../utils';
-import { EuiButton, EuiSelect } from '@elastic/eui';
+import { EuiButton, EuiIcon, EuiSelect } from '@elastic/eui';
 import AdminConsolePagination from '../components/AdminConsolePagination/pagination';
 
 const AdminPanelPage: NextPage = () => {
@@ -147,7 +147,9 @@ const AdminPanelPage: NextPage = () => {
                                             ))}
                                         </td>
                                         <td className={styles.tdata}>
-                                            <p className={styles.theader2}>Actions</p>
+                                            <button className={styles.deleteButton}>
+                                                <EuiIcon type="trash" />
+                                            </button>
                                         </td>
                                     </tr>
                                 )) : null}
