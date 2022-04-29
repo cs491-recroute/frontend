@@ -322,34 +322,68 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                 const { name, components } = stageProps as Form;
                 return {
                     Header: name || '',
-                    columns: components.filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent).map(({ title, _id: componentID, type: componentType, titles }) => {
-                        const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
-                        return {
-                            Header: title || (titles && titles[0]) || '',
-                            accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
-                            Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
-                            sortable,
-                            filterable,
-                            sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
-                        }
-                    })
+                    columns: [
+                        {
+                            Header: 'Submission Date',
+                            accessor: `stageSubmissions.${stageID}.date`,
+                            Cell: ({ value }: any) => <div>{value ? moment(value).format('DD.MM.YYYY / HH:mm') : ''}</div>,
+                            sortable: true,
+                            sortByKey: `stageSubmissions.${stageID}.updatedAt`
+                        },
+                        ...components.filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent).map(({ title, _id: componentID, type: componentType, titles }) => {
+                            const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
+                            return {
+                                Header: title || (titles && titles[0]) || '',
+                                accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
+                                Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
+                                sortable,
+                                filterable,
+                                sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
+                            }
+                        })
+                    ]
                 }
             }
             case STAGE_TYPE.TEST: {
                 const { name, questions } = stageProps as Test;
                 return {
                     Header: name || '',
-                    columns: questions.map(({ description, _id: questionID, type: questionType }) => {
-                        const { sortable = true, sortKey, filterable = true } = QUESTION_MAPPINGS[questionType];
-                        return {
-                            Header: description || '',
-                            accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
-                            Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
-                            sortable,
-                            filterable,
-                            sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`
+                    columns: [
+                        {
+                            Header: 'Submission Date',
+                            accessor: `stageSubmissions.${stageID}.date`,
+                            Cell: ({ value }: any) => <div>{value ? moment(value).format('DD.MM.YYYY / HH:mm') : ''}</div>,
+                            sortable: true,
+                            sortByKey: `stageSubmissions.${stageID}.updatedAt`
+                        },
+                        ...questions.map(({ description, _id: questionID, type: questionType }) => {
+                            const { sortable = true, sortKey, filterable = true } = QUESTION_MAPPINGS[questionType];
+                            return {
+                                Header: description || '',
+                                accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
+                                Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
+                                sortable,
+                                filterable,
+                                sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`
+                            }
+                        }),
+                        {
+                            Header: 'Total Score',
+                            accessor: `stageSubmissions.${stageID}.totalScore`,
+                            Cell: ({ value }: any) => {
+                                if (value === undefined) return null;
+                                return <EuiProgress
+                                    valueText={true}
+                                    max={100}
+                                    color="primary"
+                                    labelProps={{ style: { color: '#0071c2' } }}
+                                    value={value || '0'}
+                                />;
+                            },
+                            sortable: true,
+                            sortByKey: `stageSubmissions.${stageID}.testSubmission.grade`
                         }
-                    })
+                    ]
                 }
             }
             case STAGE_TYPE.INTERVIEW: {
