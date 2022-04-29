@@ -14,6 +14,7 @@ import { User } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
 import { translate } from '../utils';
 import { EuiButton, EuiSelect } from '@elastic/eui';
+import AdminConsolePagination from '../components/AdminConsolePagination/pagination';
 
 const AdminPanelPage: NextPage = () => {
     const [limit, setLimit] = useState(5);
@@ -59,60 +60,21 @@ const AdminPanelPage: NextPage = () => {
 
     const handleLimitChange = (newLimit: number) => {
         setLimit(newLimit);
-        getUsersWithUiInfo(newLimit, page);
+        setPage(1);
+        getUsersWithUiInfo(newLimit, 1);
     }
 
     const handlePageChange = (newPage: number) => {
-
+        setPage(newPage);
+        getUsersWithUiInfo(limit, newPage);
     }
     
     const getUsersWithUiInfo = async (newLimit:number, newPage:number) => {
         const response = await axios.post(`/api/adminConsole/getUsers`, {limitFromUser: newLimit, pageFromUser: newPage});
         setResp( response.data );
+        console.log(response.data);
     }
-    /*
-    const showTable = () => {
-        getUsers();
-        console.log(resp.totalDocs)
-    }*/
-    /*
-    const Table = () => {
-        return(
-            <table className={styles.table}>
-                <tbody>
-                    <tr className={styles.tr}>
-                        <th className={styles.thead}>
-                            Name
-                        </th>
-                        <th className={styles.thead}>
-                            Email
-                        </th>
-                        <th className={styles.thead}>
-                            Role
-                        </th>
-                        <th className={styles.thead}>
-                            Actions
-                        </th>
-                    </tr>
-                    {resp ? resp.docs.map((specificUser: User) => (
-                        <tr key={specificUser._id} className={styles.tr}>
-                            <td className={styles.thead}>
-                                {specificUser.name}
-                            </td>
-                            <td className={styles.thead}>
-                                {specificUser.email}
-                            </td>
-                            <td className={styles.thead}>
-                                {specificUser.roles}
-                            </td>
-                            <td>Actions</td>
-                        </tr>
-                    )) : null}
-                </tbody>
-            </table>
-        )
-    }*/
-
+    
     if (user) {
         return (
             <div>
@@ -131,16 +93,42 @@ const AdminPanelPage: NextPage = () => {
                                     </EuiButton>)
                                 }
                             </td>
+                            <td className={styles.tColumn2}>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p className={styles.title2}>{translate('Select Rows Per Page :')}</p>
+                                            </td>
+                                            <td>
+                                                <EuiSelect 
+                                                    className={styles.rowSelect}
+                                                    placeholder='Rows per Page'
+                                                    options={rowPerPageOptions}
+                                                    onChange={e => (handleLimitChange(parseInt(e.target.value)))}
+                                                ></EuiSelect>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </td>
                             <td>
-                                <p className={styles.title2}>{translate('Select Rows Per Page')}</p>
-                                <EuiSelect 
-                                    className={styles.rowSelect}
-                                    placeholder='Rows per Page'
-                                    options={rowPerPageOptions}
-                                    onChange={e => (handleLimitChange(parseInt(e.target.value)))}
-                                >
-                                    
-                                </EuiSelect>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <p className={styles.title2}>{translate('Page Number:')}</p>
+                                            </td>
+                                            <td>
+                                                <AdminConsolePagination
+                                                    resp={resp}
+                                                    handlePageChange={handlePageChange}
+                                                />
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
                             </td>
                         </tr>
                     </tbody>
