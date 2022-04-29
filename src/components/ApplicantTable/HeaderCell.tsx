@@ -8,6 +8,7 @@ import debounce from 'lodash.debounce';
 import { translate } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { setFilterQuery, setSortQuery, getQueries } from '../../redux/slices/submissionsSlice';
+import { StyledTableCell } from './StyledTableCell';
 
 type HeaderCellProps = {
     column: any,
@@ -19,7 +20,9 @@ const HeaderCell = ({ column: {
     filterable,
     sortByKey,
     sortable,
-    order_by
+    order_by,
+    id,
+    getHeaderProps
 }, rowIndex }: HeaderCellProps) => {
     const [filterValue, setFilterValue] = React.useState('');
     const dispatch = useAppDispatch();
@@ -34,7 +37,7 @@ const HeaderCell = ({ column: {
         }
     }, [queries]);
 
-    return <>
+    return <StyledTableCell {...getHeaderProps()} key={id} >
         {render('Header')}
         {!!rowIndex && <div className={styles.filterRow}>
             {filterable && <EuiFieldText 
@@ -58,7 +61,7 @@ const HeaderCell = ({ column: {
                 {order_by === 'asc' ? <ArrowUp color='info' /> : <ArrowDown color={order_by ? 'info' : 'disabled'} />}
             </IconButton>}
         </div>}
-    </>
+    </StyledTableCell>
 };
 
 export default HeaderCell;

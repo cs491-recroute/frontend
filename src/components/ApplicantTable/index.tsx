@@ -1,57 +1,16 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useMemo, useCallback } from 'react';
 import { useTable } from 'react-table';
-import { Table, TableContainer, TableHead, TableRow, TableCell, TableBody, Paper, styled, tableCellClasses, tableRowClasses, IconButton, TextField } from '@mui/material';
-import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync, setSortQuery, setFilterQuery } from '../../redux/slices/submissionsSlice';
+import { Table, TableContainer, TableHead, TableRow, TableBody, Paper, styled, tableRowClasses } from '@mui/material';
+import { fetchSubmissionsAsync, getCurrentFlow, getApplicants, getQueries, applicantNextStageAsync } from '../../redux/slices/submissionsSlice';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { getColumns } from './utils';
 import debounce from 'lodash.debounce';
 import TableHeader from './TableHeader';
-import HeaderCell from './HeaderCell'; 
+import HeaderCell from './HeaderCell';
+import BodyCell from './BodyCell';
 import { useUser } from '@auth0/nextjs-auth0';
 import { getUserID } from '../../utils';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.root}`]: {
-        padding: 8
-    },
-    [`&.${tableCellClasses.head}, &.${tableCellClasses.body}`]: {
-        maxWidth: 150,
-        minWidth: 150,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        borderRight: `1px solid ${theme.palette.grey[200]}`
-    },
-    [`&.${tableCellClasses.body}:nth-child(-n+3), &.${tableCellClasses.head}:nth-child(-n+3)`]: {
-        position: 'sticky',
-        background: 'white',
-        zIndex: 10,
-        minWidth: 150,
-        textOverflow: 'clip'
-    },
-    [`&.${tableCellClasses.body}:nth-child(1), &.${tableCellClasses.head}:nth-child(1)`]: {
-        left: 0
-    },
-    [`&.${tableCellClasses.body}:nth-child(2), &.${tableCellClasses.head}:nth-child(2)`]: {
-        left: 150
-    },    
-    [`&.${tableCellClasses.body}:nth-child(3), tr:nth-child(2) &.${tableCellClasses.head}:nth-child(3)`]: {
-        left: 300,
-        [`&::after`]: {
-            content: '" "',
-            position: 'absolute',
-            top: '50%',
-            left: '100%',
-            transform: 'translate(-50%, -50%)',
-            height: '100%',
-            borderRight: `3px solid ${theme.palette.grey[400]}`
-        }
-    },
-    [`tr:nth-child(1) &.${tableCellClasses.head}:nth-child(1)`]: {
-        zIndex: 20
-    }
-}));
 
 const HeaderRow = styled(TableRow)(({ theme }) => ({
     [`&.${tableRowClasses.root}`]: {
@@ -120,9 +79,10 @@ const ApplicantTable = () => {
                     {headerGroups.map((headerGroup, rowIndex) => (
                         <HeaderRow {...headerGroup.getHeaderGroupProps()} key={headerGroup.id}>
                             {headerGroup.headers.map(column => {
-                                return <StyledTableCell {...column.getHeaderProps()} key={column.id}>
-                                    <HeaderCell column={column} rowIndex={rowIndex} />
-                                </StyledTableCell>
+                                return <HeaderCell
+                                    column={column} 
+                                    rowIndex={rowIndex}
+                                />
                             })}     
                         </HeaderRow>
                     ))}
@@ -132,13 +92,7 @@ const ApplicantTable = () => {
                         prepareRow(row);
                         return (
                             <TableRow {...row.getRowProps()} key={row.id}>
-                                {row.cells.map(cell => {
-                                    return (
-                                        <StyledTableCell {...cell.getCellProps()}>
-                                            {cell.render('Cell', { onNextClick })}
-                                        </StyledTableCell>
-                                    );
-                                })}
+                                {row.cells.map(cell => <BodyCell cell={cell} onNextClick={onNextClick} />)}
                             </TableRow>
                         );
                     })}
