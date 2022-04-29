@@ -1,5 +1,5 @@
-import { EuiCollapsibleNav, EuiText, EuiButton } from '@elastic/eui';
-import React, { useCallback, createRef, RefObject } from 'react';
+import { EuiCollapsibleNav, EuiText, EuiButton, EuiFormRow } from '@elastic/eui';
+import React, { useCallback, createRef, RefObject, useState } from 'react';
 import { getRightPanelStatus, toggleRightPanel, updateQuestionAsync } from '../../../redux/slices/testBuilderSlice';
 import { translate } from '../../../utils';
 import { useAppSelector, useAppDispatch } from '../../../utils/hooks';
@@ -13,16 +13,29 @@ const RightPanel = () => {
     const { status: isOpen, question } = useAppSelector(getRightPanelStatus);
     const editorRefs: PartialRecord<keyof Question, RefObject<{ value: any; }>> = {};
 
+    //for save button feedback
+    const [saveButtonClicked, setSaveButtonClicked] = useState(false);
+    const [isFulfilled, setIsFulfilled] = useState(false);
+
     const close = useCallback(() => {
         dispatch(toggleRightPanel({ status: false }));
     }, []);
 
-    const handleSave = () => {
+    const handleSave = async() => {
         const newProps = (Object.keys(editorRefs) as Array<keyof Question>).reduce((acc, ref) => {
             return { ...acc, [ref]: editorRefs[ref]?.current?.value };
         }, {});
 
-        dispatch(updateQuestionAsync({ newProps, questionID: question?._id }));
+        const response = await dispatch(updateQuestionAsync({ newProps, questionID: question?._id }));
+        setSaveButtonClicked(true);
+        setTimeout(setSaveButtonClicked, 2000);
+        if(response.type.search('fulfilled') === -1){
+            //rejected
+            setIsFulfilled(false);
+        } else {
+            //succesfull
+            setIsFulfilled(true);
+        }
     }
 
     if (!question) return null;
@@ -52,7 +65,21 @@ const RightPanel = () => {
                     <Renderer ref={newRef} defaultValue={question[key]} />
                 </div>;
             })}
-            <EuiButton onClick={handleSave} className={styles.saveButton}>{translate('Save')}</EuiButton>
+            <table>
+                <tr>
+                    <th className={styles.th}>
+                        <EuiFormRow>  
+                            <p className={styles.feedbackText1}> {saveButtonClicked && isFulfilled && translate('Saved Succesfully')}</p>
+                        </EuiFormRow>
+                        <EuiFormRow> 
+                            <p className={styles.feedbackText2}> {saveButtonClicked && !isFulfilled && translate('Unseccessful Save')}</p>
+                        </EuiFormRow>
+                    </th>
+                    <th> 
+                        <EuiButton onClick={handleSave} className={styles.saveButton}>{translate('Save')}</EuiButton>
+                    </th>
+                </tr>
+            </table>
         </EuiCollapsibleNav>
     )
 };
