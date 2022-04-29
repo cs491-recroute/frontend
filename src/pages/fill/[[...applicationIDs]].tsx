@@ -87,7 +87,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
                         <br/>
                         <Image src='/assets/start_test.png' width={250} height={250} />
                         <br/>
-                        {`${translate('You have {duration} minutes to solve this test.', { duration: stage.testDuration })}`}
+                        {stage.testDuration && `${translate('You have {duration} minutes to solve this test.', { duration: stage.testDuration })}`}
                         <br/>
                         {translate('After clicking the below button, you will be redirected to the test page.')}
                         <br/>
