@@ -338,7 +338,8 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                                 Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
                                 sortable,
                                 filterable,
-                                sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
+                                sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`,
+                                description: title || (titles && titles[0]) || ''
                             }
                         })
                     ]
@@ -364,7 +365,8 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                                 Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
                                 sortable,
                                 filterable,
-                                sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`
+                                sortByKey:  `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`,
+                                description
                             }
                         }),
                         {

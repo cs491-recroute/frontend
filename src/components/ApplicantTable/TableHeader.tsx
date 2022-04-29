@@ -98,7 +98,7 @@ const TableHeader = ({ allColumns }: TableHeaderProps) => {
                             <div key={column.id}>
                                 <label>
                                     <Checkbox {...column.getToggleHiddenProps()} size="small" />
-                                    {column.Header}
+                                    {column.description || column.Header}
                                 </label>
                             </div>
                         ))}

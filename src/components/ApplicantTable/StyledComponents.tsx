@@ -52,15 +52,16 @@ export const HeaderRow = styled(TableRow)(({ theme }) => ({
     [`&.${tableRowClasses.root}:nth-child(1)`]: {
         top: 0,
         [`& > *`]: {
-            background: `${theme.palette.grey[400]} !important`,
+            background: `#1f3b87 !important`,
             fontWeight: 'bold',
-            fontSize: '1.125rem'
+            fontSize: '1.125rem',
+            color: 'white'
         }
     },
     [`&.${tableRowClasses.root}:nth-child(2)`]: {
         top: 38,
         [`& > *`]: {
-            background: `${theme.palette.grey[300]} !important`,
+            background: `#C4DDFF !important`,
             fontWeight: 'bold',
             fontSize: '1rem'
         },
@@ -79,6 +80,6 @@ export const HeaderRow = styled(TableRow)(({ theme }) => ({
 
 export const BodyRow = styled(TableRow)(({ theme }) => ({
     [`&.${tableRowClasses.root}:nth-child(even) > *`]: {
-        background: `${theme.palette.grey[100]} !important`
+        background: `#f2f7ff !important`
     }
 }));

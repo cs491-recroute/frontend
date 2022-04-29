@@ -1387,7 +1387,6 @@ p {
   background-position: top center;
   position: relative;
   z-index: 5; }
-
 .footer-area::before {
   position: absolute;
   content: '';
