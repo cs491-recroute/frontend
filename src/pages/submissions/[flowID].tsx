@@ -22,7 +22,7 @@ import { wrapper } from '../../redux/store';
 import FlowRenderer from '../../components/FlowRenderer';
 import styles from '../../styles/Submissions.module.scss';
 import ApplicantTable from '../../components/ApplicantTable';
-import { Box, LinearProgress } from '@mui/material';
+import { Box, LinearProgress, Button } from '@mui/material';
 
 const SubmissionsPage: NextPage = () => {
     const dispatch = useAppDispatch();
@@ -40,18 +40,39 @@ const SubmissionsPage: NextPage = () => {
                 <LinearProgress/>
             </Box>}
             <div className={styles.container}>
-                <FlowRenderer
-                    stages={stages}
-                    conditions={conditions}
-                    className={styles.flowRenderer}
-                    mode='submission'
-                    additionalProps={{
-                        applicantCounts: stageCounts,
-                        setStageFilter: (stageIndex, stageCompleted) => dispatch(setStageFilter({stageIndex, stageCompleted})),
-                        resetStageFilter: () => dispatch(resetStageFilter()),
-                        activeStageFilter
-                    }}
-                />
+                <div className={styles.leftPanel}>
+                    <Button 
+                        fullWidth 
+                        variant='contained'
+                        onClick={() => dispatch(resetStageFilter())}
+                        disabled={activeStageFilter.stageIndex === undefined}
+                    >
+                        SHOW ALL
+                    </Button>
+                    <FlowRenderer
+                        stages={stages}
+                        conditions={conditions}
+                        className={styles.flowRenderer}
+                        mode='submission'
+                        additionalProps={{
+                            applicantCounts: stageCounts,
+                            setStageFilter: (stageIndex, stageCompleted) => dispatch(setStageFilter({stageIndex, stageCompleted})),
+                            resetStageFilter: () => dispatch(resetStageFilter()),
+                            activeStageFilter
+                        }}
+                    />
+                    <Button 
+                        fullWidth 
+                        variant='contained' 
+                        color='success'
+                        onClick={() => {
+                            dispatch(setStageFilter({ stageIndex: stages.length, stageCompleted: false }))
+                        }}
+                        disabled={activeStageFilter.stageIndex === stages.length}
+                    >
+                        SHOW APPROVED
+                    </Button>
+                </div>
                 <ApplicantTable />
             </div>
         </>
