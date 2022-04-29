@@ -1,11 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { getUser } from '../redux/slices/userSlice';
 import { NextApiRequest, NextApiResponse, NextPage } from 'next';
-import styles from '../styles/Profile.module.scss';
-import { useAppSelector } from '../utils/hooks';
-import { AxiosResponse } from 'axios';
+import styles from '../styles/AdminConsole.module.scss';
+import { useAppDispatch, useAppSelector } from '../utils/hooks';
+import axios, { AxiosResponse } from 'axios';
 import { MAIN_PAGE } from '../constants';
 import { SERVICES } from '../constants/services';
 import { setCurrentUser } from '../redux/slices/userSlice';
@@ -13,9 +13,31 @@ import { wrapper } from '../redux/store';
 import { User } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
 import { translate } from '../utils';
-import { EuiButton } from '@elastic/eui';
+import { EuiButton, EuiSelect } from '@elastic/eui';
 
 const AdminPanelPage: NextPage = () => {
+    const [limit, setLimit] = useState(5);
+    const [page, setPage] = useState(1);
+    const [resp, setResp] = useState({
+        docs: [],
+        hasNextPage: false,
+        hasPrevPage: false,
+        limit: 0,
+        nextPage: 0,
+        page: 0,
+        pagingCounter: 0,
+        prevPage: 0,
+        totalDocs: 0,
+        totalPages: 0
+    });
+    const rowPerPageOptions = [
+        { key: '1', text: '1' },
+        { key: '2', text: '2' },
+        { key: '3', text: '3' },
+        { key: '4', text: '4' },
+        { key: '5', text: '5' }
+    ];
+
     const user = useAppSelector(getUser);
     const zoomAuthURL = `https://zoom.us/oauth/authorize` +
         `?response_type=code` +
@@ -27,18 +49,142 @@ const AdminPanelPage: NextPage = () => {
         window.open(zoomAuthURL, "_blank");
     }
 
+    useEffect(() => {
+        const getUsers = async () => {
+            const response = await axios.post(`/api/adminConsole/getUsers`, {limitFromUser: limit, pageFromUser: page});
+            setResp( response.data );
+        }
+        getUsers();
+    }, [])
+
+    const handleLimitChange = (newLimit: number) => {
+        setLimit(newLimit);
+        getUsersWithUiInfo(newLimit, page);
+    }
+
+    const handlePageChange = (newPage: number) => {
+
+    }
+    
+    const getUsersWithUiInfo = async (newLimit:number, newPage:number) => {
+        const response = await axios.post(`/api/adminConsole/getUsers`, {limitFromUser: newLimit, pageFromUser: newPage});
+        setResp( response.data );
+    }
+    /*
+    const showTable = () => {
+        getUsers();
+        console.log(resp.totalDocs)
+    }*/
+    /*
+    const Table = () => {
+        return(
+            <table className={styles.table}>
+                <tbody>
+                    <tr className={styles.tr}>
+                        <th className={styles.thead}>
+                            Name
+                        </th>
+                        <th className={styles.thead}>
+                            Email
+                        </th>
+                        <th className={styles.thead}>
+                            Role
+                        </th>
+                        <th className={styles.thead}>
+                            Actions
+                        </th>
+                    </tr>
+                    {resp ? resp.docs.map((specificUser: User) => (
+                        <tr key={specificUser._id} className={styles.tr}>
+                            <td className={styles.thead}>
+                                {specificUser.name}
+                            </td>
+                            <td className={styles.thead}>
+                                {specificUser.email}
+                            </td>
+                            <td className={styles.thead}>
+                                {specificUser.roles}
+                            </td>
+                            <td>Actions</td>
+                        </tr>
+                    )) : null}
+                </tbody>
+            </table>
+        )
+    }*/
+
     if (user) {
         return (
             <div>
                 <h1 className={styles.title1}>{translate('Admin Panel')}</h1>
                 <hr />
-                {user.company.isLinked ?
-                    (<h1>Zoom account is linked</h1>) :
-                    (<EuiButton
-                        onClick={zoomLinkClick}
-                    >
-                        Link Zoom Account
-                    </EuiButton>)
+                <table className={styles.table2}>
+                    <tbody>
+                        <tr>
+                            <td className={styles.tColumn1}>
+                                {user.company.isLinked ?
+                                    (<h1 className={styles.title2}>Zoom account is linked</h1>) :
+                                    (<EuiButton
+                                        onClick={zoomLinkClick}
+                                    >
+                                        Link Zoom Account
+                                    </EuiButton>)
+                                }
+                            </td>
+                            <td>
+                                <p className={styles.title2}>{translate('Select Rows Per Page')}</p>
+                                <EuiSelect 
+                                    className={styles.rowSelect}
+                                    placeholder='Rows per Page'
+                                    options={rowPerPageOptions}
+                                    onChange={e => (handleLimitChange(parseInt(e.target.value)))}
+                                >
+                                    
+                                </EuiSelect>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                {resp.totalDocs !== 0 ?
+                    <>
+                        <table className={styles.table}>
+                            <tbody>
+                                <tr className={styles.tr}>
+                                    <td className={styles.tdata}>
+                                        <p className={styles.theader}>Name</p>
+                                    </td>
+                                    <td className={styles.tdata}>
+                                        <p className={styles.theader}>Email</p>
+                                    </td>
+                                    <td className={styles.tdata}>
+                                        <p className={styles.theader2}>Role</p>
+                                    </td>
+                                    <td className={styles.tdata}>
+                                        <p className={styles.theader2}>Actions</p>
+                                    </td>
+                                </tr>
+                                {resp ? resp.docs.map((specificUser: User) => (
+                                    <tr key={specificUser._id} className={styles.tr}>
+                                        <td className={styles.tdata}>
+                                            <p className={styles.tname}>{specificUser.name}</p>
+                                        </td>
+                                        <td className={styles.tdata}>
+                                            <p className={styles.temail}>{specificUser.email}</p>
+                                        </td>
+                                        <td className={styles.tdata}>
+                                            {specificUser.roles.map(role => (
+                                                <p key={role}>{role}</p>
+                                            ))}
+                                        </td>
+                                        <td className={styles.tdata}>
+                                            <p className={styles.theader2}>Actions</p>
+                                        </td>
+                                    </tr>
+                                )) : null}
+                            </tbody>
+                        </table> 
+                        
+                    </>: null
                 }
             </div>
         )
