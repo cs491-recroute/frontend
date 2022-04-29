@@ -6,13 +6,14 @@ import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
-import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText, EuiLoadingContent } from '@elastic/eui';
 import { useWithConfirmation } from '../contexts/confirmation';
 import { translate } from '../utils';
 import styles from '../styles/Flows.module.scss';
 import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
 import { Paper } from '@mui/material';
 import FlowsShareButton from '../components/FlowsShareButton';
+import classNames from 'classnames';
 
 interface SelectedBoxes {
 	[key: string]: boolean
@@ -97,7 +98,7 @@ const FlowsPage: NextPage = () => {
                     onChange={event => setSearchTerm(event.target.value)}
                 />
             </div>
-            <div className={styles.flowList}>
+            <div className={styles.flowList} data-testid='flowList'>
                 {isReady ? flows.filter( flow => {
                     if (searchTerm === "") {
                         //if query is empty
@@ -137,7 +138,11 @@ const FlowsPage: NextPage = () => {
                                 <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
                             </div>						
                         </Paper>
-                    )}) : <div>Fetching</div>}
+                    )}) : <div data-testid='flows-loading'>
+                    {[...Array(5)].map((_, i) => <Paper key={i} className={classNames(styles.cardContainer, styles.loading)}>
+                        <EuiLoadingContent lines={2} className={styles.loadingContent}/>
+                    </Paper>)}
+                </div>}
             </div>
             <CreateFlowModal ref={createFlowRef} />
         </div>
