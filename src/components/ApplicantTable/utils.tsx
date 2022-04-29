@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ComponentTypes, Flow, Form, Test, Interview } from './../../types/models';
 import { STAGE_TYPE, QUESTION_TYPES } from './../../types/enums';
 import { Button } from '@mui/material';
@@ -9,6 +9,11 @@ import styled from 'styled-components';
 import { COMPONENT_MAPPINGS } from '../../constants';
 import { QUESTION_MAPPINGS } from '../TestBuilder/Questions/constants';
 import moment from 'moment';
+import { IconButton } from '@mui/material';
+import { EuiPopover, EuiPopoverTitle, EuiProgress, EuiText, EuiAccordion, EuiSpacer } from '@elastic/eui';
+import InfoIcon from '@mui/icons-material/Info';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 
 const Cell = styled.div`
     overflow: hidden;
@@ -17,21 +22,104 @@ const Cell = styled.div`
 `;
 
 const getQuestionCell = (questionType: QUESTION_TYPES, props: any) => {
+    let content = null;
+    let detailedContent = null;
+
     switch (questionType) {
         case QUESTION_TYPES.OPEN_ENDED: {
-            return props?.text;
+            content = props?.text;
+            detailedContent = <pre style={{ whiteSpace: 'pre-wrap' }}>{content}</pre>;
+            break;
         }
-        default:
-            return props?.grade;
+        case QUESTION_TYPES.CODING:
+            content = <EuiProgress
+                valueText={true}
+                max={100}
+                color="primary"
+                size="s"
+                label='Grade'
+                labelProps={{ style: { color: '#0071c2' } }}
+                value={props?.percentageGrade || '0'}
+            />;
+            detailedContent = <>
+                <EuiText size='s'>
+                    <b>Test Case Results</b>
+                </EuiText>
+                <EuiSpacer size='s' />
+                <div>
+                    {props?.testCaseResults.map(({ input, output, passed, points, _id }: any, index: number) => {
+                        return <EuiAccordion 
+                            id={_id} 
+                            key={_id} 
+                            buttonContent={<div style={{ display: 'flex'}}>
+                                {passed ? <CheckCircleIcon style={{ color: 'green' }} /> : <CancelRoundedIcon style={{ color: 'red' }} />}
+                                <b style={{ marginLeft: 5, color: passed ? 'green' : 'red' }}>{`Test Case ${index + 1}`}</b>
+                            </div>} 
+                            arrowDisplay="none"
+                        >
+                            <EuiText size='s' style={{ display: 'flex', justifyContent: 'space-between', width: 100 }}><b>Input:</b><span>{input}</span></EuiText>
+                            <EuiText size='s' style={{ display: 'flex', justifyContent: 'space-between', width: 100 }}><b>Output:</b>{output}</EuiText>
+                            <EuiText size='s' style={{ display: 'flex', justifyContent: 'space-between', width: 100 }}><b>Points:</b>{points}</EuiText>
+                        </EuiAccordion>
+                    })}
+                </div>
+                <EuiSpacer size='s'/>
+                <hr/>
+                <EuiSpacer size='s'/>
+                <EuiAccordion 
+                    id={props?._id}
+                    buttonContent={<b>Code</b>}
+                >
+                    <pre style={{ whiteSpace: 'pre-wrap' }}>
+                        {props?.code}
+                    </pre>
+                </EuiAccordion>
+            </>
+            break;
+        case QUESTION_TYPES.MULTIPLE_CHOICE:
+            content = <EuiProgress
+                valueText={true}
+                max={100}
+                color="primary"
+                size="s"
+                label='Grade'
+                labelProps={{ style: { color: '#0071c2' } }}
+                value={props?.percentageGrade || '0'}
+            />;
+            detailedContent = <>
+                <EuiText size='s'>Selected Options</EuiText>
+                <hr/>
+                <EuiSpacer size='s' />
+                {props?.options.map((option: string) => <div key={option} style={{ 
+                    marginBottom: '5px',
+                    backgroundColor: '#ccc',
+                    padding: '5px',
+                    borderRadius: '5px',
+                    fontSize: '12px',
+                    overflow: 'hidden'
+                }}
+                >{option}</div>)}
+            </>;
+            break;
     }
+
+    return { content, detailedContent };
 };
 
 const getComponentCell = (componentType: ComponentTypes, props: any, applicantID: string, stageID: string, userID: string) => {
+    let content = null;
+    let detailedContent = null;
+
     switch (componentType) {
+        case ComponentTypes.address:
+        case ComponentTypes.longText:
+            content = props?.value || '';
+            detailedContent = <pre style={{ whiteSpace: 'pre-wrap' }}>{content}</pre>;
+            break;
         case ComponentTypes.upload: {
             const { originalName } = props?.value || {};
-            if (!originalName) return null;
-            return <a
+            if (!originalName) return { content: null };
+            content = <a
                 href={`https://recroute.co:3501/applicant/${applicantID}/stage/${stageID}/component/${props.componentID}/file?userID=${userID}`}
                 download
             >
@@ -48,15 +136,19 @@ const getComponentCell = (componentType: ComponentTypes, props: any, applicantID
                     {originalName}
                 </div>
             </a>;
+            break;
         }
         case ComponentTypes.datePicker: {
-            if (!props?.value) return '';
-            return moment(props?.value).format('DD/MM/YYYY');
+            if (!props?.value) return { content: null };
+            content = moment(props?.value).format('DD/MM/YYYY');
+            break;
         }
         case ComponentTypes.multipleChoice: {
             const options = props?.value || [];
-            return <>
-                {[...options, ...options].map((option: string) => <span key={option} style={{ 
+            if (options.length === 0) return { content: null };
+
+            content = <>
+                {options.map((option: string) => <span key={option} style={{ 
                     marginRight: '5px',
                     backgroundColor: '#ccc',
                     padding: '5px',
@@ -65,44 +157,97 @@ const getComponentCell = (componentType: ComponentTypes, props: any, applicantID
                     overflow: 'hidden'
                 }}
                 >{option}</span>)}
-            </>
+            </>;
+
+            detailedContent = <>
+                {options.map((option: string) => <div key={option} style={{ 
+                    marginBottom: '5px',
+                    backgroundColor: '#ccc',
+                    padding: '5px',
+                    borderRadius: '5px',
+                    fontSize: '12px',
+                    overflow: 'hidden'
+                }}
+                >{option}</div>)}
+            </>;
+            break;
         }
         case ComponentTypes.fullName: {
             const { name = '', surname = '' } = props?.value || {};
-            return `${name} ${surname}`;
+            if (!name && !surname) return { content: null };
+            content = `${name} ${surname}`;
+            break;
         }
         default: {
-            return props?.value || '';
+            content = props?.value || '';
         }
     }
+
+    return { content, detailedContent };
 };
 
-const getCellRenderer = (stageType: STAGE_TYPE, cellType: QUESTION_TYPES | ComponentTypes, stageID: string, userID: string) => {
+type CellRendererProps<T> = T extends true ? {
+    isEmail: T
+} : { isEmail?: T, stageType: STAGE_TYPE, cellType: QUESTION_TYPES | ComponentTypes, stageID: string, userID: string };
+function getCellRenderer<T>({ isEmail, ...rest }: CellRendererProps<T>) {
     // eslint-disable-next-line react/prop-types
-    const Component = ({ value: props, row: { original: { id: applicantID } } }: any) => {
-        if (!props) return '';
-        let text;
-        switch (stageType) {
-            case STAGE_TYPE.FORM: {
-                text = getComponentCell(cellType as ComponentTypes, props, applicantID, stageID, userID);
-                break;
-            }
-            case STAGE_TYPE.TEST: {
-                text = getQuestionCell(cellType as QUESTION_TYPES, props);
-                break;
-            }
-            case STAGE_TYPE.INTERVIEW: {
-                text = 'Not Implemented';
-                break;
+    const Component = ({ value: props, row: { original: { id: applicantID } }, column: { hideDetailsButton }, isFocused }: any) => {
+        const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+        useEffect(() => {
+            if (!isFocused) setIsPopoverOpen(false);
+        }, [isFocused]);
+        
+        let content, detailedContent;
+        if (isEmail) {
+            content = props;
+            detailedContent = props;
+        } else {
+            const { stageType, cellType, stageID, userID } = rest as any;
+            switch (stageType) {
+                case STAGE_TYPE.FORM: {
+                    const componentCell = getComponentCell(cellType as ComponentTypes, props, applicantID, stageID, userID);
+                    content = componentCell.content;
+                    detailedContent = componentCell.detailedContent || componentCell.content;
+                    break;
+                }
+                case STAGE_TYPE.TEST: {
+                    const questionCell = getQuestionCell(cellType as QUESTION_TYPES, props);
+                    content = questionCell.content;
+                    detailedContent = questionCell.detailedContent || questionCell.content;
+                    break;
+                }
+                case STAGE_TYPE.INTERVIEW: {
+                    content = 'Not Implemented';
+                    break;
+                }
             }
         }
-        return <Cell title={text}>
-            {text}
-        </Cell>;
+        if (!props || !content) return '';
+        return <>
+            <Cell title={content}>
+                {content}
+            </Cell>
+            {!hideDetailsButton && <EuiPopover
+                button={isFocused && <IconButton
+                    onClick={() => setIsPopoverOpen(e => !e)}
+                    color="info"
+                    size='small'
+                >
+                    <InfoIcon />
+                </IconButton>}
+                isOpen={isPopoverOpen}
+                closePopover={() => setIsPopoverOpen(false)}
+                anchorPosition="downCenter"
+                style={{ position: 'absolute', zIndex: 1, right: 0, top: 6 }}
+            >
+                <EuiPopoverTitle paddingSize='s'>Details</EuiPopoverTitle>
+                {detailedContent}
+            </EuiPopover>}
+        </>;
     };
     Component.displayName = 'CellRenderer';
     return Component;
-};
+}
 
 type getColumnsParams = {
     flow: Flow,
@@ -121,7 +266,7 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
             {
                 Header: 'Primary Email',
                 accessor: 'email',
-                Cell: ({ value: email }: any) => <Cell title={email}>{email}</Cell>,
+                Cell: getCellRenderer({ isEmail: true }),
                 sortable: true,
                 filterable: true,
                 sortByKey: 'email'
@@ -182,7 +327,7 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                         return {
                             Header: title || (titles && titles[0]) || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
-                            Cell: getCellRenderer(stageType, componentType, stageID, userID),
+                            Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
                             sortable,
                             filterable,
                             sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`
@@ -199,7 +344,7 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                         return {
                             Header: description || '',
                             accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
-                            Cell: getCellRenderer(stageType, questionType, stageID, userID),
+                            Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
                             sortable,
                             filterable,
                             sortByKey: `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`
