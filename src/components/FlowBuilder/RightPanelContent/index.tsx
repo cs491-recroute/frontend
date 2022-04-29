@@ -26,7 +26,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
     const [testDuration, setTestDuration] = useState(stage?.testDuration);
     const [interviewLengthInMins, setInterviewLengthInMins] = useState(stage?.stageProps.interviewLengthInMins)
-    const [interviewers, setInterviewers] = useState(stage?.stageProps.interviewers)
+    const [interviewers, setInterviewers] = useState(stage?.stageProps.interviewers || []);
     const [activeInterviewers, setActiveInterviewers] = useState(stage?.stageProps.interviewers);
     const [interviewerOptions, setInterviewerOptions] = useState([{ key: '', text: '' }])
 
@@ -61,10 +61,10 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
         setIsInvalid(startDate > endDate || startDate <= moment());
         setTestDuration(newStage?.testDuration);
         setInterviewLengthInMins(newStage?.stageProps.interviewLengthInMins);
-        setInterviewers(newStage?.stageProps.interviewers)
+        setInterviewers(newStage?.stageProps.interviewers || []);
     }, [flow, _id]);
 
-    const handleSaveButton = async() => {
+    const handleSaveButton = async () => {
         //if check yap state yoksa direkt hata ver
         if (stage) {
             const response = await dispatch(updateStageAsync({
@@ -76,7 +76,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
             }));
             setSaveButtonClicked(true);
             setTimeout(setSaveButtonClicked, 2000);
-            if(response.type.search('fulfilled') === -1){
+            if (response.type.search('fulfilled') === -1) {
                 //rejected
                 setIsFulfilled(false);
             } else {
@@ -231,14 +231,14 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                 <table>
                     <tr>
                         <th className={styles.th}>
-                            <EuiFormRow>  
+                            <EuiFormRow>
                                 <p className={styles.feedbackText1}> {saveButtonClicked && isFulfilled && translate('Saved Succesfully')}</p>
                             </EuiFormRow>
-                            <EuiFormRow> 
+                            <EuiFormRow>
                                 <p className={styles.feedbackText2}> {saveButtonClicked && !isFulfilled && translate('Unseccessful Save')}</p>
                             </EuiFormRow>
                         </th>
-                        <th> 
+                        <th>
                             <EuiButton onClick={handleSaveButton} className={styles.saveButton}>{translate('Save')}</EuiButton>
                         </th>
                     </tr>

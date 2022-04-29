@@ -6,9 +6,9 @@ import { gatewayManager } from '../../../utils/gatewayManager';
 const checkStageAccess: NextApiHandler = async (request, response) => {
     const { fetchedInterviewers } = request.body;
     try {
-        const {data: timeSlots} = await axios.get(`https://recroute.co:3500/user/available/timeSlots`, { params: { userIDs: JSON.stringify(fetchedInterviewers) } });
+        const { data: timeSlots } = await gatewayManager.useService(SERVICES.USER).get(`/user/available/timeSlots`, { params: { userIDs: JSON.stringify(fetchedInterviewers) } });
         return response.status(200).send(timeSlots);
-    } catch ({ response: { data: { message }}}: any) {
+    } catch ({ response: { data: { message } } }: any) {
         return response.status(400).send(message);
     }
 };

@@ -5,30 +5,25 @@ import { getUserID } from '.';
 import { SERVICES } from '../constants/services';
 
 // eslint-disable-next-line no-unused-vars
-type GatewayManager = AxiosInstance & { useService: (service: SERVICES) => GatewayManager, addUser: (request: NextApiRequest, response: NextApiResponse) => GatewayManager }
-export const gatewayManager = Axios.create() as GatewayManager;
-
-let useServiceInterceptor: number;
-gatewayManager.useService = (service: SERVICES): GatewayManager => {
-    if (useServiceInterceptor) gatewayManager.interceptors.request.eject(useServiceInterceptor);
-    useServiceInterceptor = gatewayManager.interceptors.request.use(req => {
-        const endpoint = process.env[`${SERVICES[service]}_RUNNING`] ? 'http://localhost' : 'https://recroute.co';
-        const prefix = `${endpoint}:${service}`;
-        if (!req.url?.startsWith(prefix)) req.url = prefix + req.url;
-        return req;
-    });
-    return gatewayManager;
+type GatewayManager = AxiosInstance & {
+    useService: (service: SERVICES) => GatewayManager,
+    addUser: (request: NextApiRequest, response: NextApiResponse) => GatewayManager
 };
 
-let addUserInterceptor: number;
-gatewayManager.addUser = (request: NextApiRequest, response: NextApiResponse): GatewayManager => {
+export const gatewayManager = Axios.create() as GatewayManager;
+gatewayManager.interceptors.response.use(response => {
+    delete gatewayManager.defaults.baseURL;
+    delete gatewayManager.defaults.params;
+    return response;
+});
+
+gatewayManager.useService = function (service: SERVICES): GatewayManager {
+    this.defaults.baseURL = `${process.env[`${SERVICES[service]}_RUNNING`] ? 'http://localhost' : 'https://recroute.co'}:${service}`;
+    return this;
+};
+
+gatewayManager.addUser = function (request: NextApiRequest, response: NextApiResponse): GatewayManager {
     const { user } = getSession(request, response) as Session;
-    if (addUserInterceptor) gatewayManager.interceptors.request.eject(addUserInterceptor);
-    addUserInterceptor = gatewayManager.interceptors.request.use(req => {
-        if (user) {
-            req.params = { ...req.params, userID: getUserID(user) };
-        }
-        return req;
-    });
-    return gatewayManager;
+    this.defaults.params = { ...this.defaults.params, userID: getUserID(user) }
+    return this;
 };
