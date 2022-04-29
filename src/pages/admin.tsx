@@ -112,24 +112,6 @@ const AdminPanelPage: NextPage = () => {
                                     </tbody>
                                 </table>
                             </td>
-                            <td>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p className={styles.title2}>{translate('Page Number:')}</p>
-                                            </td>
-                                            <td className={styles.td2}>
-                                                <AdminConsolePagination
-                                                    resp={resp}
-                                                    handlePageChange={handlePageChange}
-                                                />
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                
-                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -174,6 +156,12 @@ const AdminPanelPage: NextPage = () => {
                         
                     </>: null
                 }
+                <div className={styles.pageNumbers}>
+                    <AdminConsolePagination
+                        resp={resp}
+                        handlePageChange={handlePageChange}
+                    />
+                </div>
             </div>
         )
     }
