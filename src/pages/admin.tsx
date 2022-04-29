@@ -155,15 +155,14 @@ const AdminPanelPage: NextPage = () => {
                                 )) : null}
                             </tbody>
                         </table> 
-                        
+                        <div className={styles.pageNumbers}>
+                            <AdminConsolePagination
+                                resp={resp}
+                                handlePageChange={handlePageChange}
+                            />
+                        </div>
                     </>: null
                 }
-                <div className={styles.pageNumbers}>
-                    <AdminConsolePagination
-                        resp={resp}
-                        handlePageChange={handlePageChange}
-                    />
-                </div>
             </div>
         )
     }
