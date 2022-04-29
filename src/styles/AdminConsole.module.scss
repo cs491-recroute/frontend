@@ -47,11 +47,16 @@
     border-collapse: collapse;
     width:100%;
     .tColumn1{
-        width: 30%;
+        width: 55%;
     }
     .tColumn2{
-        width: 40%;
+        width: 20%;
     }
+}
+
+.td2{
+    bottom: 10px;
+    margin-top: 50%;
 }
 
 .rowSelect{

@@ -119,7 +119,7 @@ const AdminPanelPage: NextPage = () => {
                                             <td>
                                                 <p className={styles.title2}>{translate('Page Number:')}</p>
                                             </td>
-                                            <td>
+                                            <td className={styles.td2}>
                                                 <AdminConsolePagination
                                                     resp={resp}
                                                     handlePageChange={handlePageChange}
