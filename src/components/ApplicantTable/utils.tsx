@@ -333,7 +333,7 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                         ...components.filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent).map(({ title, _id: componentID, type: componentType, titles }) => {
                             const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
                             return {
-                                Header: title || (titles && titles[0]) || '',
+                                Header: () => <span title={title || (titles && titles[0]) || ''}>{title || (titles && titles[0]) || ''}</span>,
                                 accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
                                 Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
                                 sortable,
@@ -359,7 +359,7 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                         ...questions.map(({ description, _id: questionID, type: questionType }) => {
                             const { sortable = true, sortKey, filterable = true } = QUESTION_MAPPINGS[questionType];
                             return {
-                                Header: description || '',
+                                Header: () => <span title={description}>{description || ''}</span>,
                                 accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
                                 Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
                                 sortable,

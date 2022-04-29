@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyledTableCell } from './StyledTableCell';
+import { StyledTableCell } from './StyledComponents';
 import { ClickAwayListener} from '@mui/material';
 import styles from './ApplicantTable.module.scss';
 import classNames from 'classnames';

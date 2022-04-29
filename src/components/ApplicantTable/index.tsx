@@ -11,30 +11,7 @@ import HeaderCell from './HeaderCell';
 import BodyCell from './BodyCell';
 import { useUser } from '@auth0/nextjs-auth0';
 import { getUserID } from '../../utils';
-
-const HeaderRow = styled(TableRow)(({ theme }) => ({
-    [`&.${tableRowClasses.root}`]: {
-        position: 'sticky',
-        background: 'white',
-        zIndex: 100
-    },
-    [`&.${tableRowClasses.root}:nth-child(1)`]: {
-        top: 0
-    },
-    [`&.${tableRowClasses.root}:nth-child(2)`]: {
-        top: 38,
-        [`&::after`]: {
-            content: '" "',
-            position: 'absolute',
-            top: '100%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: '100%',
-            borderBottom: `2px solid ${theme.palette.grey[400]}`,
-            zIndex: 1000
-        }
-    }
-}));
+import { HeaderRow, BodyRow } from './StyledComponents';
 
 const ApplicantTable = () => {
     const { user, isLoading } = useUser();
@@ -91,9 +68,9 @@ const ApplicantTable = () => {
                     {rows.map((row, i) => {
                         prepareRow(row);
                         return (
-                            <TableRow {...row.getRowProps()} key={row.id}>
+                            <BodyRow {...row.getRowProps()} key={row.id}>
                                 {row.cells.map(cell => <BodyCell cell={cell} onNextClick={onNextClick} />)}
-                            </TableRow>
+                            </BodyRow>
                         );
                     })}
                 </TableBody>

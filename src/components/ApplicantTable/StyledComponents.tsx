@@ -1,4 +1,4 @@
-import { TableCell, styled, tableCellClasses } from '@mui/material';
+import { TableCell, styled, tableCellClasses, TableRow, tableRowClasses } from '@mui/material';
 
 export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.root}`]: {
@@ -40,5 +40,45 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
     [`tr:nth-child(1) &.${tableCellClasses.head}:nth-child(1)`]: {
         zIndex: 20
+    }
+}));
+
+export const HeaderRow = styled(TableRow)(({ theme }) => ({
+    [`&.${tableRowClasses.root}`]: {
+        position: 'sticky',
+        background: 'white',
+        zIndex: 100
+    },
+    [`&.${tableRowClasses.root}:nth-child(1)`]: {
+        top: 0,
+        [`& > *`]: {
+            background: `${theme.palette.grey[400]} !important`,
+            fontWeight: 'bold',
+            fontSize: '1.125rem'
+        }
+    },
+    [`&.${tableRowClasses.root}:nth-child(2)`]: {
+        top: 38,
+        [`& > *`]: {
+            background: `${theme.palette.grey[300]} !important`,
+            fontWeight: 'bold',
+            fontSize: '1rem'
+        },
+        [`&::after`]: {
+            content: '" "',
+            position: 'absolute',
+            top: '100%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '100%',
+            borderBottom: `2px solid ${theme.palette.grey[400]}`,
+            zIndex: 1000
+        }
+    }
+}));
+
+export const BodyRow = styled(TableRow)(({ theme }) => ({
+    [`&.${tableRowClasses.root}:nth-child(even) > *`]: {
+        background: `${theme.palette.grey[100]} !important`
     }
 }));

@@ -8,7 +8,7 @@ import debounce from 'lodash.debounce';
 import { translate } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
 import { setFilterQuery, setSortQuery, getQueries } from '../../redux/slices/submissionsSlice';
-import { StyledTableCell } from './StyledTableCell';
+import { StyledTableCell } from './StyledComponents';
 
 type HeaderCellProps = {
     column: any,
