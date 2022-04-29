@@ -1,8 +1,11 @@
 import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { getCurrentFlow, setConditionsOfFlow, setCurrentFlow, updateFlowAsync } from '../../../redux/slices/flowBuilderSlice';
 import { FORM_FIELDS, FORM_OPERATIONS, STAGE_TYPE } from '../../../types/enums';
 import { ComponentTypes, Condition, Form, Stage, Option } from '../../../types/models';
 import { translate } from '../../../utils';
+import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import styles from './Condition.module.scss';
 
 type FieldOption = EuiComboBoxOptionOption<{ name: string; componentID: string; componentType: ComponentTypes; componentOptions: Option[]; }>;
@@ -15,6 +18,8 @@ type ConditionalElementProps = {
 }
 
 const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
+    const dispatch = useAppDispatch();
+    const flow = useAppSelector(getCurrentFlow);
     //General states and functions common for all stage types
     const [isOpen, setIsOpen] = useState(false);
     const [allOperations, setAllOperations] = useState([] as EuiComboBoxOptionOption[]);
@@ -64,7 +69,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 const optArray = selectedOpts[0]?.value?.componentOptions ? selectedOpts[0].value.componentOptions : [];
                 const componentOptions = optArray.map(e => ({
                     label: e.description,
-                    _id: e._id
+                    id: e._id
                 }));
                 setDropDownOptions(componentOptions);
                 setSelectedDropDownOptions([]);
@@ -90,8 +95,47 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     }
 
     const handleSaveButton = async () => {
-        console.log(selectedOptions[0].value?.componentOptions?.[0]?._id);
-        if ((selectedOptions.length === 1) && (selectedOperations.length === 1) && value) {
+        if ( (selectedOperations.length === 1) && value) {
+            const body: any = {};
+            body.from = stage._id;
+
+            body.operation = selectedOperations[0].label;
+            if(stage.type === STAGE_TYPE.FORM && (selectedOptions.length === 1)){
+                const field = (selectedOptions[0]?.value?.componentID);
+                body.field = field;
+                const componentType = (selectedOptions[0]?.value?.componentType);
+                if(stringComponents.includes(componentType || '') || (componentType === ComponentTypes.number)){ //value should be sent as a string or number
+                    body.value = value;
+                    if(componentType === ComponentTypes.number) body.value = Number(value);
+                } else if(componentType === ComponentTypes.singleChoice){ // value should be sent as a string
+                    const singleChoiceID = selectedDropDownOptions[0].id;
+                    body.value = singleChoiceID;
+                } else { //
+                    const selectedOptionIds = selectedDropDownOptions.map(({id}) => id);
+                    body.value = selectedOptionIds;
+                }
+            } else { //stage is interview or test
+                //body.field = testOrInterviewOptions[0].label;
+                body.value = Number(value);
+            }
+            if(condition){ //condition should be updated
+                try {
+                    const { data } =  await axios.put(`/api/flows/${flow._id}/${condition._id}/updateCondition`, body);
+                    dispatch(setConditionsOfFlow(data));
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                } catch (error: any) {
+                    console.log(error.message);
+                }
+            }else { //condition should be set
+                try {
+                    const { data } =  await axios.post(`/api/flows/${flow._id}/setCondition`, body);
+                    dispatch(setConditionsOfFlow(data));
+                // eslint-disable-next-line @typescript-eslint/no-shadow
+                } catch (error: any) {
+                    console.log(error.message);
+                }
+            }
+
             setError({
                 fieldError: false,
                 operationError: false,
@@ -183,6 +227,13 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 disabled: (type === ComponentTypes.datePicker || type === ComponentTypes.upload)
             })));
             setSelectedOperations([{ label: (condition?.operation) || "" }]);
+            if (fieldComponent.type) {
+                const arr = FORM_FIELDS[fieldComponent.type];
+                const newOptions = arr.map(e => ({
+                    label: e
+                }));
+                setAllOperations(newOptions);
+            }
 
             if (fieldComponent.type === ComponentTypes.dropDown || fieldComponent.type === ComponentTypes.singleChoice) {
                 const valueOption = fieldComponent.options.find(option => option._id === value);
@@ -206,7 +257,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
             setSelectedOperations([{ label: (condition?.operation) || "" }]);
             setValue(condition?.value);
         }
-    }, [condition]);
+    }, [condition, isOpen]);
 
     return (
         <div className={styles.container}>
@@ -249,7 +300,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                                     singleSelection={{ asPlainText: true }}
                                     options={testOrInterviewOptions}
                                     selectedOptions={testOrInterviewOptions}
-                                    onChange={() => console.log('test option tiklandi')}
+                                    onChange={() => {}}
                                     isDisabled={true}
                                 />
                             </EuiFormRow>}

@@ -118,6 +118,9 @@ export const flowBuilderSlice = createSlice({
         },
         setCurrentFlow: (state, action) => {
             state.currentFlow = action.payload;
+        },
+        setConditionsOfFlow: (state, action) => {
+            state.currentFlow.conditions = action.payload;
         }
     },
     extraReducers: builder => {
@@ -163,7 +166,7 @@ export const flowBuilderSlice = createSlice({
     }
 });
 
-export const { toggleLeftPanel, toggleRightPanel, setCurrentFlow } = flowBuilderSlice.actions;
+export const { toggleLeftPanel, toggleRightPanel, setCurrentFlow, setConditionsOfFlow } = flowBuilderSlice.actions;
 
 export const getLeftPanelStatus = (state: AppState) => state.flowBuilder.ui.leftPanelStatus;
 export const getRightPanelStatus = (state: AppState) => state.flowBuilder.ui.rightPanelStatus;
