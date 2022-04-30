@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiFormRow, EuiButton, EuiDatePicker, EuiText } from '@elastic/eui';
 import { translate } from '../../../../utils';
 import moment, { Moment } from 'moment';
+import { toast } from 'react-toastify';
 
 type fetchedTimeSlot = {
     durationInMins: number,
@@ -18,7 +19,7 @@ type fetchedTimeSlot = {
 
 const ScheduleInterviewPage: NextPage = () => {
     const router = useRouter();
-    const {applicantID, interviewID} = router.query;
+    const { applicantID, interviewID } = router.query;
     const [selectedDate, setSelectedDate] = useState(moment().add(1, 'days'));
     const [fetchedTimeSlots, setFetchedTimeSlots] = useState([] as fetchedTimeSlot[]);
     const [times, setTimes] = useState([] as Moment[])
@@ -29,13 +30,13 @@ const ScheduleInterviewPage: NextPage = () => {
             try {
                 const { data } = await axios.get(`/api/interviews/${interviewID}`);
                 const fetchedInterviewers = data.interview.interviewers;
-                const {data: timeSlots} = await axios.post('/api/user/timeSlots', {
+                const { data: timeSlots } = await axios.post('/api/user/timeSlots', {
                     fetchedInterviewers
                 });
                 setFetchedTimeSlots(timeSlots);
-                if(timeSlots.length === 0){
+                if (timeSlots.length === 0) {
                     alert('There is no available time slot. Please contact with company.')
-                }else {
+                } else {
                     const fetchedInterviewDates = timeSlots.map((e: any) => moment(e.startTime));
                     setInterviewDates(fetchedInterviewDates);
                     setSelectedDate(fetchedInterviewDates[0]);
@@ -48,14 +49,14 @@ const ScheduleInterviewPage: NextPage = () => {
                 console.log(error);
             }
         }
-        if(!router.isReady) return;
+        if (!router.isReady) return;
         getInterviewers();
 
     }, [interviewID]);
 
     const handleChange = (date: Moment) => {
         const selectedTime = interviewDates.find(e => date.clone().startOf('day').toString() === e.clone().startOf('day').toString());
-        if(!selectedTime) return;
+        if (!selectedTime) return;
         setSelectedDate(selectedTime);
         const newTimes = interviewDates.filter(e => {
             return date.clone().startOf('day').toString() === e.clone().startOf('day').toString();
@@ -63,14 +64,23 @@ const ScheduleInterviewPage: NextPage = () => {
         setTimes(newTimes);
     };
 
-    const handleSaveButton = async() => {
-        const selectedSlot = fetchedTimeSlots.find(({startTime}) => moment(startTime).isSame(selectedDate));
-        if(selectedSlot){
-            const body = {interviewerID: selectedSlot.interviewerID, timeSlotID: selectedSlot._id};
+    const handleSaveButton = async () => {
+        const selectedSlot = fetchedTimeSlots.find(({ startTime }) => moment(startTime).isSame(selectedDate));
+        if (selectedSlot) {
+            const body = { interviewerID: selectedSlot.interviewerID, timeSlotID: selectedSlot._id };
             try {
                 await axios.post(`/api/modal/interview/timeSlot/${applicantID}/${interviewID}/scheduleInterview`, body);
-            } catch ({ response: { data }}: any) {
-                console.log(data);
+                toast(translate('Successful'), {
+                    type: 'success',
+                    position: 'bottom-right',
+                    hideProgressBar: true
+                });
+            } catch (error: any) {
+                toast(translate(error?.response?.data || 'Error occured!'), {
+                    type: 'error',
+                    position: 'bottom-right',
+                    hideProgressBar: true
+                });
             }
         }
 
@@ -78,14 +88,14 @@ const ScheduleInterviewPage: NextPage = () => {
 
     if (applicantID) {
         return (
-            <EuiModal onClose={() => {}} initialFocus='.name' style={{ width: '50vw', height: '60vh', maxWidth: '500px' }}>
+            <EuiModal onClose={() => { }} initialFocus='.name' style={{ width: '50vw', height: '60vh', maxWidth: '500px' }}>
                 <EuiModalHeader>
                     <EuiModalHeaderTitle>{translate('Schedule Interview')}</EuiModalHeaderTitle>
                 </EuiModalHeader>
 
                 <EuiModalBody>
                     <EuiFormRow>
-                        <EuiText style={{fontStyle: 'italic', fontWeight: 'bold'}}>{translate('Please select the interview date from the available time slots.')}</EuiText>
+                        <EuiText style={{ fontStyle: 'italic', fontWeight: 'bold' }}>{translate('Please select the interview date from the available time slots.')}</EuiText>
                     </EuiFormRow>
 
                     <EuiFormRow label="Exclude yesterday and today">
@@ -103,7 +113,6 @@ const ScheduleInterviewPage: NextPage = () => {
                     <EuiButton onClick={handleSaveButton} disabled={fetchedTimeSlots.length === 0} fill >
                         {translate('Save')}
                     </EuiButton>
-
                 </EuiModalFooter>
             </EuiModal>
         )
