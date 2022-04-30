@@ -188,7 +188,7 @@ const getComponentCell = (componentType: ComponentTypes, props: any, applicantID
 
 type CellRendererProps<T> = T extends true ? {
     isEmail: T
-} : { isEmail?: T, stageType: STAGE_TYPE, cellType: QUESTION_TYPES | ComponentTypes, stageID: string, userID: string };
+} : { isEmail?: T, stageType: STAGE_TYPE, cellType?: QUESTION_TYPES | ComponentTypes, stageID: string, userID: string };
 function getCellRenderer<T>({ isEmail, ...rest }: CellRendererProps<T>) {
     // eslint-disable-next-line react/prop-types
     const Component = ({ value: props, row: { original: { id: applicantID } }, column: { hideDetailsButton }, isFocused }: any) => {
@@ -197,6 +197,8 @@ function getCellRenderer<T>({ isEmail, ...rest }: CellRendererProps<T>) {
             if (!isFocused) setIsPopoverOpen(false);
         }, [isFocused]);
         
+        if (!props) return '';
+
         let content, detailedContent;
         if (isEmail) {
             content = props;
@@ -217,12 +219,21 @@ function getCellRenderer<T>({ isEmail, ...rest }: CellRendererProps<T>) {
                     break;
                 }
                 case STAGE_TYPE.INTERVIEW: {
-                    content = 'Not Implemented';
+                    content = <EuiProgress
+                        valueText={true}
+                        max={100}
+                        color="primary"
+                        size="s"
+                        label='Grade'
+                        labelProps={{ style: { color: '#0071c2' } }}
+                        value={props?.grade || '0'}
+                    />;
+                    detailedContent = props.notes;
                     break;
                 }
             }
         }
-        if (!props || !content) return '';
+        if (!content) return '';
         return <>
             <Cell title={content}>
                 {content}
@@ -392,7 +403,8 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                 const { name } = stageProps as Interview;
                 return {
                     Header: name || '',
-                    accessor: `stageSubmissions.${stageID}.submissions` // ?
+                    accessor: `stageSubmissions.${stageID}.submissions`,
+                    Cell: getCellRenderer({ stageType, stageID, userID })
                 }
             }
         }
