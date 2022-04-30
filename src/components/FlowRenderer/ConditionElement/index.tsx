@@ -1,4 +1,5 @@
 import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
+import { DeleteForever } from '@mui/icons-material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getCurrentFlow, setConditionsOfFlow, setCurrentFlow, updateFlowAsync } from '../../../redux/slices/flowBuilderSlice';
@@ -94,43 +95,49 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
         }));
     }
 
+    const handleDelete = async () => {
+        if (!condition?._id) return;
+        const { data } = await axios.delete(`/api/flows/${flow._id}/${condition._id}/deleteCondition`);
+        dispatch(setConditionsOfFlow(data));
+    }
+
     const handleSaveButton = async () => {
-        if ( (selectedOperations.length === 1) && value) {
+        if ((selectedOperations.length === 1) && value) {
             const body: any = {};
             body.from = stage._id;
 
             body.operation = selectedOperations[0].label;
-            if(stage.type === STAGE_TYPE.FORM && (selectedOptions.length === 1)){
+            if (stage.type === STAGE_TYPE.FORM && (selectedOptions.length === 1)) {
                 const field = (selectedOptions[0]?.value?.componentID);
                 body.field = field;
                 const componentType = (selectedOptions[0]?.value?.componentType);
-                if(stringComponents.includes(componentType || '') || (componentType === ComponentTypes.number)){ //value should be sent as a string or number
+                if (stringComponents.includes(componentType || '') || (componentType === ComponentTypes.number)) { //value should be sent as a string or number
                     body.value = value;
-                    if(componentType === ComponentTypes.number) body.value = Number(value);
-                } else if(componentType === ComponentTypes.singleChoice){ // value should be sent as a string
+                    if (componentType === ComponentTypes.number) body.value = Number(value);
+                } else if (componentType === ComponentTypes.singleChoice) { // value should be sent as a string
                     const singleChoiceID = selectedDropDownOptions[0].id;
                     body.value = singleChoiceID;
                 } else { //
-                    const selectedOptionIds = selectedDropDownOptions.map(({id}) => id);
+                    const selectedOptionIds = selectedDropDownOptions.map(({ id }) => id);
                     body.value = selectedOptionIds;
                 }
             } else { //stage is interview or test
                 //body.field = testOrInterviewOptions[0].label;
                 body.value = Number(value);
             }
-            if(condition){ //condition should be updated
+            if (condition) { //condition should be updated
                 try {
-                    const { data } =  await axios.put(`/api/flows/${flow._id}/${condition._id}/updateCondition`, body);
+                    const { data } = await axios.put(`/api/flows/${flow._id}/${condition._id}/updateCondition`, body);
                     dispatch(setConditionsOfFlow(data));
-                // eslint-disable-next-line @typescript-eslint/no-shadow
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
                 } catch (error: any) {
                     console.log(error.message);
                 }
-            }else { //condition should be set
+            } else { //condition should be set
                 try {
-                    const { data } =  await axios.post(`/api/flows/${flow._id}/setCondition`, body);
+                    const { data } = await axios.post(`/api/flows/${flow._id}/setCondition`, body);
                     dispatch(setConditionsOfFlow(data));
-                // eslint-disable-next-line @typescript-eslint/no-shadow
+                    // eslint-disable-next-line @typescript-eslint/no-shadow
                 } catch (error: any) {
                     console.log(error.message);
                 }
@@ -262,7 +269,9 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
     return (
         <div className={styles.container}>
             <div className={styles.conditionBox} onClick={() => setIsOpen(true)}>
+                {condition?.operation}
             </div>
+            {condition && <DeleteForever onClick={handleDelete} className={styles.deleteIcon} />}
             {isOpen ?
                 <EuiModal onClose={closeModel} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
                     <EuiModalHeader>
@@ -300,7 +309,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                                     singleSelection={{ asPlainText: true }}
                                     options={testOrInterviewOptions}
                                     selectedOptions={testOrInterviewOptions}
-                                    onChange={() => {}}
+                                    onChange={() => { }}
                                     isDisabled={true}
                                 />
                             </EuiFormRow>}

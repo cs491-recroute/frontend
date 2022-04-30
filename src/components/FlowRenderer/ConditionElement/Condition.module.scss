@@ -8,6 +8,8 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  position: relative;
+  cursor: pointer;
 
   .conditionBox {
     padding: 10px;
@@ -16,7 +18,13 @@
     border-radius: 20px;
     height: 40px;
     min-width: 40px;
-    cursor: pointer;
+  }
+
+  .deleteIcon {
+    position: absolute;
+    right: -30px;
+    height: 25px;
+    width: 25px;
   }
 }
 
@@ -30,12 +38,13 @@
     color: red;
     margin-bottom: 10px;
   }
+
   .successfulFeedbackText {
-      color: green;
-      margin-bottom: 10px;
-    }
-  
-  & > *:not(:first-child) {
+    color: green;
+    margin-bottom: 10px;
+  }
+
+  &>*:not(:first-child) {
     margin-left: 10px;
   }
 }
