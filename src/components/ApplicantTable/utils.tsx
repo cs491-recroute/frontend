@@ -341,18 +341,20 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                             sortable: true,
                             sortByKey: `stageSubmissions.${stageID}.updatedAt`
                         },
-                        ...components.filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent).map(({ title, _id: componentID, type: componentType, titles }) => {
-                            const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
-                            return {
-                                Header: () => <span title={title || (titles && titles[0]) || ''}>{title || (titles && titles[0]) || ''}</span>,
-                                accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
-                                Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
-                                sortable,
-                                filterable,
-                                sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`,
-                                description: title || (titles && titles[0]) || ''
-                            }
-                        })
+                        ...components
+                            .filter(component => !COMPONENT_MAPPINGS[component.type].viewComponent)
+                            .map(({ title, name: componentName = '', _id: componentID, type: componentType, titles }) => {
+                                const { sortKey, sortable = true, filterable = true } = COMPONENT_MAPPINGS[componentType];
+                                return {
+                                    Header: () => <span title={title || (titles && titles[0]) || ''}>{componentName}</span>,
+                                    accessor: `stageSubmissions.${stageID}.submissions.${componentID}`,
+                                    Cell: getCellRenderer({stageType, cellType: componentType, stageID, userID}),
+                                    sortable,
+                                    filterable,
+                                    sortByKey: `stageSubmissions.${stageID}.formSubmission.componentSubmissions.${componentID}.${sortKey}`,
+                                    description: componentName
+                                }
+                            })
                     ]
                 }
             }
@@ -368,16 +370,16 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                             sortable: true,
                             sortByKey: `stageSubmissions.${stageID}.updatedAt`
                         },
-                        ...questions.map(({ description, _id: questionID, type: questionType }) => {
+                        ...questions.map(({ name: questionName, description, _id: questionID, type: questionType }) => {
                             const { sortable = true, sortKey, filterable = true } = QUESTION_MAPPINGS[questionType];
                             return {
-                                Header: () => <span title={description}>{description || ''}</span>,
+                                Header: () => <span title={description}>{questionName}</span>,
                                 accessor: `stageSubmissions.${stageID}.submissions.${questionID}`,
                                 Cell: getCellRenderer({stageType, cellType: questionType, stageID, userID}),
                                 sortable,
                                 filterable,
                                 sortByKey:  `stageSubmissions.${stageID}.testSubmission.questionSubmissions.${questionID}.${sortKey}`,
-                                description
+                                description: questionName
                             }
                         }),
                         {
@@ -403,8 +405,13 @@ export const getColumns = ({ flow, userID, stageIndex, stageCompleted, sort_by, 
                 const { name } = stageProps as Interview;
                 return {
                     Header: name || '',
-                    accessor: `stageSubmissions.${stageID}.submissions`,
-                    Cell: getCellRenderer({ stageType, stageID, userID })
+                    columns: [
+                        {
+                            Header: '',
+                            accessor: `stageSubmissions.${stageID}.submissions`,
+                            Cell: getCellRenderer({ stageType, stageID, userID })
+                        }
+                    ] 
                 }
             }
         }
