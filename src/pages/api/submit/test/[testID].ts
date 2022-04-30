@@ -13,7 +13,7 @@ const submitTest: NextApiHandler = async (request, response) => {
     const result = {} as { [key: string]: any };
     for (let index = 0; index < answers.length; index++) {
         const { questionID, answer, language } = answers[index];
-        const { data: question }: AxiosResponse<Question> = await gatewayManager.useService(SERVICES.FLOW).get(`/question/${questionID}`);
+        const { data: question }: AxiosResponse<Question> = await gatewayManager.useService(SERVICES.FLOW).get(`/test/${testID}/question/${questionID}`);
         
         let grade = 0;
         let additionalProps = {};
