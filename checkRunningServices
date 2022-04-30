@@ -8,4 +8,4 @@ for i in "${!services[@]}"; do
     echo ${services[$i]} is running
   fi
 done
-next dev
+next dev "$@"

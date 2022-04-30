@@ -76,7 +76,7 @@ const FlowsPage: NextPage = () => {
                 <title>{translate('Flows')}</title>
             </Head>
             <div className={styles.leftPanel}>
-                <EuiButton className={styles.createButton} onClick={createFlowRef.current?.open}>
+                <EuiButton className={styles.createButton} onClick={createFlowRef.current?.open} data-testid='create-flow-button'>
                     <EuiText className={styles.text}>CREATE FLOW</EuiText>
                 </EuiButton>
                 <EuiHorizontalRule className={styles.rule}></EuiHorizontalRule>
@@ -110,7 +110,7 @@ const FlowsPage: NextPage = () => {
                     }
                 }).map( flow => {
                     return (
-                        <Paper key={flow._id}  className={styles.cardContainer}>
+                        <Paper key={flow._id} data-testid={`${flow.name}-card`} className={styles.cardContainer}>
                             <EuiCheckbox
                                 id={flow._id}
                                 checked={checked[flow._id]}
@@ -135,7 +135,7 @@ const FlowsPage: NextPage = () => {
                                         <a style={{color: 'black'}}>{translate('Submissions')}</a>
                                     </Link>
                                 </EuiButtonEmpty>
-                                <EuiButtonEmpty style={{color: 'black'}} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
+                                <EuiButtonEmpty style={{color: 'black'}} data-testid={`${flow.name}-delete`} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
                             </div>						
                         </Paper>
                     )}) : <div data-testid='flows-loading'>

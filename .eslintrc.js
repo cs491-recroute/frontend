@@ -4,13 +4,14 @@ module.exports = {
         browser: true,
         es2021: true
     },
-    ignorePatterns: ['public/landing*'],
+    ignorePatterns: ['public/landing*', 'cypress/plugins/*'],
     extends: [
         'eslint:recommended',
         'plugin:react/recommended',
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:@typescript-eslint/recommended',
-        'plugin:@next/next/recommended'
+        'plugin:@next/next/recommended',
+        'plugin:cypress/recommended'
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {

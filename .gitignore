@@ -38,3 +38,7 @@ yarn-error.log*
 .env.production
 
 /public/assets/logo_black.png
+
+# cypress
+/cypress/videos
+/cypress/screenshots

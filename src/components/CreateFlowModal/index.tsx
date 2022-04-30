@@ -34,7 +34,12 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
         setOpen(false);
     };
 
-    return isOpen ? <EuiModal onClose={close} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
+    return isOpen ? <EuiModal 
+        onClose={close} 
+        initialFocus='.name' 
+        style={{ width: '50vw', height: '50vh', maxWidth: '500px' }} 
+        data-testid='create-flow-modal'
+    >
         <EuiModalHeader>
             <EuiModalHeaderTitle>{translate('Create New Flow')}</EuiModalHeaderTitle>
         </EuiModalHeader>
@@ -52,6 +57,7 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
                     }} 
                     className='name' 
                     fullWidth
+                    data-testid='create-flow-modal-name'
                 />
             </EuiFormRow>
             <EuiFormRow label={translate('Specify Duration')} >
@@ -96,7 +102,7 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
         </EuiModalBody>
 
         <EuiModalFooter>
-            <EuiButton onClick={createFlow} fill>
+            <EuiButton onClick={createFlow} fill data-testid='create-flow-modal-button'>
                 Create
             </EuiButton>
         </EuiModalFooter>

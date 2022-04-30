@@ -52,7 +52,7 @@ export const ConfirmationProvider: FunctionComponent = ({ children }) => {
                 <EuiButton onClick={handleDeny} fill>
                     {confirmationTexts.cancel}
                 </EuiButton>
-                <EuiButton onClick={handleApprove} fill>
+                <EuiButton data-testid="approve-confirmation-button" onClick={handleApprove} fill>
                     {confirmationTexts.approve}
                 </EuiButton>
             </EuiModalFooter>
