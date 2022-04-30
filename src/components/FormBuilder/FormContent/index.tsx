@@ -137,14 +137,16 @@ const FormContent = ({ form, editMode, userIdentifier, withEmail }: FormContentP
                     </button>}
                 </div>;
             })}
-            {!editMode && <Button
-                variant='contained'
-                color='success'
-                className={styles.submitButton}
-                onClick={handleSubmit}
-            >
-                {translate('SUBMIT')}
-            </Button>}
+            {!editMode && <div className={styles.question}>
+                <Button
+                    variant='contained'
+                    color='success'
+                    className={styles.submitButton}
+                    onClick={handleSubmit}
+                >
+                    {translate('SUBMIT')}
+                </Button>
+            </div>}
         </Paper>
     </div>
 }
