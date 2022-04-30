@@ -13,12 +13,12 @@ import { useAppSelector } from '../../../../../../utils/hooks';
 import { EuiButton, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiTextArea } from '@elastic/eui';
 import { translate } from '../../../../../../utils';
 import { useRouter } from 'next/router';
-import styles from './grade.module.scss';
+import { toast } from 'react-toastify';
 
 const GradeInterviewPage: NextPage = () => {
     const user = useAppSelector(getUser);
     const router = useRouter();
-    const {applicantID, interviewID, instanceID} = router.query;
+    const { applicantID, interviewID, instanceID } = router.query;
     const [applicantEmail, setApplicantEmail] = useState('');
     const [comment, setComment] = useState('');
     const [grade, setGrade] = useState(0 as number);
@@ -26,16 +26,11 @@ const GradeInterviewPage: NextPage = () => {
         isError: false,
         errorMessage: ''
     });
-    const [finishState, setFinishState] = useState({
-        finished: false,
-        success: false,
-        message: ''
-    });
 
     useEffect(() => {
         async function fetchData() {
             try {
-                const { data : applicant } = await axios.get(`/api/applicant/${applicantID}`);
+                const { data: applicant } = await axios.get(`/api/applicant/${applicantID}`);
                 setApplicantEmail(applicant.email);
             } catch (error: any) {
                 setApplicantEmail('');
@@ -45,14 +40,14 @@ const GradeInterviewPage: NextPage = () => {
 
     }, [applicantID]);
 
-    const handleSetGrade = ({ target: { value }}: any) => {
+    const handleSetGrade = ({ target: { value } }: any) => {
         setGrade(value);
-        if(value > 100 || value < 0){
+        if (value > 100 || value < 0) {
             setGradeError({
                 isError: true,
                 errorMessage: 'Please enter a number between 0 and 100'
             });
-        }else {
+        } else {
             setGradeError({
                 isError: false,
                 errorMessage: ''
@@ -60,21 +55,21 @@ const GradeInterviewPage: NextPage = () => {
         }
     }
 
-    const handleSaveButton = async() => {
-        if(!gradeError.isError){
-            const body = {notes: comment, grade: +grade}
+    const handleSaveButton = async () => {
+        if (!gradeError.isError) {
+            const body = { notes: comment, grade: +grade }
             try {
                 await axios.post(`/api/modal/interview/${interviewID}/${instanceID}/${applicantID}/gradeInterview`, body);
-                setFinishState({
-                    finished: true,
-                    success: true,
-                    message: translate('Review submitted successfully!')
+                toast(translate('Successful'), {
+                    type: 'success',
+                    position: 'bottom-right',
+                    hideProgressBar: true
                 });
-            } catch ({ response: { data }}: any) {
-                setFinishState({
-                    finished: true,
-                    success: false,
-                    message: data as any
+            } catch (error: any) {
+                toast(translate(error?.response?.data || 'Error occured!'), {
+                    type: 'error',
+                    position: 'bottom-right',
+                    hideProgressBar: true
                 });
             }
         }
@@ -82,7 +77,7 @@ const GradeInterviewPage: NextPage = () => {
 
     if (user) {
         return (
-            <EuiModal onClose={() => {}} initialFocus='.name' style={{ width: '50vw', height: '60vh', maxWidth: '500px' }}>
+            <EuiModal onClose={() => { }} initialFocus='.name' style={{ width: '50vw', height: '60vh', maxWidth: '500px' }}>
                 <EuiModalHeader>
                     <EuiModalHeaderTitle>{translate('Review Interview')}</EuiModalHeaderTitle>
                 </EuiModalHeader>
@@ -92,16 +87,16 @@ const GradeInterviewPage: NextPage = () => {
                         <EuiFieldText fullWidth value={applicantEmail} disabled={true} />
                     </EuiFormRow>
                     <EuiFormRow fullWidth label={translate('Comment')}>
-                        <EuiTextArea 
-                            fullWidth 
+                        <EuiTextArea
+                            fullWidth
                             value={comment}
                             onChange={e => setComment(e.target.value)}
                             resize={'vertical'}
                         />
                     </EuiFormRow>
 
-                    <EuiFormRow         
-                        isInvalid={gradeError.isError} 
+                    <EuiFormRow
+                        isInvalid={gradeError.isError}
                         error={gradeError.errorMessage}
                         fullWidth
                         label={translate('Grade')}
@@ -116,15 +111,9 @@ const GradeInterviewPage: NextPage = () => {
                 </EuiModalBody>
 
                 <EuiModalFooter>
-                    <div className={styles.shareButtons}>
-                        <EuiFormRow>  
-                            <p className={finishState.success ? styles.successFeedbackText : styles.unsuccessFeedbackText}>{finishState.finished && finishState.message}</p>
-                        </EuiFormRow>
-                        <EuiButton onClick={handleSaveButton} fill>
-                            {translate('Save')}
-                        </EuiButton>
-                    </div>
-
+                    <EuiButton onClick={handleSaveButton} fill>
+                        {translate('Save')}
+                    </EuiButton>
                 </EuiModalFooter>
             </EuiModal>
         )

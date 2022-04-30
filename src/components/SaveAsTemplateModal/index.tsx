@@ -1,10 +1,9 @@
-import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle, EuiSwitch } from '@elastic/eui';
-import React, { ChangeEventHandler, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiSwitch } from '@elastic/eui';
+import React, { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 import { getCategories, saveAsTemplateAsync } from '../../redux/slices/testBuilderSlice';
 import { Question } from '../../types/models';
 import { translate } from '../../utils';
 import { useAppDispatch, useAppSelector } from '../../utils/hooks';
-import styles from './SaveAsTemplateModal.module.scss';
 
 type SaveAsTemplateModalProps = {
     question: Question;
@@ -21,8 +20,6 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
     const [selectedOptions, setSelectedOptions] = useState([] as CategoryOption[]);
     const [isOpen, setOpen] = useState(false);
     const [questionName, setQuestionName] = useState(question.name);
-    const [sendSuccessful, setSendSuccessful] = useState(false);
-    const [sendButtonClicked, setSendButtonClicked] = useState(false);
     const [nameError, setNameError] = useState({
         isError: false,
         errorMessage: ''
@@ -58,20 +55,12 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
         } else {
             setNameError({ isError: false, errorMessage: '' });
             setCategoryError({ isError: false, errorMessage: '' });
-            const questionData = {...question};
+            const questionData = { ...question };
             questionData.name = questionName;
             questionData.categoryID = selectedOptions[0].value?.categoryID ? selectedOptions[0].value?.categoryID : '';
-            const allData = {'questionData': questionData,'accessModifier': (checked ? 'public' : 'private')};
-            const response = await dispatch(saveAsTemplateAsync(allData));
-            setSendButtonClicked(true);
-            setTimeout(setSendButtonClicked, 2000);
-            if (response.type.search('fulfilled') === -1) {
-                //rejected
-                setSendSuccessful(false);
-            } else {
-                //succesfull
-                setSendSuccessful(true);
-            }
+            const allData = { 'questionData': questionData, 'accessModifier': (checked ? 'public' : 'private') };
+            dispatch(saveAsTemplateAsync(allData));
+            close();
         }
     };
 
@@ -79,7 +68,6 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
         setNameError({ isError: false, errorMessage: '' });
         setCategoryError({ isError: false, errorMessage: '' });
         setQuestionName(question.name);
-        setSendSuccessful(false);
         setOpen(false);
     }
     const open = () => {
@@ -132,20 +120,12 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
                         onChange={e => setChecked(e.target.checked)}
                     />
                 </EuiFormRow>
-                <div className={styles.saveButton}>
-                    <EuiFormRow>
-                        <p className={styles.successfulFeedbackText}>{sendButtonClicked && sendSuccessful && translate('Saved Succesfully')}</p>
-                    </EuiFormRow>
-                    <EuiFormRow>
-                        <p className={styles.feedbackText}>{sendButtonClicked && !sendSuccessful && translate('Unseccessful Save')}</p>
-                    </EuiFormRow>
-                    <EuiFormRow fullWidth>
-                        <EuiButton onClick={handleSaveButton} fill>
-                            {translate('Save')}
-                        </EuiButton>
-                    </EuiFormRow>
-                </div>
             </EuiModalBody>
+            <EuiModalFooter>
+                <EuiButton onClick={handleSaveButton} fill>
+                    {translate('Save')}
+                </EuiButton>
+            </EuiModalFooter>
         </EuiModal> : null;
 });
 

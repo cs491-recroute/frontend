@@ -1,4 +1,4 @@
-import { EuiCard, EuiIcon } from '@elastic/eui';
+import { EuiCard, EuiIcon, EuiText } from '@elastic/eui';
 import classNames from 'classnames';
 import React from 'react';
 import { deleteStageAsync, toggleRightPanel } from '../../../redux/slices/flowBuilderSlice';
@@ -11,6 +11,8 @@ import { useRouterWithReturnBack } from '../../../utils/hooks';
 import { Stage } from '../../../types/models';
 import { DeleteForever } from '@mui/icons-material';
 import { getInterviewersAsync } from '../../../redux/slices/interviewersSlice';
+import { useWithConfirmation } from '../../../contexts/confirmation';
+import { translate } from '../../../utils';
 
 type StageCardProps = {
     type: STAGE_TYPE;
@@ -33,6 +35,7 @@ const StageCard = ({ type, name, id, stageID, mode }: StageCardProps) => {
         if (type === STAGE_TYPE.INTERVIEW) dispatch(getInterviewersAsync());
     }
     const { pushWithReturn } = useRouterWithReturnBack();
+    const withConfirmation = useWithConfirmation();
 
     const goToBuilder = () => {
         const { builderURL } = STAGE_PROPS[type];
@@ -40,13 +43,24 @@ const StageCard = ({ type, name, id, stageID, mode }: StageCardProps) => {
             pushWithReturn(`/${builderURL}/${stageID}`);
         }
     };
-    const deleteStage = () => {
-        if (id) {
-            dispatch(deleteStageAsync(id));
-        } else {
-            alert('Stage was not deleted!')
+    const deleteStage = withConfirmation({
+        onApprove: () => {
+            if (id) {
+                dispatch(deleteStageAsync(id));
+            } else {
+                alert('Stage was not deleted!')
+            }
+        },
+        texts: {
+            approve: translate('Delete'),
+            cancel: translate('Cancel'),
+            prompt: <div style={{ textAlign: 'center' }}>
+                <EuiText size='m' style={{ fontWeight: 'bold' }}>
+                    {translate('Are you sure you want to delete this stage?')}
+                </EuiText>
+            </div>
         }
-    };
+    });
 
     const layout = mode === 'edit' ? 'horizontal' : 'vertical';
     return (

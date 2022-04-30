@@ -1,4 +1,4 @@
-import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
+import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
 import { DeleteForever } from '@mui/icons-material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import { ComponentTypes, Condition, Form, Stage, Option } from '../../../types/m
 import { translate } from '../../../utils';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import styles from './Condition.module.scss';
+import { toast } from 'react-toastify';
 
 type FieldOption = EuiComboBoxOptionOption<{ name: string; componentID: string; componentType: ComponentTypes; componentOptions: Option[]; }>;
 const stringComponents = ["address", "fullName", "header", "longText", "phone", "shortText", "email"];
@@ -129,17 +130,37 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 try {
                     const { data } = await axios.put(`/api/flows/${flow._id}/${condition._id}/updateCondition`, body);
                     dispatch(setConditionsOfFlow(data));
+                    toast(translate('Successful'), {
+                        type: 'success',
+                        position: 'bottom-right',
+                        hideProgressBar: true
+                    });
+                    closeModel();
                     // eslint-disable-next-line @typescript-eslint/no-shadow
                 } catch (error: any) {
-                    console.log(error.message);
+                    toast(translate(error?.response?.data || 'Error occured!'), {
+                        type: 'error',
+                        position: 'bottom-right',
+                        hideProgressBar: true
+                    });
                 }
             } else { //condition should be set
                 try {
                     const { data } = await axios.post(`/api/flows/${flow._id}/setCondition`, body);
                     dispatch(setConditionsOfFlow(data));
+                    toast(translate('Successful'), {
+                        type: 'success',
+                        position: 'bottom-right',
+                        hideProgressBar: true
+                    });
+                    closeModel();
                     // eslint-disable-next-line @typescript-eslint/no-shadow
                 } catch (error: any) {
-                    console.log(error.message);
+                    toast(translate(error?.response?.data || 'Error occured!'), {
+                        type: 'error',
+                        position: 'bottom-right',
+                        hideProgressBar: true
+                    });
                 }
             }
 
@@ -385,21 +406,12 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                             </EuiFormRow>
                         }
 
-                        <div className={styles.saveButton}>
-                            <EuiFormRow>
-                                <p className={styles.successfulFeedbackText}></p>
-                            </EuiFormRow>
-                            <EuiFormRow>
-                                <p className={styles.feedbackText}></p>
-                            </EuiFormRow>
-                            <EuiFormRow fullWidth>
-                                <EuiButton onClick={handleSaveButton} fill>
-                                    {translate('Save')}
-                                </EuiButton>
-                            </EuiFormRow>
-                        </div>
-
                     </EuiModalBody>
+                    <EuiModalFooter>
+                        <EuiButton onClick={handleSaveButton} fill>
+                            {translate('Save')}
+                        </EuiButton>
+                    </EuiModalFooter>
                 </EuiModal> : null}
         </div>
 

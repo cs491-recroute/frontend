@@ -3,16 +3,18 @@ import { Test, Question, Category } from '../../types/models';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import type { AppState } from '../store';
+import { translate } from '../../utils';
+import { toast } from 'react-toastify';
 
 export interface TestBuilderState {
-	ui: {
-		leftPanelStatus: boolean;
+    ui: {
+        leftPanelStatus: boolean;
         rightPanelStatus: {
             status: boolean;
             question?: Question;
         }
-	},
-	currentTest: Test,
+    },
+    currentTest: Test,
     isActive: boolean,
     questions: Question[],
     categories: Category[]
@@ -26,7 +28,7 @@ const initialState: TestBuilderState = {
         }
     },
     currentTest: {
-        _id: '', name: '', questions: [], flowID: '' 
+        _id: '', name: '', questions: [], flowID: ''
     },
     isActive: false,
     questions: [],
@@ -61,9 +63,9 @@ export const deleteQuestionAsync = createAsyncThunk(
 
 export const updateTestTitleAsync = createAsyncThunk(
     'test/updateTitle',
-    async (titleData: { name: string; value: string}, { getState }) => {
-        const {testBuilder: {currentTest: {_id: testId} = {} } } = getState() as AppState;
-        const {data: test} = await axios.put(`/api/tests/${testId}/updateTitle`, { 
+    async (titleData: { name: string; value: string }, { getState }) => {
+        const { testBuilder: { currentTest: { _id: testId } = {} } } = getState() as AppState;
+        const { data: test } = await axios.put(`/api/tests/${testId}/updateTitle`, {
             ...titleData
         });
         return test;
@@ -72,9 +74,9 @@ export const updateTestTitleAsync = createAsyncThunk(
 
 export const getParentFlowAsync = createAsyncThunk(
     'test/getParentFlow',
-    async (any , { getState }) => {
-        const {testBuilder: {currentTest: {flowID: fid} = {} } } = getState() as AppState;
-        const {data: test} = await axios.get(`/api/flows/${fid}`);
+    async (any, { getState }) => {
+        const { testBuilder: { currentTest: { flowID: fid } = {} } } = getState() as AppState;
+        const { data: test } = await axios.get(`/api/flows/${fid}`);
         return test;
     }
 );
@@ -82,7 +84,7 @@ export const getParentFlowAsync = createAsyncThunk(
 export const getMyQuestionsAsync = createAsyncThunk(
     'test/getMyQuestions',
     async () => {
-        const {data: questions} = await axios.get(`/api/questions/getMyQuestions`);
+        const { data: questions } = await axios.get(`/api/questions/getMyQuestions`);
         return questions;
     }
 );
@@ -90,7 +92,7 @@ export const getMyQuestionsAsync = createAsyncThunk(
 export const getCategoriesAsync = createAsyncThunk(
     'test/getCategories',
     async () => {
-        const {data: categories} = await axios.get(`/api/questions/getCategories`);
+        const { data: categories } = await axios.get(`/api/questions/getCategories`);
         return categories;
     }
 );
@@ -98,16 +100,29 @@ export const getCategoriesAsync = createAsyncThunk(
 export const getPoolQuestionsAsync = createAsyncThunk(
     'test/getPoolQuestions',
     async (cid: string) => {
-        const {data: questions} = await axios.get(`/api/questions/getPoolQuestions/${cid}`);
+        const { data: questions } = await axios.get(`/api/questions/getPoolQuestions/${cid}`);
         return questions;
     }
 );
 
 export const saveAsTemplateAsync = createAsyncThunk(
     'test/saveAsTemplate',
-    async (allData : {questionData: Partial<Question>, accessModifier: string}) => {
-        const { data: question } = await axios.post(`/api/questions/saveAsTemplate`, allData);
-        return question;
+    async (allData: { questionData: Partial<Question>, accessModifier: string }) => {
+        try {
+            const { data: question } = await axios.post(`/api/questions/saveAsTemplate`, allData);
+            toast(translate('Successful'), {
+                type: 'success',
+                position: 'bottom-right',
+                hideProgressBar: true
+            });
+            return question;
+        } catch (error: any) {
+            toast(translate(error?.response?.data || 'Error occured!'), {
+                type: 'error',
+                position: 'bottom-right',
+                hideProgressBar: true
+            });
+        }
     }
 );
 
@@ -146,7 +161,7 @@ export const testBuilderSlice = createSlice({
                 const { questions } = state.currentTest;
                 const index = questions.findIndex(question => question._id === action.payload);
                 state.currentTest.questions.splice(index, 1);
-            })    
+            })
             .addCase(getMyQuestionsAsync.fulfilled, (state, action) => {
                 state.questions = action.payload;
             })

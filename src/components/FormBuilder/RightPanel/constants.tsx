@@ -25,7 +25,7 @@ export const ALLOWED_EDITORS = {
     [ComponentTypes.address]: ['name', 'title', 'placeholder', 'required'],
     [ComponentTypes.datePicker]: ['name', 'title', 'placeholder', 'required'],
     [ComponentTypes.dropDown]: ['name', 'title', 'placeholder', 'options', 'required'],
-    [ComponentTypes.header]: ['name', 'title', 'placeholder', 'required'],
+    [ComponentTypes.header]: ['name', 'title', 'placeholder'],
     [ComponentTypes.longText]: ['name', 'title', 'placeholder', 'required'],
     [ComponentTypes.shortText]: ['name', 'title', 'placeholder', 'required'],
     [ComponentTypes.fullName]: ['name', 'titles', 'placeholders', 'required'],
