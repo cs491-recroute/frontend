@@ -130,192 +130,109 @@ const ProfilePage: NextPage = () => {
                 <Paper className={styles.card} elevation={4}>
                     <h1 className={styles.title1}>{translate('User Settings')}</h1>
                     <hr />
-                    {editable ?
-                        <table>
-                            <tbody>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User Name :')}</h1>
-                                    </td>
-                                    <td>
-                                        <EuiFieldText
-                                            className={styles.p}
-                                            value={newName}
-                                            onChange={event => setNewName(event.target.value)}
-                                        >
-                                        </EuiFieldText>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('Email :')}</h1>
-                                    </td>
-                                    <td>
-                                        <p className={styles.p}>{user.email}</p>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('Company :')}</h1>
-                                    </td>
-                                    <td>
-                                        <p className={styles.p}>{user.company.name}</p>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User Roles :')}</h1>
-                                    </td>
-                                    <td>
-                                        {user.roles.length === 0 ? <p className={styles.p}>{translate('No Roles Assigned')}</p>
-                                            : user.roles.map((role: string) => (
-                                                <p key={role} className={styles.p}>{role}</p>
-                                            ))}
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
-                                        <button onClick={togglePopup} className={styles.addButton}>Add Time Slot</button>
-                                    </td>
-                                    <td>
-                                        {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
-                                            : <table className={styles.timeSlotTable}>
-                                                <tbody>
-                                                    <tr>
-                                                        <th>{translate('Start Date')}</th>
-                                                        <th>{translate('Start Time in UTC')}</th>
-                                                        <th>{translate('Duration in Minutes')}</th>
-                                                    </tr>
-                                                    {timeSlots.map((availableTime: TimeSlot) => (
-                                                        <tr className={styles.timeSlotTableRow}
-                                                            key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                            new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                            new Date(availableTime.startTime).getUTCSeconds()  
+                    <table>
+                        <tbody>
+                            <tr className={styles.tr}>
+                                <td>
+                                    <h1 className={styles.title2}>{translate('User Name :')}</h1>
+                                </td>
+                                <td>
+                                    {editable ? <EuiFieldText
+                                        className={styles.p}
+                                        value={newName}
+                                        onChange={event => setNewName(event.target.value)}
+                                    >
+                                    </EuiFieldText>
+                                        : <p className={styles.p}>{user.name}</p>
+                                    }
+                                </td>
+                            </tr>
+                            <tr className={styles.tr}>
+                                <td>
+                                    <h1 className={styles.title2}>{translate('Email :')}</h1>
+                                </td>
+                                <td>
+                                    <p className={styles.p}>{user.email}</p>
+                                </td>
+                            </tr>
+                            <tr className={styles.tr}>
+                                <td>
+                                    <h1 className={styles.title2}>{translate('Company :')}</h1>
+                                </td>
+                                <td>
+                                    <p className={styles.p}>{user.company.name}</p>
+                                </td>
+                            </tr>
+                            <tr className={styles.tr}>
+                                <td>
+                                    <h1 className={styles.title2}>{translate('User Roles :')}</h1>
+                                </td>
+                                <td>
+                                    {user.roles.length === 0 ? <p className={styles.p}>{translate('No Roles Assigned')}</p>
+                                        : user.roles.map((role: string) => (
+                                            <p key={role} className={styles.p}>{role}</p>
+                                        ))}
+                                </td>
+                            </tr>
+                            <tr className={styles.tr}>
+                                <td>
+                                    <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
+                                    {editable ? <button onClick={togglePopup} className={styles.addButton}>Add Time Slot</button> : null}
+                                </td>
+                                <td>
+                                    {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
+                                        : <table className={styles.timeSlotTable}>
+                                            <tbody>
+                                                <tr>
+                                                    <th>{translate('Start Date')}</th>
+                                                    <th>{translate('Start Time in UTC')}</th>
+                                                    <th>{translate('Duration in Minutes')}</th>
+                                                </tr>
+                                                {timeSlots.map((availableTime: TimeSlot) => (
+                                                    <tr className={styles.timeSlotTableRow}
+                                                        key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                        new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                                        new Date(availableTime.startTime).getUTCSeconds()  
+                                                        }
+                                                    >
+                                                        <td className={styles.tdata}>
+                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
+                                                                new Date(availableTime.startTime).getMonth() + '/' +
+                                                                new Date(availableTime.startTime).getFullYear()
                                                             }
-                                                        >
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
-                                                                    new Date(availableTime.startTime).getMonth() + '/' +
-                                                                    new Date(availableTime.startTime).getFullYear()
-                                                                }
-                                                                </p>
-                                                            </td>
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                                    new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                                    new Date(availableTime.startTime).getUTCSeconds()  
-                                                                }
-                                                                </p>
-                                                            </td>
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>{availableTime.durationInMins}</p>
-                                                            </td>
-                                                            <td>
-                                                                <button
-                                                                    className={styles.deleteButton}
-                                                                    onClick={() => deleteTimeslot(availableTime.startTime, availableTime.durationInMins)}
-                                                                >
-                                                                    <EuiIcon type='cross'></EuiIcon>
-                                                                </button>
-                                                            </td> 
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        }
-                                    </td>
-                                </tr>
-                                {isOpen && <Popup
-                                    handleClose={togglePopup}
-                                />}
-                            </tbody>
-                        </table>
-                        : <table>
-                            <tbody>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User Name :')}</h1>
-                                    </td>
-                                    <td>
-                                        <p className={styles.p}>{user.name}</p>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('Email :')}</h1>
-                                    </td>
-                                    <td>
-                                        <p className={styles.p}>{user.email}</p>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('Company :')}</h1>
-                                    </td>
-                                    <td>
-                                        <p className={styles.p}>{user.company.name}</p>
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User Roles :')}</h1>
-                                    </td>
-                                    <td>
-                                        {user.roles.length === 0 ? <p className={styles.p}>{translate('No Roles Assigned')}</p>
-                                            : user.roles.map((role: string) => (
-                                                <p key={role} className={styles.p}>{role}</p>
-                                            ))}
-                                    </td>
-                                </tr>
-                                <tr className={styles.tr}>
-                                    <td>
-                                        <h1 className={styles.title2}>{translate('User\'s Available Times :')}</h1>
-                                    </td>
-                                    <td>
-                                        {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
-                                            : <table className={styles.timeSlotTable}>
-                                                <tbody>
-                                                    <tr >
-                                                        <th>{translate('Start Date')}</th>
-                                                        <th>{translate('Start Time in UTC')}</th>
-                                                        <th>{translate('Duration in Minutes')}</th>
+                                                            </p>
+                                                        </td>
+                                                        <td className={styles.tdata}>
+                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                                new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                                                new Date(availableTime.startTime).getUTCSeconds()  
+                                                            }
+                                                            </p>
+                                                        </td>
+                                                        <td className={styles.tdata}>
+                                                            <p className={styles.tcol1}>{availableTime.durationInMins}</p>
+                                                        </td>
+                                                        {editable ? <td>
+                                                            <button
+                                                                className={styles.deleteButton}
+                                                                onClick={() => deleteTimeslot(availableTime.startTime, availableTime.durationInMins)}
+                                                            >
+                                                                <EuiIcon type='cross'></EuiIcon>
+                                                            </button>
+                                                        </td>: null}   
                                                     </tr>
-                                                    {timeSlots.map((availableTime: TimeSlot) => (
-                                                        <tr className={styles.timeSlotTableRow}
-                                                            key = {new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                            new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                            new Date(availableTime.startTime).getUTCSeconds()}
-                                                        >
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>
-                                                                    {new Date(availableTime.startTime).getDate() + '/' +
-                                                                    new Date(availableTime.startTime).getMonth() + '/' +
-                                                                    new Date(availableTime.startTime).getFullYear()}
-                                                                </p>
-                                                            </td>
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>
-                                                                    {new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                                    new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                                    new Date(availableTime.startTime).getUTCSeconds()}
-                                                                </p>
-                                                            </td>
-                                                            <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>
-                                                                    {availableTime.durationInMins}
-                                                                </p>
-                                                            </td>
-                                                        </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
-                                        }
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    }
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    }
+                                </td>
+                            </tr>
+                            {isOpen && <Popup
+                                handleClose={togglePopup}
+                            />}
+                        </tbody>
+                    </table>
+                   
                 </Paper>
                 <EuiButton 
                     className={styles.button}
