@@ -1,4 +1,5 @@
 /// <reference types="cypress" />
+/// <reference types="../support" />
 
 describe('Flows page', () => {
     before(() => {
@@ -7,7 +8,14 @@ describe('Flows page', () => {
   
     it('can see all flows', () => {
         cy.getByTestID('flows-loading').should('not.exist');
-        // TODO: check dummy flows are displayed
+
+        cy.fixture('flows').then(flows => {
+            cy.getByTestID('flowList').within(() => {
+                flows.forEach(flow => {
+                    cy.getByTestID(`${flow.name}-card`).should('be.visible');
+                })
+            })
+        })
     })
 
     it('can create and delete a flow', () => {
