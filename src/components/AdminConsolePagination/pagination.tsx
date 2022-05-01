@@ -5,7 +5,7 @@ const AdminConsolePagination = (props: any) => {
 
     return(
         <div className={styles.pagination}>
-            <button onClick={() => props.handlePageChange(1)} className={styles.paginationButtons}>&laquo;</button>
+            <button onClick={() => props.handlePageChange(1)}>&laquo;</button>
             {props.resp.page - 1 === 0 && props.resp.totalPages - props.resp.page === 0 &&
                 <button onClick={() => props.handlePageChange(1)} className={styles.active}>1</button>
             }
@@ -66,7 +66,7 @@ const AdminConsolePagination = (props: any) => {
                 <button>...</button>
             </> 
             }
-            <button onClick={() => props.handlePageChange(props.resp.totalPages)} className={styles.paginationButtons}>&raquo;</button>
+            <button onClick={() => props.handlePageChange(props.resp.totalPages)}>&raquo;</button>
         </div>
     )
 }

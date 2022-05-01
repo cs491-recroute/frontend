@@ -8,6 +8,7 @@ import { translate } from '../../../utils';
 import { STAGE_TYPE } from '../../../types/enums';
 import moment from 'moment';
 import { getInterviewers } from '../../../redux/slices/interviewersSlice';
+import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 
 type RightPanelProps = {
     stageType: STAGE_TYPE | false;
@@ -202,29 +203,18 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                         onChange={({ target: { value } }) => handleInterviewerAdd(value)}
                     />
                 </EuiFormRow>
-                {activeInterviewers.map((interviewerName: string) => (
-                    <div
-                        key={interviewerName}
-                    >
-                        <table>
-                            <tbody>
-                                <tr>
-                                    <th className={styles.th1}>
-                                        <p key={interviewerName} className={styles.input}>{interviewerName}</p>
-                                    </th>
-                                    <th>
-                                        <button
-                                            className={styles.deleteButton}
-                                            onClick={() => handleInterviewerDelete(interviewerName)}
-                                        >
-                                            <EuiIcon type='cross'></EuiIcon>
-                                        </button>
-                                    </th>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                ))}
+                <List>
+                    {activeInterviewers.map((interviewerName: string) => (
+                        <ListItem className={styles.listItem} key={interviewerName} disablePadding>
+                            <ListItemText className={styles.th1} primary={interviewerName} />
+                            <ListItemButton 
+                                className={styles.deleteButton}
+                                onClick={() => handleInterviewerDelete(interviewerName)}
+                            >
+                                <EuiIcon type='cross'></EuiIcon></ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
             </div>}
             <EuiSpacer />
             <EuiFormRow>
