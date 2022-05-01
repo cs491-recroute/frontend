@@ -103,7 +103,7 @@ const Header = () => {
             </IconButton>
             <div className={styles.rightButtons}>
                 <EuiSwitch
-                    label={isActive ? 'Active' : 'Inactive'}
+                    label={'Active'}
                     checked={isActive}
                     onChange={handleIsActiveSwitch}                
                 />
