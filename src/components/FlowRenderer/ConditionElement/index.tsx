@@ -2,13 +2,16 @@ import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFie
 import { DeleteForever } from '@mui/icons-material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { getCurrentFlow, setConditionsOfFlow, setCurrentFlow, updateFlowAsync } from '../../../redux/slices/flowBuilderSlice';
+import { getCurrentFlow, setConditionsOfFlow } from '../../../redux/slices/flowBuilderSlice';
+import { getCurrentFlow as getSubmissionsFlow } from '../../../redux/slices/submissionsSlice';
 import { FORM_FIELDS, FORM_OPERATIONS, STAGE_TYPE } from '../../../types/enums';
 import { ComponentTypes, Condition, Form, Stage, Option } from '../../../types/models';
 import { translate } from '../../../utils';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import styles from './Condition.module.scss';
 import { toast } from 'react-toastify';
+import classNames from 'classnames';
+import { getPrettyConditionName } from './utils';
 
 type FieldOption = EuiComboBoxOptionOption<{ name: string; componentID: string; componentType: ComponentTypes; componentOptions: Option[]; }>;
 const stringComponents = ["address", "fullName", "header", "longText", "phone", "shortText", "email"];
@@ -16,12 +19,14 @@ const dropDownComponents = ["dropDown", "multipleChoice", "singleChoice"];
 
 type ConditionalElementProps = {
     stage: Stage,
-    condition?: Condition
+    condition?: Condition,
+    mode: 'edit' | 'submission'
 }
 
-const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
+// eslint-disable-next-line complexity
+const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) => {
     const dispatch = useAppDispatch();
-    const flow = useAppSelector(getCurrentFlow);
+    const flow = useAppSelector(mode === 'edit' ? getCurrentFlow : getSubmissionsFlow);
     //General states and functions common for all stage types
     const [isOpen, setIsOpen] = useState(false);
     const [allOperations, setAllOperations] = useState([] as EuiComboBoxOptionOption[]);
@@ -115,7 +120,7 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
                 if (stringComponents.includes(componentType || '') || (componentType === ComponentTypes.number)) { //value should be sent as a string or number
                     body.value = value;
                     if (componentType === ComponentTypes.number) body.value = Number(value);
-                } else if (componentType === ComponentTypes.singleChoice) { // value should be sent as a string
+                } else if (componentType === ComponentTypes.singleChoice || componentType === ComponentTypes.dropDown) { // value should be sent as a string
                     const singleChoiceID = selectedDropDownOptions[0].id;
                     body.value = singleChoiceID;
                 } else { //
@@ -287,10 +292,11 @@ const ConditionElement = ({ stage, condition }: ConditionalElementProps) => {
         }
     }, [condition, isOpen]);
 
+    const [prettyConditionName, prettyConditionElement] = getPrettyConditionName(flow, condition);
     return (
-        <div className={styles.container}>
-            <div className={styles.conditionBox} onClick={() => setIsOpen(true)}>
-                {condition?.operation}
+        <div className={classNames(styles.container, { [styles.editMode]: mode === 'edit' })}>
+            <div className={styles.conditionBox} title={prettyConditionName} onClick={() => mode === 'edit' && setIsOpen(true)}>
+                {prettyConditionElement}
             </div>
             {condition && <DeleteForever onClick={handleDelete} className={styles.deleteIcon} />}
             {isOpen ?
