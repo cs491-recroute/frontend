@@ -50,59 +50,64 @@
             }
         }
     }
-    .searchItem{
-        margin-top: 65px;
-        position:absolute;
-        right:20px; top:2px;
-        .searchBar {
-            margin-top: 5px;
-            width: 300px;
-            height: 40px;
-            margin-left: 10px;
-        }
-    }
-    .flowList{
-        width: 100%;
-        margin-top: 40px;
-        padding: 10px;
-        .cardContainer {
-            height: 44px;
-            background: #FFFFFF;
-            box-shadow: 0px 0.9px 4px -1px rgba(0, 0, 0, 0.08), 0px 2.6px 8px -1px rgba(0, 0, 0, 0.06), 0px 5.7px 12px -1px rgba(0, 0, 0, 0.05), 0px 15px 15px -1px rgba(0, 0, 0, 0.04);
-            border-radius: 6px;
-            margin: 10px;
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-            gap: 10px;
+    .rightPanel {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 20px 10px;
+        align-items: flex-end;
 
-            &.loading {
-                display: block;
-                padding-top: 5px;
+        .searchItem {
+            margin-right: 10px;
+            & input {
+                height: 50px;
             }
-            .flowCard {
+        }
+
+        .flowList{
+            width: 100%;
+            margin-top: 50px;
+            overflow: auto;
+            height: calc(100vh - 190px);
+            .cardContainer {
+                height: 50px;
+                background: #FFFFFF;
+                box-shadow: 0px 0.9px 4px -1px rgba(0, 0, 0, 0.08), 0px 2.6px 8px -1px rgba(0, 0, 0, 0.06), 0px 5.7px 12px -1px rgba(0, 0, 0, 0.05), 0px 15px 15px -1px rgba(0, 0, 0, 0.04);
+                border-radius: 6px;
+                margin: 10px;
                 display: flex;
                 align-items: center;
                 padding: 0 20px;
-                gap: px;
-                .flowTitle {
-                    align-items: center;
-                    font-size: 18px;
+                gap: 10px;
+    
+                &.loading {
+                    display: block;
+                    padding-top: 5px;
                 }
-                .details {
-                    font-size: 12px;
+                .flowCard {
                     display: flex;
                     align-items: center;
                     padding: 0 20px;
-                    gap: 10px;
+                    gap: px;
+                    .flowTitle {
+                        align-items: center;
+                        font-size: 18px;
+                    }
+                    .details {
+                        font-size: 12px;
+                        display: flex;
+                        align-items: center;
+                        padding: 0 20px;
+                        gap: 10px;
+                    }
                 }
             }
-        }
-
-        .loadingContent {
-            padding-top: 5px;
-            & > span {
-                height: 12px;
+    
+            .loadingContent {
+                padding-top: 5px;
+                & > span {
+                    height: 12px;
+                }
             }
         }
     }
