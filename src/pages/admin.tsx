@@ -15,6 +15,7 @@ import { gatewayManager } from '../utils/gatewayManager';
 import { translate } from '../utils';
 import { EuiButton, EuiIcon, EuiSelect } from '@elastic/eui';
 import AdminConsolePagination from '../components/AdminConsolePagination/pagination';
+import { Paper } from '@mui/material';
 
 const AdminPanelPage: NextPage = () => {
     const [limit, setLimit] = useState(5);
@@ -32,11 +33,10 @@ const AdminPanelPage: NextPage = () => {
         totalPages: 0
     });
     const rowPerPageOptions = [
-        { key: '1', text: '1' },
-        { key: '2', text: '2' },
-        { key: '3', text: '3' },
-        { key: '4', text: '4' },
-        { key: '5', text: '5' }
+        { key: '5', text: '5' },
+        { key: '10', text: '10' },
+        { key: '15', text: '15' },
+        { key: '25', text: '25' }
     ];
 
     const user = useAppSelector(getUser);
@@ -77,92 +77,87 @@ const AdminPanelPage: NextPage = () => {
     
     if (user) {
         return (
-            <div>
-                <h1 className={styles.title1}>{translate('Admin Panel')}</h1>
-                <hr />
-                <table className={styles.table2}>
-                    <tbody>
-                        <tr>
-                            <td className={styles.tColumn1}>
-                                {user.company.isLinked ?
-                                    (<h1 className={styles.title2}>Zoom account is linked</h1>) :
-                                    (<EuiButton
-                                        onClick={zoomLinkClick}
-                                    >
-                                        Link Zoom Account
-                                    </EuiButton>)
-                                }
-                            </td>
-                            <td className={styles.tColumn2}>
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <p className={styles.title2}>{translate('Select Rows Per Page :')}</p>
-                                            </td>
-                                            <td>
-                                                <EuiSelect 
-                                                    className={styles.rowSelect}
-                                                    placeholder='Rows per Page'
-                                                    options={rowPerPageOptions}
-                                                    onChange={e => (handleLimitChange(parseInt(e.target.value)))}
-                                                ></EuiSelect>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                {resp.totalDocs !== 0 ?
-                    <>
-                        <table className={styles.table}>
-                            <tbody>
-                                <tr className={styles.tr}>
-                                    <td className={styles.tdata}>
-                                        <p className={styles.theader}>Name</p>
-                                    </td>
-                                    <td className={styles.tdata}>
-                                        <p className={styles.theader}>Email</p>
-                                    </td>
-                                    <td className={styles.tdata}>
-                                        <p className={styles.theader2}>Role</p>
-                                    </td>
-                                    <td className={styles.tdata}>
-                                        <p className={styles.theader2}>Actions</p>
-                                    </td>
-                                </tr>
-                                {resp ? resp.docs.map((specificUser: User) => (
-                                    <tr key={specificUser._id} className={styles.tr}>
+            <div className={styles.container}>
+                <Paper className={styles.card} elevation={4}>
+                    <h1 className={styles.title1}>{translate('Admin Panel')}</h1>
+                    <hr />
+                    <table className={styles.table2}>
+                        <tbody>
+                            <tr>
+                                <td className={styles.tColumn1}>
+                                    {user.company.isLinked ?
+                                        (<h1 className={styles.title2}>Zoom account is linked</h1>) :
+                                        (<EuiButton
+                                            onClick={zoomLinkClick}
+                                        >
+                                            Link Zoom Account
+                                        </EuiButton>)
+                                    }
+                                </td>
+                                <td className={styles.tColumn2}>
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <p className={styles.title2}>{translate('Select Rows Per Page :')}</p>
+                                                </td>
+                                                <td>
+                                                    <EuiSelect 
+                                                        className={styles.rowSelect}
+                                                        placeholder='Rows per Page'
+                                                        value={limit}
+                                                        options={rowPerPageOptions}
+                                                        onChange={e => (handleLimitChange(parseInt(e.target.value)))}
+                                                    ></EuiSelect>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    {resp.totalDocs !== 0 ?
+                        <>
+                            <table className={styles.table}>
+                                <tbody>
+                                    <tr className={styles.tr}>
                                         <td className={styles.tdata}>
-                                            <p className={styles.tname}>{specificUser.name}</p>
+                                            <p className={styles.theader}>Name</p>
                                         </td>
                                         <td className={styles.tdata}>
-                                            <p className={styles.temail}>{specificUser.email}</p>
+                                            <p className={styles.theader}>Email</p>
                                         </td>
                                         <td className={styles.tdata}>
-                                            {specificUser.roles.map(role => (
-                                                <p key={role}>{role}</p>
-                                            ))}
-                                        </td>
-                                        <td className={styles.tdata}>
-                                            <button className={styles.deleteButton}>
-                                                <EuiIcon type="trash" />
-                                            </button>
+                                            <p className={styles.theader2}>Role</p>
                                         </td>
                                     </tr>
-                                )) : null}
-                            </tbody>
-                        </table> 
-                        <div className={styles.pageNumbers}>
-                            <AdminConsolePagination
-                                resp={resp}
-                                handlePageChange={handlePageChange}
-                            />
-                        </div>
-                    </>: null
-                }
+                                    {resp ? resp.docs.map((specificUser: User) => (
+                                        <tr key={specificUser._id} className={styles.tr}>
+                                            <td className={styles.tdata}>
+                                                <p className={styles.tname}>{specificUser.name}</p>
+                                            </td>
+                                            <td className={styles.tdata}>
+                                                <p className={styles.temail}>{specificUser.email}</p>
+                                            </td>
+                                            <td className={styles.tdata}>
+                                                {specificUser.roles.map(role => (
+                                                    <p key={role}>{role}</p>
+                                                ))}
+                                            </td>
+                                        </tr>
+                                    )) : null}
+                                </tbody>
+                            </table> 
+                            <div className={styles.pageNumbers}>
+                                <AdminConsolePagination
+                                    resp={resp}
+                                    handlePageChange={handlePageChange}
+                                />
+                            </div>
+                        </>: null
+                    }
+                </Paper>
             </div>
         )
     }

@@ -1,70 +1,82 @@
-.title1 {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: xx-large;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    margin-top: 5px;
-}
-
-.title2 {
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    font-size: large;
-    margin-bottom: 10px;
-    margin-left: 10px;
-    margin-top: 10px;
-}
-
-.table {
-    margin-top:15px;
-    border-collapse: collapse;
-    width:100%;
-    .tr {
-        border-top: 1px solid rgba(0, 0, 0, 0.2);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-        height:30px;
-        .tdata{
-            padding:15px;
-        }
-        .theader {
-            margin-left: 38%;
-            font-weight: bold;
-        }
-        .theader2 {
-            margin-left: 4%;
-            font-weight: bold;
-        }
-        .tname{
-            margin-left: 35%;
-        }
-        .temail{
-            margin-left: 30%;
-        }
-    }
-}
-
-.table2{
-    margin-top:15px;
-    border-collapse: collapse;
-    width:100%;
-    .tColumn1{
+.container { 
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    height: 95%;
+  
+    .card {
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         width: 70%;
+        min-width: 600px;
+        overflow: auto;
+
+        .title1 {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: xx-large;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-top: 5px;
+        }
+
+        .title2 {
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: large;
+            margin-bottom: 10px;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        .table {
+            margin-top:15px;
+            border-collapse: collapse;
+            width:100%;
+            .tr {
+                border-top: 1px solid rgba(0, 0, 0, 0.2);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+                height:30px;
+                .tdata{
+                    padding:15px;
+                }
+                .theader {
+                    margin-left: 33%;
+                    font-weight: bold;
+                }
+                .theader2 {
+                    font-weight: bold;
+                }
+                .tname{
+                    margin-left: 27%;
+                }
+                .temail{
+                    margin-left: 23%;
+                }
+            }
+        }
+
+        .table2{
+            margin-top:15px;
+            border-collapse: collapse;
+            width:100%;
+            .tColumn1{
+                width: 70%;
+            }
+            .tColumn2{
+                width: 30%;
+            }
+        }
+
+        .rowSelect{
+            margin-left: 10px;
+        }
+
+        .pageNumbers{
+            padding: 10px;
+            text-align: right;
+        }
     }
-    .tColumn2{
-        width: 20%;
-    }
-}
-
-.rowSelect{
-    margin-left: 10px;
-}
-
-.pageNumbers{
-    padding: 10px;
-    position:absolute;
-    right:40px;
-}
-
-.deleteButton{
-    margin-left: 12%;
 }
   
