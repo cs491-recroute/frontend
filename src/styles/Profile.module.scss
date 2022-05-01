@@ -58,13 +58,6 @@
       font-weight: bold;
     }
 
-    .tablehr{
-      border: 0;
-      height: 0;
-      border-top: 1px solid rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
     .table {
       border-collapse: collapse;
     }
@@ -131,4 +124,20 @@
   float: right;
   right: 25%;
   bottom: 0;
+}
+
+.timeSlotTable{
+  border-collapse: collapse;
+  width:100%;
+  .timeSlotTableRow{
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    height:30px;
+    .tdata{
+      padding:10px;
+    }
+    .tcol1{
+      text-align: center;
+    }
+  }
 }

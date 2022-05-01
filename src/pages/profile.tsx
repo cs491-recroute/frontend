@@ -179,30 +179,37 @@ const ProfilePage: NextPage = () => {
                                         <button onClick={togglePopup} className={styles.addButton}>Add Time Slot</button>
                                     </td>
                                     <td>
-                                        <table>
-                                            <tbody>
-                                                {timeSlots.length === 0 ? <tr><td><p className={styles.p}>{translate('No Available Time Specified')}</p></td></tr>
-                                                    : timeSlots.map((availableTime: TimeSlot) => (
-                                                        <tr key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                        new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                        new Date(availableTime.startTime).getUTCSeconds()  
-                                                        }
+                                        {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
+                                            : <table className={styles.timeSlotTable}>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>{translate('Start Date')}</th>
+                                                        <th>{translate('Start Time in UTC')}</th>
+                                                        <th>{translate('Duration in Minutes')}</th>
+                                                    </tr>
+                                                    {timeSlots.map((availableTime: TimeSlot) => (
+                                                        <tr className={styles.timeSlotTableRow}
+                                                            key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                            new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                                            new Date(availableTime.startTime).getUTCSeconds()  
+                                                            }
                                                         >
-                                                            <td>
-                                                                <div>
-                                                                    <p className={styles.p}>Start Date : {new Date(availableTime.startTime).getDate() + '/' +
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
                                                                     new Date(availableTime.startTime).getMonth() + '/' +
                                                                     new Date(availableTime.startTime).getFullYear()
-                                                                    }
-                                                                    </p>
-                                                                    <p className={styles.p}>Start Time in UTC : {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                                }
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getUTCHours() + ':' +
                                                                     new Date(availableTime.startTime).getUTCMinutes() + ':' + 
                                                                     new Date(availableTime.startTime).getUTCSeconds()  
-                                                                    }
-                                                                    </p>
-                                                                    <p className={styles.p}>Duration in Minutes : {availableTime.durationInMins}</p>
-                                                                </div>
-                                                                <hr className={styles.tablehr}></hr> 
+                                                                }
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{availableTime.durationInMins}</p>
                                                             </td>
                                                             <td>
                                                                 <button
@@ -214,8 +221,9 @@ const ProfilePage: NextPage = () => {
                                                             </td> 
                                                         </tr>
                                                     ))}
-                                            </tbody>
-                                        </table>
+                                                </tbody>
+                                            </table>
+                                        }
                                     </td>
                                 </tr>
                                 {isOpen && <Popup
@@ -266,28 +274,43 @@ const ProfilePage: NextPage = () => {
                                     </td>
                                     <td>
                                         {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
-                                            : timeSlots.map((availableTime: TimeSlot) => (
-                                                <div key={new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                new Date(availableTime.startTime).getUTCSeconds()  
-                                                }
-                                                >
-                                                    <div>
-                                                        <p className={styles.p}>Start Date : {new Date(availableTime.startTime).getDate() + '/' +
-                                                            new Date(availableTime.startTime).getMonth() + '/' +
-                                                            new Date(availableTime.startTime).getFullYear()
-                                                        }
-                                                        </p>
-                                                        <p className={styles.p}>Start Time in UTC : {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                            : <table className={styles.timeSlotTable}>
+                                                <tbody>
+                                                    <tr >
+                                                        <th>{translate('Start Date')}</th>
+                                                        <th>{translate('Start Time in UTC')}</th>
+                                                        <th>{translate('Duration in Minutes')}</th>
+                                                    </tr>
+                                                    {timeSlots.map((availableTime: TimeSlot) => (
+                                                        <tr className={styles.timeSlotTableRow}
+                                                            key = {new Date(availableTime.startTime).getUTCHours() + ':' +
                                                             new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                            new Date(availableTime.startTime).getUTCSeconds()  
-                                                        }
-                                                        </p>
-                                                        <p className={styles.p}>Duration in Minutes : {availableTime.durationInMins}</p>
-                                                        <hr className={styles.tablehr}></hr>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                            new Date(availableTime.startTime).getUTCSeconds()}
+                                                        >
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>
+                                                                    {new Date(availableTime.startTime).getDate() + '/' +
+                                                                    new Date(availableTime.startTime).getMonth() + '/' +
+                                                                    new Date(availableTime.startTime).getFullYear()}
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>
+                                                                    {new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                                    new Date(availableTime.startTime).getUTCMinutes() + ':' + 
+                                                                    new Date(availableTime.startTime).getUTCSeconds()}
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>
+                                                                    {availableTime.durationInMins}
+                                                                </p>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        }
                                     </td>
                                 </tr>
                             </tbody>
