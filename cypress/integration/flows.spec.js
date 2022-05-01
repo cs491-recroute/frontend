@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe('Flows page', () => {
-    beforeEach(() => {
+    before(() => {
         cy.loginAndVisit('/flows');
     })
   

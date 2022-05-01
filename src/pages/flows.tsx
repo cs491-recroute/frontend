@@ -137,16 +137,20 @@ const FlowsPage: NextPage = () => {
                             <div style={{ flex: 1 }}/>
                             <div className={styles.flowCard}>
                                 <FlowsShareButton flow={flow}/>
-                                <EuiButtonEmpty>
-                                    <Link href={`flowbuilder/${flow._id}`}>
-                                        <a style={{color: 'black'}}>{translate('Edit')}</a>
-                                    </Link>
-                                </EuiButtonEmpty>
-                                <EuiButtonEmpty>
-                                    <Link href={`submissions/${flow._id}`}>
-                                        <a style={{color: 'black'}}>{translate('Submissions')}</a>
-                                    </Link>
-                                </EuiButtonEmpty>
+                                <Link href={`flowbuilder/${flow._id}`}>
+                                    <a style={{color: 'black'}}>
+                                        <EuiButtonEmpty>
+                                            {translate('Edit')}
+                                        </EuiButtonEmpty>
+                                    </a>
+                                </Link>
+                                <Link href={`submissions/${flow._id}`}>
+                                    <a style={{color: 'black'}}>
+                                        <EuiButtonEmpty>
+                                            {translate('Submissions')}
+                                        </EuiButtonEmpty>
+                                    </a>
+                                </Link>
                                 <EuiButtonEmpty style={{color: 'black'}} data-testid={`${flow.name}-delete`} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
                             </div>						
                         </Paper>
