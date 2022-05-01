@@ -21,10 +21,20 @@ export enum QUESTION_TYPES {
 }
 
 export const FORM_OPERATIONS = {
-    STRING: ['equal', 'not equal', 'includes'],
-    NUMBER: ['equal', 'not equal', 'greater than', 'less than', 'greater then or equal', 'less than or equal'],
-    OPTION: ['equal', 'not equal'],
-    MULTIPLEOPTION: ['equal', 'not equal', 'includes']
+    STRING: ['eq', 'ne', 'includes'],
+    NUMBER: ['eq', 'ne', 'gt', 'lt', 'gte', 'lte'],
+    OPTION: ['eq', 'ne'],
+    MULTIPLEOPTION: ['eq', 'ne', 'includes']
+}
+
+export const OPERATION_DESCRIPTIONS = {
+    'eq' : 'Equal',
+    'ne': 'Not Equal',
+    'includes': 'Includes',
+    'gt': 'Greater Than',
+    'lt': 'Less Than',
+    'gte': 'Greater Than or Equal',
+    'lte': 'Less Than or Equal'
 }
 
 export const FORM_FIELDS  = {

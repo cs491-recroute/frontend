@@ -1,5 +1,5 @@
 import React from 'react';
-import { STAGE_TYPE } from '../../../types/enums';
+import { OPERATION_DESCRIPTIONS, STAGE_TYPE } from '../../../types/enums';
 import { Flow, Stage } from '../../../types/models';
 import { ComponentTypes } from '../../../types/models';
 
@@ -24,11 +24,11 @@ export const getPrettyConditionName = (flow: Flow, condition: any) => {
     }
 
     return [
-        `${fieldName} ${condition.operation} ${valueName}`,
+        `${fieldName} ${OPERATION_DESCRIPTIONS[(condition.operation) as keyof typeof OPERATION_DESCRIPTIONS]} ${valueName}`,
         <span key={condition._id}>
             <b>{fieldName}</b>
             {' '}
-            {condition.operation}
+            {OPERATION_DESCRIPTIONS[(condition.operation) as keyof typeof OPERATION_DESCRIPTIONS]}
             {' '}
             <b>{valueName}</b>
         </span>

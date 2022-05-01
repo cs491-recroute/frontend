@@ -1,10 +1,11 @@
+/* eslint-disable complexity */
 import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
 import { DeleteForever } from '@mui/icons-material';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { getCurrentFlow, setConditionsOfFlow } from '../../../redux/slices/flowBuilderSlice';
 import { getCurrentFlow as getSubmissionsFlow } from '../../../redux/slices/submissionsSlice';
-import { FORM_FIELDS, FORM_OPERATIONS, STAGE_TYPE } from '../../../types/enums';
+import { FORM_FIELDS, FORM_OPERATIONS, OPERATION_DESCRIPTIONS, STAGE_TYPE } from '../../../types/enums';
 import { ComponentTypes, Condition, Form, Stage, Option } from '../../../types/models';
 import { translate } from '../../../utils';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
@@ -69,7 +70,8 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
         if (componentType) {
             const arr = FORM_FIELDS[componentType];
             const newOptions = arr.map(e => ({
-                label: e
+                label: OPERATION_DESCRIPTIONS[e as keyof typeof OPERATION_DESCRIPTIONS],
+                id: e
             }));
             setAllOperations(newOptions);
             if (dropDownComponents.includes(selectedOpts[0]?.value?.componentType || '')) {
@@ -112,7 +114,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
             const body: any = {};
             body.from = stage._id;
 
-            body.operation = selectedOperations[0].label;
+            body.operation = selectedOperations[0].id;
             if (stage.type === STAGE_TYPE.FORM && (selectedOptions.length === 1)) {
                 const field = (selectedOptions[0]?.value?.componentID);
                 body.field = field;
@@ -243,7 +245,8 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
         } else {
             const arr = FORM_OPERATIONS.NUMBER
             const newOperations = arr.map(e => ({
-                label: e
+                label: OPERATION_DESCRIPTIONS[e as keyof typeof OPERATION_DESCRIPTIONS],
+                id: e
             }));
             setAllOperations(newOperations);
         }
@@ -259,11 +262,12 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
                 value: { name: name, componentID: _id, componentType: type, componentOptions: options },
                 disabled: (type === ComponentTypes.datePicker || type === ComponentTypes.upload)
             })));
-            setSelectedOperations([{ label: (condition?.operation) || "" }]);
+            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || ""}]);
             if (fieldComponent.type) {
                 const arr = FORM_FIELDS[fieldComponent.type];
                 const newOptions = arr.map(e => ({
-                    label: e
+                    label: OPERATION_DESCRIPTIONS[e as keyof typeof OPERATION_DESCRIPTIONS],
+                    id: e
                 }));
                 setAllOperations(newOptions);
             }
@@ -287,7 +291,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
                 setValue(condition?.value);
             }
         } else {
-            setSelectedOperations([{ label: (condition?.operation) || "" }]);
+            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || ""}]);
             setValue(condition?.value);
         }
     }, [condition, isOpen]);
