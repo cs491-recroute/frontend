@@ -141,7 +141,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
             </EuiFormRow>
             <EuiSpacer />
             {specifyDuration && <>
-                <EuiFormRow label={translate('Start Date')}>
+                <EuiFormRow className={styles.rowPadding} label={translate('Start Date')}>
                     <EuiDatePicker
                         selected={startDate}
                         onChange={date => {
@@ -159,7 +159,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                     />
                 </EuiFormRow>
                 <EuiSpacer />
-                <EuiFormRow label={translate('End Date')}>
+                <EuiFormRow className={styles.rowPadding} label={translate('End Date')}>
                     <EuiDatePicker
                         selected={endDate}
                         onChange={date => {
@@ -176,7 +176,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                     />
                 </EuiFormRow></>
             }
-            {stageType === STAGE_TYPE.TEST && <EuiFormRow label={translate('Test Duration')}>
+            {stageType === STAGE_TYPE.TEST && <EuiFormRow className={styles.rowPadding} label={translate('Test Duration')}>
                 <EuiFieldNumber
                     min={0}
                     step={5}
@@ -186,7 +186,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                 />
             </EuiFormRow>}
             {stageType === STAGE_TYPE.INTERVIEW && <div className={styles.div}>
-                <EuiFormRow label={translate('Length in minutes')}>
+                <EuiFormRow className={styles.rowPadding} label={translate('Length in minutes')}>
                     <EuiFieldNumber
                         min={0}
                         step={5}
@@ -195,7 +195,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                         onChange={({ target: { value } }) => setInterviewLengthInMins(parseInt(value))}
                     />
                 </EuiFormRow>
-                <EuiFormRow label={translate('Interviewers')}>
+                <EuiFormRow className={styles.rowPadding} label={translate('Interviewers')}>
                     <EuiSelect
                         fullWidth
                         options={interviewerOptions}
