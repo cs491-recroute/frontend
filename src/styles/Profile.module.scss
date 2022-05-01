@@ -3,6 +3,7 @@
   display: flex;
   justify-content: center;
   padding: 20px;
+  height: 95%;
 
   .card {
       padding: 30px;
@@ -11,7 +12,7 @@
       align-items: stretch;
       width: 50%;
       min-width: 600px;
-  
+      overflow: auto;
 
     .header {
       height: 70px;
