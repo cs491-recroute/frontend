@@ -76,15 +76,27 @@ const FlowsPage: NextPage = () => {
                 <title>{translate('Flows')}</title>
             </Head>
             <div className={styles.leftPanel}>
-                <EuiButton className={styles.createButton} onClick={createFlowRef.current?.open} data-testid='create-flow-button'>
-                    <EuiText className={styles.text}>CREATE FLOW</EuiText>
+                <EuiButton className={styles.createButton} onClick={createFlowRef.current?.open} fill
+                    data-testid='create-flow-button'
+                >
+                    <EuiText className={styles.text}>{translate('CREATE FLOW')}</EuiText>
                 </EuiButton>
                 <EuiHorizontalRule className={styles.rule}></EuiHorizontalRule>
                 <div className={styles.itemList}>
-                    <EuiButton className={styles.item} fullWidth={true} iconSide="right"
+                    <EuiButton className={styles.item} fill fullWidth={true}
+                        iconSide="right"
                         iconType="arrowRight"
                     >
                         All Flows
+                    </EuiButton>
+                    <EuiButton className={styles.item} fullWidth={true}>
+                        {translate('Actives')}
+                    </EuiButton>
+                    <EuiButton className={styles.item} fullWidth={true}>
+                        {translate('Favorites')}
+                    </EuiButton>
+                    <EuiButton className={styles.item} fullWidth={true}>
+                        {translate('Archived')}
                     </EuiButton>
                 </div>
 
@@ -116,11 +128,11 @@ const FlowsPage: NextPage = () => {
                                 checked={checked[flow._id]}
                                 onChange={e => handleCheckboxClick(e)}
                             />
+                            <EuiIcon type={'starEmpty'} size={'m'}/>
                             <div className={styles.flowTitle}>
                                 <Link href={`flowbuilder/${flow._id}`}>
                                     <a>{flow.name}</a>
                                 </Link>
-                                <div className={styles.description}>description</div>
                             </div>
                             <div style={{ flex: 1 }}/>
                             <div className={styles.flowCard}>
