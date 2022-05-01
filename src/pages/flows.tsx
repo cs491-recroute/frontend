@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef} from 'react';
+import React, { ChangeEvent, ChangeEventHandler, useEffect, useState, useRef } from 'react';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
 import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
-import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText, EuiLoadingContent, EuiFieldText } from '@elastic/eui';
+import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText, EuiLoadingContent, EuiFieldText, EuiFieldSearch } from '@elastic/eui';
 import { useWithConfirmation } from '../contexts/confirmation';
 import { translate } from '../utils';
 import styles from '../styles/Flows.module.scss';
@@ -16,7 +16,7 @@ import FlowsShareButton from '../components/FlowsShareButton';
 import classNames from 'classnames';
 
 interface SelectedBoxes {
-	[key: string]: boolean
+    [key: string]: boolean
 }
 const FlowsPage: NextPage = () => {
     const createFlowRef = useRef<CreateFlowRef>(null);
@@ -39,9 +39,9 @@ const FlowsPage: NextPage = () => {
 
     const handleDeleteButton = withConfirmation({
         onApprove: (flowID: string) => {
-            if(flowID){
+            if (flowID) {
                 dispatch(deleteFlowAsync(flowID));
-            }else{
+            } else {
                 alert('Flow was not deleted!')
             }
         },
@@ -64,7 +64,7 @@ const FlowsPage: NextPage = () => {
         // setChecked(previousState => {
         // 	return { ...previousState, id: !checked[id] };
         // });
-        setChecked({...checked, [id] : !checked[id]});
+        setChecked({ ...checked, [id]: !checked[id] });
         console.log(checked);
     };
 
@@ -103,7 +103,7 @@ const FlowsPage: NextPage = () => {
             </div>
             <div className={styles.rightPanel}>
                 <div className={styles.searchItem}>
-                    <EuiFieldText
+                    <EuiFieldSearch
                         className={styles.searchBar}
                         type="text"
                         placeholder='Search Flow...'
@@ -111,16 +111,16 @@ const FlowsPage: NextPage = () => {
                     />
                 </div>
                 <div className={styles.flowList} data-testid='flowList'>
-                    {isReady ? flows.filter( flow => {
+                    {isReady ? flows.filter(flow => {
                         if (searchTerm === "") {
-                        //if query is empty
+                            //if query is empty
                             return flow;
                         } else if (flow.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-                        //returns filtered array
+                            //returns filtered array
                             console.log(flow.name.toLowerCase());
                             return flow;
                         }
-                    }).map( flow => {
+                    }).map(flow => {
                         return (
                             <Paper key={flow._id} data-testid={`${flow.name}-card`} className={styles.cardContainer}>
                                 <EuiCheckbox
@@ -128,35 +128,47 @@ const FlowsPage: NextPage = () => {
                                     checked={checked[flow._id]}
                                     onChange={e => handleCheckboxClick(e)}
                                 />
-                                <EuiIcon type={'starEmpty'} size={'m'}/>
-                                <div className={styles.flowTitle}>
-                                    <Link href={`flowbuilder/${flow._id}`}>
-                                        <a>{flow.name}</a>
-                                    </Link>
+                                <EuiIcon type={'starEmpty'} size={'m'} />
+                                <div className={styles.cardContent}>
+                                    <div className={styles.flowTitle}>
+                                        <Link href={`flowbuilder/${flow._id}`}>
+                                            <a>{flow.name}</a>
+                                        </Link>
+                                    </div>
+                                    <div className={styles.details}>
+                                        {`${flow.stages.length} Stages, ${flow.active ? 'Active' : 'Passive'}`}
+                                    </div>
                                 </div>
-                                <div style={{ flex: 1 }}/>
+                                <div style={{ flex: 1 }} />
                                 <div className={styles.flowCard}>
-                                    <FlowsShareButton flow={flow}/>
+                                    <FlowsShareButton flow={flow} />
                                     <Link href={`flowbuilder/${flow._id}`}>
                                         <a>
-                                            <EuiButtonEmpty style={{color: 'black'}}>
+                                            <EuiButtonEmpty className={styles.cardButton}>
                                                 {translate('Edit')}
                                             </EuiButtonEmpty>
                                         </a>
                                     </Link>
                                     <Link href={`submissions/${flow._id}`}>
                                         <a>
-                                            <EuiButtonEmpty style={{color: 'black'}}>
+                                            <EuiButtonEmpty className={styles.cardButton}>
                                                 {translate('Submissions')}
                                             </EuiButtonEmpty>
                                         </a>
                                     </Link>
-                                    <EuiButtonEmpty style={{color: 'black'}} data-testid={`${flow.name}-delete`} onClick={() => handleDeleteButton(flow._id)}>{translate('Delete')}</EuiButtonEmpty>
-                                </div>						
+                                    <EuiButtonEmpty
+                                        className={styles.cardButton}
+                                        data-testid={`${flow.name}-delete`}
+                                        onClick={() => handleDeleteButton(flow._id)}
+                                    >
+                                        {translate('Delete')}
+                                    </EuiButtonEmpty>
+                                </div>
                             </Paper>
-                        )}) : <div data-testid='flows-loading'>
+                        )
+                    }) : <div data-testid='flows-loading'>
                         {[...Array(5)].map((_, i) => <Paper key={i} className={classNames(styles.cardContainer, styles.loading)}>
-                            <EuiLoadingContent lines={2} className={styles.loadingContent}/>
+                            <EuiLoadingContent lines={2} className={styles.loadingContent} />
                         </Paper>)}
                     </div>}
                 </div>

@@ -11,10 +11,10 @@ type FlowsShareButtonProps = {
 const FlowsShareButton = ({ flow }: FlowsShareButtonProps) => {
     const shareFlowRef = useRef<ShareFlowModalRef>(null);
     const isDisabled = !flow.stages[0] || !flow.active
-    
+
     return (
         <>
-            <EuiButtonEmpty style={{color: isDisabled ? 'disabled' : 'black'}} isDisabled={isDisabled} isSelected={true}
+            <EuiButtonEmpty style={{ color: isDisabled ? 'disabled' : 'black', fontWeight: 600, fontSize: 15 }} isDisabled={isDisabled} isSelected={true}
                 onClick={() => shareFlowRef.current?.open()}
             >{translate('Share')}</EuiButtonEmpty>
             <ShareFlowModal flow={flow} ref={shareFlowRef} />

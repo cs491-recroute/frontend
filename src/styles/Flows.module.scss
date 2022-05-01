@@ -1,10 +1,10 @@
-
 .mainDiv {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
+
     .leftPanel {
         width: 350px;
         height: 100%;
@@ -13,27 +13,33 @@
         flex-direction: column;
         align-items: center;
         padding: 8px;
+
         .createButton {
             width: 100%;
-            height: 50px;
+            height: 40px;
             display: flex;
             align-items: center;
             text-align: center;
-            margin-top: 10px;
-            .text{
+            margin-top: 5px;
+
+            .text {
                 font-style: normal;
                 font-weight: bold;
                 font-size: 20px;
             }
         }
+
         .rule {
             padding: 0px;
+            margin: 10px 0;
         }
+
         .itemList {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
+
             .item {
                 margin-bottom: 10px;
                 width: 100%;
@@ -42,35 +48,33 @@
                 flex-direction: row;
                 justify-content: space-between;
                 align-items: center;
-                .text{
-                    font-style: normal;
-                    font-weight: bold;
-                    font-size: 16px;
-                }
+                font-style: normal;
+                font-size: 16px;
+                font-weight: 600;
             }
         }
     }
+
     .rightPanel {
         display: flex;
         flex-direction: column;
         flex: 1;
-        padding: 20px 10px;
+        padding: 15px 10px;
         align-items: flex-end;
 
         .searchItem {
             margin-right: 10px;
-            & input {
-                height: 50px;
-            }
+            background-color: #FFFFFF;
+            width: 250px;
         }
 
-        .flowList{
+        .flowList {
             width: 100%;
-            margin-top: 50px;
+            margin-top: 10px;
             overflow: auto;
             height: calc(100vh - 190px);
+
             .cardContainer {
-                height: 50px;
                 background: #FFFFFF;
                 box-shadow: 0px 0.9px 4px -1px rgba(0, 0, 0, 0.08), 0px 2.6px 8px -1px rgba(0, 0, 0, 0.06), 0px 5.7px 12px -1px rgba(0, 0, 0, 0.05), 0px 15px 15px -1px rgba(0, 0, 0, 0.04);
                 border-radius: 6px;
@@ -79,33 +83,45 @@
                 align-items: center;
                 padding: 0 20px;
                 gap: 10px;
-    
+
                 &.loading {
                     display: block;
                     padding-top: 5px;
                 }
+
+                .cardContent {
+                    padding: 5px;
+
+                    .flowTitle {
+                        font-size: 17px;
+                        font-weight: 600;
+                        padding-bottom: 2px;
+                    }
+
+                    .details {
+                        font-size: 13px;
+                        padding-top: 2px;
+                    }
+                }
+
                 .flowCard {
                     display: flex;
                     align-items: center;
                     padding: 0 20px;
                     gap: px;
-                    .flowTitle {
-                        align-items: center;
-                        font-size: 18px;
-                    }
-                    .details {
-                        font-size: 12px;
-                        display: flex;
-                        align-items: center;
-                        padding: 0 20px;
-                        gap: 10px;
+
+                    .cardButton {
+                        font-weight: 600;
+                        font-size: 15px;
+                        color: black;
                     }
                 }
             }
-    
+
             .loadingContent {
                 padding-top: 5px;
-                & > span {
+
+                &>span {
                     height: 12px;
                 }
             }
