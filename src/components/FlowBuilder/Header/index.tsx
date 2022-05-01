@@ -26,24 +26,24 @@ const Header = () => {
     const [toggle, setToggle] = useState(true)
     const [isOpen, setOpen] = useState(false);
     const flow = useAppSelector(getCurrentFlow);
-    const [specifyDuration, setSpecifyDuration] = useState(flow.startDate != null);
-    const minDate = moment().add(1, 'd');
-    const [startDate, setStartDate] = useState(moment(flow.startDate));
-    const [endDate, setEndDate] = useState(moment(flow.endDate));
+    // const [specifyDuration, setSpecifyDuration] = useState(flow.startDate != null);
+    // const minDate = moment().add(1, 'd');
+    // const [startDate, setStartDate] = useState(moment(flow.startDate));
+    // const [endDate, setEndDate] = useState(moment(flow.endDate));
     const [name, setName] = useState(flow.name);
     const [isActive, setIsActive] = useState(flow.active);
-    const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
+    // const [isInvalid, setIsInvalid] = useState(startDate > endDate || startDate <= moment());
 
     const close = () => setOpen(false);
     const open = () => setOpen(true);
 
     useEffect(() => {
-        setSpecifyDuration(flow.startDate != null);
-        setStartDate(moment(flow.startDate));
-        setEndDate(moment(flow.endDate));
+        // setSpecifyDuration(flow.startDate != null);
+        // setStartDate(moment(flow.startDate));
+        // setEndDate(moment(flow.endDate));
         setName(flow.name);
         setIsActive(flow.active);
-        setIsInvalid(startDate > endDate || startDate <= moment());
+        // setIsInvalid(startDate > endDate || startDate <= moment());
     }, [flow]);
 
     const handleTitleField = () => {
@@ -61,9 +61,9 @@ const Header = () => {
         if(flow){
             dispatch(updateFlowAsync({
                 name: name,
-                active: isActive,
-                ...(specifyDuration && {startDate: startDate.toString()}),
-                ...(specifyDuration && {endDate: endDate.toString()})
+                active: isActive
+                // ...(specifyDuration && {startDate: startDate.toString()}),
+                // ...(specifyDuration && {endDate: endDate.toString()})
     
             }));
         }else{
@@ -129,7 +129,7 @@ const Header = () => {
                         fullWidth
                     />
                 </EuiFormRow>
-                <EuiFormRow label={translate('Specify Duration')} >
+                {/* <EuiFormRow label={translate('Specify Duration')} >
                     <EuiSwitch
                         label=''
                         checked={specifyDuration} 
@@ -175,7 +175,7 @@ const Header = () => {
                         disabled={specifyDuration}
                         onChange={({ target: { checked }}) => setIsActive(checked)}
                     />
-                </EuiFormRow>
+                </EuiFormRow> */}
             </EuiModalBody>
 
             <EuiModalFooter>

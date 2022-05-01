@@ -9,12 +9,12 @@ export type CreateFlowRef = { close: () => void, open: () => void };
 
 const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
     const dispatch = useAppDispatch();
-    const [specifyDuration, setSpecifyDuration] = useState(false);
-    const minDate = moment().add(1, 'd');
-    const [startDate, setStartDate] = useState(minDate);
-    const [endDate, setEndDate] = useState(moment().add(1, 'month'));
+    // const [specifyDuration, setSpecifyDuration] = useState(false);
+    // const minDate = moment().add(1, 'd');
+    // const [startDate, setStartDate] = useState(minDate);
+    // const [endDate, setEndDate] = useState(moment().add(1, 'month'));
     const [name, setName] = useState('');
-    const isInvalid = startDate > endDate || startDate <= moment();
+    // const isInvalid = startDate > endDate || startDate <= moment();
 
     const [isOpen, setOpen] = useState(false);
 
@@ -25,11 +25,11 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
 
     const createFlow = () => {
         dispatch(createFlowAsync({
-            name,
-            ...(specifyDuration && {
-                startDate: startDate.format(), 
-                endDate: endDate.format()
-            })
+            name
+            // ...(specifyDuration && {
+            //     startDate: startDate.format(), 
+            //     endDate: endDate.format()
+            // })
         }));
         setOpen(false);
     };
@@ -60,7 +60,7 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
                     data-testid='create-flow-modal-name'
                 />
             </EuiFormRow>
-            <EuiFormRow label={translate('Specify Duration')} >
+            {/* <EuiFormRow label={translate('Specify Duration')} >
                 <EuiSwitch
                     label=''
                     checked={specifyDuration} 
@@ -98,7 +98,7 @@ const CreateFlowModal = forwardRef<CreateFlowRef>((props, ref) => {
                         />
                     }
                 />
-            </EuiFormRow>}
+            </EuiFormRow>} */}
         </EuiModalBody>
 
         <EuiModalFooter>
