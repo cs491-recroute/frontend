@@ -14,7 +14,7 @@ import { User, TimeSlot } from '../types/models';
 import { gatewayManager } from '../utils/gatewayManager';
 import { EuiButton, EuiButtonEmpty, EuiDatePicker, EuiFieldText, EuiFormRow, EuiIcon, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle, EuiOverlayMask } from '@elastic/eui';
 import { translate } from '../utils';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 import { Paper } from '@mui/material';
 
 const ProfilePage: NextPage = () => {
@@ -53,8 +53,8 @@ const ProfilePage: NextPage = () => {
             props.handleClose();
         };
 
-        const handleDateChange = (date: any) => {
-            setStartDate(date);
+        const handleDateChange = (date: Moment) => {
+            setStartDate(date.zone(0));
         };
 
         /*
@@ -79,12 +79,12 @@ const ProfilePage: NextPage = () => {
                                 >{duration}</p>
                             </EuiFormRow>
                             <EuiFormRow label='Select Start Date'>
-                                <EuiDatePicker 
-                                    id='popupStartDate' 
+                                <EuiDatePicker
+                                    id='popupStartDate'
                                     showTimeSelect
                                     selected={startDate}
                                     placeholder='Select Date and Hour'
-                                    onChange={handleDateChange} 
+                                    onChange={handleDateChange}
                                 />
                             </EuiFormRow>
                         </div>}
@@ -94,7 +94,7 @@ const ProfilePage: NextPage = () => {
                         <EuiButtonEmpty onClick={() => togglePopup()}>Cancel</EuiButtonEmpty>
 
                         <EuiButton onClick={addTimeSlot} fill>
-                        Add Time Slot
+                            Add Time Slot
                         </EuiButton>
                     </EuiModalFooter>
                 </EuiModal>
@@ -107,17 +107,17 @@ const ProfilePage: NextPage = () => {
             name: 'name',
             value: newName
         }
-        dispatch(updateUserAsync( newProps ));
+        dispatch(updateUserAsync(newProps));
         const newTimeSlots = [...timeSlots]
-        dispatch(updateTimeSlotsAsync( newTimeSlots ));
+        dispatch(updateTimeSlotsAsync(newTimeSlots));
         setEditable(false);
     }
 
-    const deleteTimeslot = (startTimeDel: string, durationDel: number) =>{
-        for(let i = 0; i < timeSlots.length; i++){
-            if(durationDel === timeSlots[i].durationInMins && startTimeDel === timeSlots[i].startTime){
+    const deleteTimeslot = (startTimeDel: string, durationDel: number) => {
+        for (let i = 0; i < timeSlots.length; i++) {
+            if (durationDel === timeSlots[i].durationInMins && startTimeDel === timeSlots[i].startTime) {
                 const temp = [...timeSlots];
-                temp.splice(i,1);
+                temp.splice(i, 1);
                 setTimeSlots(temp);
                 break;
             }
@@ -190,9 +190,9 @@ const ProfilePage: NextPage = () => {
                                                 </tr>
                                                 {timeSlots.map((availableTime: TimeSlot) => (
                                                     <tr className={styles.timeSlotTableRow}
-                                                        key=  {new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                        new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                        new Date(availableTime.startTime).getUTCSeconds()  
+                                                        key={new Date(availableTime.startTime).getUTCHours() + ':' +
+                                                            new Date(availableTime.startTime).getUTCMinutes() + ':' +
+                                                            new Date(availableTime.startTime).getUTCSeconds()
                                                         }
                                                     >
                                                         <td className={styles.tdata}>
@@ -204,8 +204,8 @@ const ProfilePage: NextPage = () => {
                                                         </td>
                                                         <td className={styles.tdata}>
                                                             <p className={styles.tcol1}>{new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                                new Date(availableTime.startTime).getUTCMinutes() + ':' + 
-                                                                new Date(availableTime.startTime).getUTCSeconds()  
+                                                                new Date(availableTime.startTime).getUTCMinutes() + ':' +
+                                                                new Date(availableTime.startTime).getUTCSeconds()
                                                             }
                                                             </p>
                                                         </td>
@@ -219,7 +219,7 @@ const ProfilePage: NextPage = () => {
                                                             >
                                                                 <EuiIcon type='cross'></EuiIcon>
                                                             </button>
-                                                        </td>: null}   
+                                                        </td> : null}
                                                     </tr>
                                                 ))}
                                             </tbody>
@@ -232,9 +232,9 @@ const ProfilePage: NextPage = () => {
                             />}
                         </tbody>
                     </table>
-                   
+
                 </Paper>
-                <EuiButton 
+                <EuiButton
                     className={styles.button}
                     onClick={editable ? () => handleSave() : () => setEditable(true)}
                 >
@@ -244,7 +244,7 @@ const ProfilePage: NextPage = () => {
         )
     }
     return null;
-    
+
 };
 
 export default ProfilePage;
