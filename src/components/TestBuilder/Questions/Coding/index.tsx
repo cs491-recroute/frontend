@@ -8,7 +8,7 @@ import { RefProps } from '../../../CodeEditor';
 import { RendererProps } from '../constants';
 import axios, { AxiosResponse } from 'axios';
 
-const Coding = forwardRef(({ description, editMode, number, _id }: RendererProps, ref) => {
+const Coding = forwardRef(({ description, editMode, number, _id, testID }: RendererProps, ref) => {
     const [fullScreen, setFullScreen] = useState(false);
     const [darkMode, setDarkMode] = useState(false);
     const [result, setResult] = useState<boolean[] | string>();
@@ -17,7 +17,7 @@ const Coding = forwardRef(({ description, editMode, number, _id }: RendererProps
         setResult(undefined);
         let runResult: boolean[] | string;
         try {
-            const { data: testResults }: AxiosResponse<boolean[]> = await axios.post('/api/executeCode', { language, content, questionID: _id });
+            const { data: testResults }: AxiosResponse<boolean[]> = await axios.post('/api/executeCode', { language, content, questionID: _id, testID });
             runResult = testResults;
         } catch ({ response: { data }}: any) {
             runResult = data as string;

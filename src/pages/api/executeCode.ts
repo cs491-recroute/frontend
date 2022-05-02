@@ -7,8 +7,8 @@ import type { NextApiHandler } from 'next';
 
 const handler: NextApiHandler = async (request, response) => {
     try {
-        const { questionID, content, language } = request.body;
-        const { data: question }: AxiosResponse<Question> = await gatewayManager.useService(SERVICES.FLOW).get(`/question/${questionID}`);
+        const { questionID, content, language, testID } = request.body;
+        const { data: question }: AxiosResponse<Question> = await gatewayManager.useService(SERVICES.FLOW).get(`/test/${testID}/question/${questionID}`);
 
         try {
             const testCaseResults = await getCodeResult(language, content, question)

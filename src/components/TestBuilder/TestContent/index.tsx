@@ -114,6 +114,7 @@ const TestContent = ({ test, editMode, duration, userIdentifier }: TestContentPr
                         ref={newRef}
                         editMode={editMode} 
                         number={index + 1}
+                        testID={test._id}
                     />
                     {editMode && <IconButton className={styles.editButton} onClick={handleSettingsClick(question)}>
                         <SettingsIcon />
