@@ -73,10 +73,6 @@
       padding: 10px;
     }
 
-    .deleteButton {
-      margin-left: 10px;
-    }
-
     .popupBox {
       position: fixed;
       background: #00000050;
@@ -127,18 +123,29 @@
   bottom: 0;
 }
 
-.timeSlotTable{
+.tableFixHead {
+  overflow-y: auto;
+  height: 250px;
+}
+.tableFixHead table {
   border-collapse: collapse;
-  width:100%;
-  .timeSlotTableRow{
-    border-top: 1px solid rgba(0, 0, 0, 0.2);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    height:30px;
-    .tdata{
-      padding:10px;
-    }
-    .tcol1{
-      text-align: center;
-    }
-  }
+  width: 100%;
+}
+
+.tableFixHead td {
+  padding: 8px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.tableFixHead th {
+  padding: 10px;
+  position: sticky;
+  top: 0;
+  background: #eee;
+}
+
+.deleteButton{
+  z-index: 5;
 }

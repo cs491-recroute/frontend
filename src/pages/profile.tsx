@@ -181,46 +181,49 @@ const ProfilePage: NextPage = () => {
                                 </td>
                                 <td>
                                     {timeSlots.length === 0 ? <p className={styles.p}>{translate('No Available Time Specified')}</p>
-                                        : <table className={styles.timeSlotTable}>
-                                            <tbody>
-                                                <tr>
-                                                    <th>{translate('Start Date')}</th>
-                                                    <th>{translate(`Start Time (${Intl.DateTimeFormat().resolvedOptions().timeZone})`)}</th>
-                                                    <th>{translate('Duration in Minutes')}</th>
-                                                </tr>
-                                                {timeSlots.map((availableTime: TimeSlot, index: number) => (
-                                                    <tr className={styles.timeSlotTableRow}
-                                                        key={index}
-                                                    >
-                                                        <td className={styles.tdata}>
-                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
-                                                                new Date(availableTime.startTime).getMonth() + '/' +
-                                                                new Date(availableTime.startTime).getFullYear()
-                                                            }
-                                                            </p>
-                                                        </td>
-                                                        <td className={styles.tdata}>
-                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getHours() + ':' +
-                                                                new Date(availableTime.startTime).getMinutes() + ':' +
-                                                                new Date(availableTime.startTime).getSeconds()
-                                                            }
-                                                            </p>
-                                                        </td>
-                                                        <td className={styles.tdata}>
-                                                            <p className={styles.tcol1}>{availableTime.durationInMins}</p>
-                                                        </td>
-                                                        {editable ? <td>
-                                                            <button
-                                                                className={styles.deleteButton}
-                                                                onClick={() => deleteTimeslot(availableTime.startTime, availableTime.durationInMins)}
-                                                            >
-                                                                <EuiIcon type='cross'></EuiIcon>
-                                                            </button>
-                                                        </td> : null}
+                                        : <div className={styles.tableFixHead}>
+                                            <table className={styles.timeSlotTable}>
+                                                <tbody>
+                                                    <tr>
+                                                        <th>{translate('Start Date')}</th>
+                                                        <th>{translate(`Start Time (${Intl.DateTimeFormat().resolvedOptions().timeZone})`)}</th>
+                                                        <th>{translate('Duration in Minutes')}</th>
+                                                        {editable ? <th></th> : null}
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                                    {timeSlots.map((availableTime: TimeSlot, index: number) => (
+                                                        <tr className={styles.timeSlotTableRow}
+                                                            key={index}
+                                                        >
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
+                                                                    new Date(availableTime.startTime).getMonth() + '/' +
+                                                                    new Date(availableTime.startTime).getFullYear()
+                                                                }
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getHours() + ':' +
+                                                                    new Date(availableTime.startTime).getMinutes() + ':' +
+                                                                    new Date(availableTime.startTime).getSeconds()
+                                                                }
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles.tdata}>
+                                                                <p className={styles.tcol1}>{availableTime.durationInMins}</p>
+                                                            </td>
+                                                            {editable ? <td>
+                                                                <button
+                                                                    className={styles.deleteButton}
+                                                                    onClick={() => deleteTimeslot(availableTime.startTime, availableTime.durationInMins)}
+                                                                >
+                                                                    ✖
+                                                                </button>
+                                                            </td> : null}
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     }
                                 </td>
                             </tr>
