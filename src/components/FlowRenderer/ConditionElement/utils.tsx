@@ -21,6 +21,12 @@ export const getPrettyConditionName = (flow: Flow, condition: any) => {
             const { options = [] } = component;
             valueName = options.find((e: any) => e._id === condition.value)?.description || 'Unnamed Option';
         }
+        if(component.type === ComponentTypes.multipleChoice) {
+            const { options = [] } = component;
+            let x = options.filter((e: any) => condition.value.includes(e._id));
+            x = x.map((e: any) => e.description);
+            valueName = x.join(' & ');
+        }
     }
 
     return [

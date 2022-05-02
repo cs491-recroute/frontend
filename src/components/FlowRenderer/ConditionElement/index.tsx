@@ -1,3 +1,4 @@
+/* eslint-disable max-statements */
 /* eslint-disable complexity */
 import { EuiButton, EuiComboBox, EuiComboBoxOptionOption, EuiFieldNumber, EuiFieldText, EuiFormRow, EuiModal, EuiModalBody, EuiModalFooter, EuiModalHeader, EuiModalHeaderTitle } from '@elastic/eui';
 import { DeleteForever } from '@mui/icons-material';
@@ -110,10 +111,9 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
     }
 
     const handleSaveButton = async () => {
-        if ((selectedOperations.length === 1) && value) {
+        if ((selectedOperations.length === 1) && (value || selectedDropDownOptions.length !== 0)) {
             const body: any = {};
             body.from = stage._id;
-
             body.operation = selectedOperations[0].id;
             if (stage.type === STAGE_TYPE.FORM && (selectedOptions.length === 1)) {
                 const field = (selectedOptions[0]?.value?.componentID);
@@ -273,19 +273,29 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
             }
 
             if (fieldComponent.type === ComponentTypes.dropDown || fieldComponent.type === ComponentTypes.singleChoice) {
-                const valueOption = fieldComponent.options.find(option => option._id === value);
+                const valueOption = fieldComponent.options.find(option => option._id === condition?.value);
                 if (!valueOption) return;
                 setSelectedDropDownOptions([valueOption].map(e => ({
                     label: e.description,
-                    _id: e._id
+                    id: e._id
                 })));
+                const componentOptions = fieldComponent.options.map(e => ({
+                    label: e.description,
+                    id: e._id
+                }));
+                setDropDownOptions(componentOptions);
             }
             else if (fieldComponent.type === ComponentTypes.multipleChoice) {
-                const valueOptions = fieldComponent.options.filter(option => { if (option._id) value.includes(option._id) });
+                const valueOptions = fieldComponent.options.filter(option => condition?.value.includes(option._id));
                 setSelectedDropDownOptions(valueOptions.map(e => ({
                     label: e.description,
-                    _id: e._id
+                    id: e._id
                 })));
+                const componentOptions = fieldComponent.options.map(e => ({
+                    label: e.description,
+                    id: e._id
+                }));
+                setDropDownOptions(componentOptions);
             }
             else {
                 setValue(condition?.value);
