@@ -28,8 +28,8 @@ export const FORM_OPERATIONS = {
 }
 
 export const OPERATION_DESCRIPTIONS = {
-    'eq' : 'Equal',
-    'ne': 'Not Equal',
+    'eq' : 'Equals',
+    'ne': 'Not Equals',
     'includes': 'Includes',
     'gt': 'Greater Than',
     'lt': 'Less Than',

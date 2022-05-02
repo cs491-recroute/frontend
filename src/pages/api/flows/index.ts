@@ -4,7 +4,7 @@ import { gatewayManager } from '../../../utils/gatewayManager';
 import { SERVICES } from '../../../constants/services';
 
 const getAllFlows: NextApiHandler = async (request, response) => {
-    const { data: flows } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/flows');
+    const { data: flows } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/flows', { params: { applicants: true }});
     response.json(flows);
 };
 

@@ -19,6 +19,7 @@ export type Flow = {
   active: boolean;
   stages: Stage[];
   conditions: Condition[];
+  applicants?: string[];
 } & Basic;
 
 export type Stage = {

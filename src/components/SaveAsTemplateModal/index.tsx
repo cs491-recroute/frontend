@@ -115,7 +115,7 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
                 </EuiFormRow>
                 <EuiFormRow>
                     <EuiSwitch
-                        label={"public"}
+                        label={"Public"}
                         checked={checked}
                         onChange={e => setChecked(e.target.checked)}
                     />

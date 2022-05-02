@@ -136,7 +136,7 @@ const FlowsPage: NextPage = () => {
                                         </Link>
                                     </div>
                                     <div className={styles.details}>
-                                        {`${flow.stages.length} Stages, ${flow.active ? 'Active' : 'Passive'}`}
+                                        {`${flow.applicants?.length || 0} Applicants, ${flow.stages.length} Stages, ${flow.active ? 'Active' : 'Inactive'}`}
                                     </div>
                                 </div>
                                 <div style={{ flex: 1 }} />
