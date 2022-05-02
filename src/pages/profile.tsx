@@ -47,9 +47,18 @@ const ProfilePage: NextPage = () => {
                 durationInMins: duration
             }
 
+            let included = false;
             const newTimeSlots = [...timeSlots];
-            newTimeSlots.push(newTimeSlot);
-            setTimeSlots(newTimeSlots);
+            for(let i = 0; i < newTimeSlots.length; i++){
+                if(newTimeSlot.startTime === newTimeSlots[i].startTime){
+                    included = true;
+                    break;
+                }
+            }
+            if(!included){
+                newTimeSlots.push(newTimeSlot);
+                setTimeSlots(newTimeSlots);
+            } // else timeslot is already included
             props.handleClose();
         };
 
@@ -85,6 +94,7 @@ const ProfilePage: NextPage = () => {
                                     selected={startDate}
                                     placeholder='Select Date and Hour'
                                     onChange={handleDateChange}
+                                    minDate={moment()}
                                 />
                             </EuiFormRow>
                         </div>}
