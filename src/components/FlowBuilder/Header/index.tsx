@@ -47,39 +47,39 @@ const Header = () => {
     }, [flow]);
 
     const handleTitleField = () => {
-        if(flow){
+        if (flow) {
             dispatch(updateFlowTitleAsync({
                 name: "name",
                 value: name
             }));
-        }else{
+        } else {
             alert('Error: Name is not changed')
-        } 
+        }
     };
 
     const handleSaveButton = () => {
-        if(flow){
+        if (flow) {
             dispatch(updateFlowAsync({
                 name: name,
                 active: isActive
                 // ...(specifyDuration && {startDate: startDate.toString()}),
                 // ...(specifyDuration && {endDate: endDate.toString()})
-    
+
             }));
-        }else{
+        } else {
             alert('Error: Changes could not be saved!')
         }
         setOpen(false);
     };
-  
+
     const handleIsActiveSwitch = (e: { target: { checked: boolean }; }) => {
-        if(flow) {
+        if (flow) {
             dispatch(updateActiveStatusAsync({
                 name: "active",
                 value: e.target.checked
             }));
             setIsActive(e.target.checked);
-        }else{
+        } else {
             alert('Error: Status of the flow could not be updated');
         }
 
@@ -87,8 +87,8 @@ const Header = () => {
 
     return (<Fragment>
         <div className={styles.header}>
-            {toggle ? (<p onDoubleClick={() => {setToggle(false)}}>{name}</p>) : (<input className={styles.input} type='text' value={name}
-                onChange={event => {setName(event.target.value)}}
+            {toggle ? (<p onDoubleClick={() => { setToggle(false) }}>{name}</p>) : (<input className={styles.input} type='text' value={name}
+                onChange={event => { setName(event.target.value) }}
                 onKeyDown={event => {
                     if (event.key === 'Enter') {
                         handleTitleField()
@@ -99,20 +99,22 @@ const Header = () => {
                 }}
             />)}
             <IconButton onClick={open}>
-                <SettingsIcon className={styles.settingsIcon}/>
+                <SettingsIcon className={styles.settingsIcon} />
             </IconButton>
             <div className={styles.rightButtons}>
                 <EuiSwitch
                     label={'Active'}
                     checked={isActive}
-                    onChange={handleIsActiveSwitch}                
+                    onChange={handleIsActiveSwitch}
                 />
                 <EuiButton
-                    style={{marginLeft: '10px'}}
+                    style={{ marginLeft: '10px' }}
                     iconType={'share'}
                     color={'primary'}
                     isDisabled={!isActive || !flow.stages[0]}
-                    onClick={shareFlowRef.current?.open}
+                    onClick={() => {
+                        shareFlowRef.current?.open();
+                    }}
                 >
                     Share
                 </EuiButton>
@@ -125,7 +127,7 @@ const Header = () => {
             </EuiModalHeader>
             <EuiModalBody>
                 <EuiFormRow label={translate('Flow Name')} fullWidth>
-                    <EuiFieldText onChange={({ target: { value }}) => setName(value)} value={name} className='name'
+                    <EuiFieldText onChange={({ target: { value } }) => setName(value)} value={name} className='name'
                         fullWidth
                     />
                 </EuiFormRow>
@@ -187,7 +189,7 @@ const Header = () => {
         <ShareFlowModal flow={flow} ref={shareFlowRef} />
     </Fragment>
 
-    );	
+    );
 
 };
 
