@@ -56,7 +56,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
 
     useEffect(() => {
         const newStage = flow.stages.find(e => e._id === _id);
-        setSpecifyDuration(newStage?.startDate !== null);
+        setSpecifyDuration(!!newStage?.startDate);
         setStartDate(moment(newStage?.startDate));
         setEndDate(moment(newStage?.endDate));
         setIsInvalid(startDate > endDate || startDate <= moment());
@@ -72,8 +72,8 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                 type: stage.type,
                 stageID: stage.stageID,
                 ...(testDuration && { testDuration }),
-                ...(specifyDuration && { startDate: startDate.toString() }),
-                ...(specifyDuration && { endDate: endDate.toString() })
+                startDate: specifyDuration ? startDate.toString() : null,
+                endDate: specifyDuration ? endDate.toString() : null
             }));
             setSaveButtonClicked(true);
             setTimeout(setSaveButtonClicked, 2000);
@@ -207,7 +207,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                     {activeInterviewers.map((interviewerName: string) => (
                         <ListItem className={styles.listItem} key={interviewerName} disablePadding>
                             <ListItemText className={styles.th1} primary={interviewerName} />
-                            <ListItemButton 
+                            <ListItemButton
                                 className={styles.deleteButton}
                                 onClick={() => handleInterviewerDelete(interviewerName)}
                             >

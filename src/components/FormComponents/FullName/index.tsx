@@ -28,23 +28,23 @@ const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullN
     const handleChange = ({ target: { value, name } }: any) => {
         setAnswer({ ...answer, [name]: value });
         if (name === 'name') {
-            setNameError(!value);
+            setNameError(!!required && !value);
         } else {
-            setSurnameError(!value);
+            setSurnameError(!!required && !value);
         }
     };
 
     return <div className={styles.container}>
-        <EuiFormRow 
-            label={titles?.[0]} 
-            fullWidth 
-            isInvalid={nameError} 
+        <EuiFormRow
+            label={titles?.[0]}
+            fullWidth
+            isInvalid={nameError}
             error={translate('This field is required')}
         >
             <EuiFieldText
                 name="name"
-                disabled={editMode} 
-                required={nameError} 
+                disabled={editMode}
+                required={nameError}
                 placeholder={placeholders?.[0]}
                 value={answer.name}
                 fullWidth
@@ -52,15 +52,15 @@ const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullN
                 onBlur={handleChange}
             />
         </EuiFormRow>
-        <EuiFormRow 
-            label={titles?.[1]} 
-            fullWidth 
-            isInvalid={surnameError} 
+        <EuiFormRow
+            label={titles?.[1]}
+            fullWidth
+            isInvalid={surnameError}
             error={translate('This field is required')}
         >
-            <EuiFieldText 
+            <EuiFieldText
                 name="surname"
-                disabled={editMode} 
+                disabled={editMode}
                 required={surnameError}
                 placeholder={placeholders?.[1]}
                 value={answer.surname}
@@ -69,7 +69,7 @@ const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullN
             />
         </EuiFormRow>
     </div>
-    
+
 });
 
 FullName.displayName = 'FUllName';
