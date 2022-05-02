@@ -54,7 +54,7 @@ const ProfilePage: NextPage = () => {
         };
 
         const handleDateChange = (date: Moment) => {
-            setStartDate(date.zone(0));
+            setStartDate(date);
         };
 
         /*
@@ -185,15 +185,12 @@ const ProfilePage: NextPage = () => {
                                             <tbody>
                                                 <tr>
                                                     <th>{translate('Start Date')}</th>
-                                                    <th>{translate('Start Time in UTC')}</th>
+                                                    <th>{translate(`Start Time (${Intl.DateTimeFormat().resolvedOptions().timeZone})`)}</th>
                                                     <th>{translate('Duration in Minutes')}</th>
                                                 </tr>
-                                                {timeSlots.map((availableTime: TimeSlot) => (
+                                                {timeSlots.map((availableTime: TimeSlot, index: number) => (
                                                     <tr className={styles.timeSlotTableRow}
-                                                        key={new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                            new Date(availableTime.startTime).getUTCMinutes() + ':' +
-                                                            new Date(availableTime.startTime).getUTCSeconds()
-                                                        }
+                                                        key={index}
                                                     >
                                                         <td className={styles.tdata}>
                                                             <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
@@ -203,9 +200,9 @@ const ProfilePage: NextPage = () => {
                                                             </p>
                                                         </td>
                                                         <td className={styles.tdata}>
-                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getUTCHours() + ':' +
-                                                                new Date(availableTime.startTime).getUTCMinutes() + ':' +
-                                                                new Date(availableTime.startTime).getUTCSeconds()
+                                                            <p className={styles.tcol1}>{new Date(availableTime.startTime).getHours() + ':' +
+                                                                new Date(availableTime.startTime).getMinutes() + ':' +
+                                                                new Date(availableTime.startTime).getSeconds()
                                                             }
                                                             </p>
                                                         </td>

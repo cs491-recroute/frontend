@@ -24,6 +24,7 @@ const ScheduleInterviewPage: NextPage = () => {
     const [fetchedTimeSlots, setFetchedTimeSlots] = useState([] as fetchedTimeSlot[]);
     const [times, setTimes] = useState([] as Moment[])
     const [interviewDates, setInterviewDates] = useState([] as Moment[]);
+    const [completed, setCompleted] = useState(false);
 
     useEffect(() => {
         async function getInterviewers() {
@@ -55,13 +56,19 @@ const ScheduleInterviewPage: NextPage = () => {
     }, [interviewID]);
 
     const handleChange = (date: Moment) => {
-        const selectedTime = interviewDates.find(e => date.clone().startOf('day').toString() === e.clone().startOf('day').toString());
+        let selectedTime;
+        if (selectedDate.clone().startOf('day').toString() === date.clone().startOf('day').toString()) {
+            selectedTime = interviewDates.find(e => date.isSame(e));
+        }
+        else {
+            const newTimes = interviewDates.filter(e => {
+                return date.clone().startOf('day').toString() === e.clone().startOf('day').toString();
+            });
+            setTimes(newTimes);
+            selectedTime = interviewDates.find(e => date.clone().startOf('day').toString() === e.clone().startOf('day').toString());
+        }
         if (!selectedTime) return;
         setSelectedDate(selectedTime);
-        const newTimes = interviewDates.filter(e => {
-            return date.clone().startOf('day').toString() === e.clone().startOf('day').toString();
-        });
-        setTimes(newTimes);
     };
 
     const handleSaveButton = async () => {
@@ -75,6 +82,7 @@ const ScheduleInterviewPage: NextPage = () => {
                     position: 'bottom-right',
                     hideProgressBar: true
                 });
+                setCompleted(true);
             } catch (error: any) {
                 toast(translate(error?.response?.data || 'Error occured!'), {
                     type: 'error',
@@ -98,7 +106,7 @@ const ScheduleInterviewPage: NextPage = () => {
                         <EuiText style={{ fontStyle: 'italic', fontWeight: 'bold' }}>{translate('Please select the interview date from the available time slots.')}</EuiText>
                     </EuiFormRow>
 
-                    <EuiFormRow label="Exclude yesterday and today">
+                    <EuiFormRow label={`Select date and time (${Intl.DateTimeFormat().resolvedOptions().timeZone})`}>
                         <EuiDatePicker
                             showTimeSelect
                             selected={selectedDate}
@@ -110,7 +118,7 @@ const ScheduleInterviewPage: NextPage = () => {
                 </EuiModalBody>
 
                 <EuiModalFooter>
-                    <EuiButton onClick={handleSaveButton} disabled={fetchedTimeSlots.length === 0} fill >
+                    <EuiButton onClick={handleSaveButton} disabled={fetchedTimeSlots.length === 0 || completed} fill >
                         {translate('Save')}
                     </EuiButton>
                 </EuiModalFooter>

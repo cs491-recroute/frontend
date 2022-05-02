@@ -26,6 +26,7 @@ const GradeInterviewPage: NextPage = () => {
         isError: false,
         errorMessage: ''
     });
+    const [completed, setCompleted] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -65,6 +66,7 @@ const GradeInterviewPage: NextPage = () => {
                     position: 'bottom-right',
                     hideProgressBar: true
                 });
+                setCompleted(true);
             } catch (error: any) {
                 toast(translate(error?.response?.data || 'Error occured!'), {
                     type: 'error',
@@ -111,7 +113,7 @@ const GradeInterviewPage: NextPage = () => {
                 </EuiModalBody>
 
                 <EuiModalFooter>
-                    <EuiButton onClick={handleSaveButton} fill>
+                    <EuiButton onClick={handleSaveButton} disabled={completed} fill>
                         {translate('Save')}
                     </EuiButton>
                 </EuiModalFooter>
