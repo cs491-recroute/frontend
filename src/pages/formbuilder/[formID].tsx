@@ -30,9 +30,11 @@ import RightPanel from '../../components/FormBuilder/RightPanel';
 import { STAGE_TYPE } from '../../types/enums';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-type FormBuilderProps = {}
+type FormBuilderProps = {
+    leftPanel: boolean
+}
 
-const FormBuilderPage: NextPage<FormBuilderProps> = () => {
+const FormBuilderPage: NextPage<FormBuilderProps> = ({ leftPanel = false }: FormBuilderProps) => {
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
 
     const dispatch = useAppDispatch();
@@ -63,7 +65,10 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
         {returnAvailable &&
             <EuiButton
                 className={styles.returnToFlow}
-                onClick={() => { returnBack(STAGE_TYPE.FORM) }}
+                onClick={() => {
+                    const param = leftPanel ? STAGE_TYPE.FORM : undefined;
+                    returnBack(param);
+                }}
             >
                 Return to Flow
             </EuiButton>
@@ -74,11 +79,11 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
 
 export const getServerSideProps = withPageAuthRequired({
     getServerSideProps: wrapper.getServerSideProps(({ dispatch }) => async context => {
-        const { formID } = context.query;
+        const { formID, leftPanel } = context.query;
         try {
             const { data: form }: AxiosResponse<Form> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/form/${formID}`);
             dispatch(setCurrentForm(form));
-            return { props: {} };
+            return { props: { leftPanel: leftPanel === "true" } };
         } catch (error) {
             return {
                 redirect: {

@@ -11,8 +11,8 @@ export const useAppSelector: TypedUseSelectorHook<AppState> = useSelector;
 export const useRouterWithReturnBack = () => {
     const router = useRouter();
     const { query: { returnTo }, push, asPath } = router;
-    const pushWithReturn = (url: string): void => {
-        const query = `?returnTo=${asPath}`;
+    const pushWithReturn = (url: string, extraParam = ""): void => {
+        const query = `?returnTo=${asPath}${extraParam}`;
         push(url + query, url);
     }
     const returnBack = (stageType = '') => {

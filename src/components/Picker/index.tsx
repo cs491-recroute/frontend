@@ -41,8 +41,10 @@ const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
 
     const goToBuilder = useCallback(itemID => {
         const url = `/${builderURL}/${itemID}`;
-        const method = returnBack ? pushWithReturn : push;
-        method(url);
+        if (returnBack)
+            pushWithReturn(url, '&leftPanel=true');
+        else
+            push(url);
     }, [push, pushWithReturn, builderURL, returnBack]);
 
     const handleCreate = useCallback(() => {

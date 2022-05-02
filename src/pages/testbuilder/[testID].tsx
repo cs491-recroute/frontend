@@ -21,7 +21,11 @@ import RightPanel from '../../components/TestBuilder/RightPanel';
 import DisabledPage from '../../components/DisabledPage';
 import { STAGE_TYPE } from '../../types/enums';
 
-const TestBuilderPage: NextPage = () => {
+type TestBuilderProps = {
+    leftPanel: boolean
+}
+
+const TestBuilderPage: NextPage<TestBuilderProps> = ({ leftPanel = false }: TestBuilderProps) => {
 
     const dispatch = useAppDispatch();
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
@@ -48,7 +52,10 @@ const TestBuilderPage: NextPage = () => {
             {returnAvailable &&
                 <EuiButton
                     className={styles.returnToFlow}
-                    onClick={() => { returnBack(STAGE_TYPE.TEST) }}
+                    onClick={() => {
+                        const param = leftPanel ? STAGE_TYPE.TEST : undefined;
+                        returnBack(param);
+                    }}
                 >
                     Return to Flow
                 </EuiButton>
@@ -60,11 +67,11 @@ const TestBuilderPage: NextPage = () => {
 
 export const getServerSideProps = withPageAuthRequired({
     getServerSideProps: wrapper.getServerSideProps(({ dispatch }) => async context => {
-        const { testID } = context.query;
+        const { testID, leftPanel } = context.query;
         try {
             const { data: test }: AxiosResponse<Test> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/test/${testID}`);
             dispatch(setCurrentTest(test));
-            return { props: {} };
+            return { props: { leftPanel: leftPanel === "true" } };
         } catch (error) {
             return {
                 redirect: {
