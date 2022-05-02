@@ -52,7 +52,7 @@ export const deleteStageAsync = createAsyncThunk(
 
 export const updateStageAsync = createAsyncThunk(
     'flow/updateStage',
-    async (stageData: { type: STAGE_TYPE; stageID: string; startDate?: string, endDate?: string }, { getState }) => {
+    async (stageData: { type: STAGE_TYPE; stageID: string; startDate?: string | null, endDate?: string | null }, { getState }) => {
         const { flowBuilder: { currentFlow: { _id: flowID } = {} } } = getState() as AppState;
         const { flowBuilder: { ui: { rightPanelStatus: { _id: stage_id } = {} } } } = getState() as AppState;
         const { data: { stage } } = await axios.put(`/api/flows/${flowID}/stages/${stage_id}/updateStage`, {
