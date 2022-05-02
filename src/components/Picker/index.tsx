@@ -60,7 +60,7 @@ const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
         label: _id,
         name,
         itemID: _id,
-        append: <VisibilityIcon onClick={handlePreview(_id)} />
+        append: <VisibilityIcon className={styles.item} onClick={handlePreview(_id)} />
     })), [templates, handlePreview]);
 
     return <div className={styles.container}>

@@ -27,6 +27,7 @@ import FormContent from '../../components/FormBuilder/FormContent';
 import Header from '../../components/FormBuilder/Header';
 import DisabledPage from '../../components/DisabledPage';
 import RightPanel from '../../components/FormBuilder/RightPanel';
+import { STAGE_TYPE } from '../../types/enums';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type FormBuilderProps = {}
@@ -44,25 +45,25 @@ const FormBuilderPage: NextPage<FormBuilderProps> = () => {
     }, [isRightPanelOpen]);
 
     useEffect(() => {
-        dispatch(getParentFlowAsync());
+        if (form.flowID) dispatch(getParentFlowAsync(form.flowID));
     }, [form]);
-    
+
     return (<Fragment>
         <Head>
             <title>{`${translate('Form Builder')} | ${form.name}`}</title>
         </Head>
         <DisabledPage isActive={isActive}>
-            <Header/>
+            <Header />
             <div className={styles.content}>
                 <FormContent form={form} editMode />
             </div>
         </DisabledPage>
         <LeftPanel />
 
-        {returnAvailable && 
-            <EuiButton 
-                className={styles.returnToFlow} 
-                onClick={returnBack}
+        {returnAvailable &&
+            <EuiButton
+                className={styles.returnToFlow}
+                onClick={() => { returnBack(STAGE_TYPE.FORM) }}
             >
                 Return to Flow
             </EuiButton>
@@ -77,7 +78,7 @@ export const getServerSideProps = withPageAuthRequired({
         try {
             const { data: form }: AxiosResponse<Form> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/form/${formID}`);
             dispatch(setCurrentForm(form));
-            return { props: {}};
+            return { props: {} };
         } catch (error) {
             return {
                 redirect: {

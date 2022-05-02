@@ -15,8 +15,10 @@ export const useRouterWithReturnBack = () => {
         const query = `?returnTo=${asPath}`;
         push(url + query, url);
     }
-    const returnBack = () => {
-        if (returnTo) push(returnTo.toString());
+    const returnBack = (stageType = '') => {
+        let query = '';
+        if (stageType) query = `?returnBack=${stageType}`;
+        if (returnTo) push(returnTo.toString() + query, returnTo.toString());
     }
     return {
         pushWithReturn,

@@ -74,9 +74,8 @@ export const updateTestTitleAsync = createAsyncThunk(
 
 export const getParentFlowAsync = createAsyncThunk(
     'test/getParentFlow',
-    async (any, { getState }) => {
-        const { testBuilder: { currentTest: { flowID: fid } = {} } } = getState() as AppState;
-        const { data: test } = await axios.get(`/api/flows/${fid}`);
+    async (flowID: string) => {
+        const { data: test } = await axios.get(`/api/flows/${flowID}`);
         return test;
     }
 );

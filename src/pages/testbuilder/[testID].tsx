@@ -19,16 +19,17 @@ import { wrapper } from '../../redux/store';
 import LeftPanel from '../../components/TestBuilder/LeftPanel';
 import RightPanel from '../../components/TestBuilder/RightPanel';
 import DisabledPage from '../../components/DisabledPage';
+import { STAGE_TYPE } from '../../types/enums';
 
 const TestBuilderPage: NextPage = () => {
-    
+
     const dispatch = useAppDispatch();
     const { returnAvailable, returnBack } = useRouterWithReturnBack();
     const test = useAppSelector(getCurrentTest);
     const isActive = useAppSelector(getIsActive);
 
     useEffect(() => {
-        dispatch(getParentFlowAsync());
+        if (test.flowID) dispatch(getParentFlowAsync(test.flowID));
     }, [test]);
 
     return (
@@ -44,13 +45,13 @@ const TestBuilderPage: NextPage = () => {
             </DisabledPage>
             <LeftPanel />
 
-            {returnAvailable && 
-            <EuiButton
-                className={styles.returnToFlow} 
-                onClick={returnBack}
-            >
-                Return to Flow
-            </EuiButton>
+            {returnAvailable &&
+                <EuiButton
+                    className={styles.returnToFlow}
+                    onClick={() => { returnBack(STAGE_TYPE.TEST) }}
+                >
+                    Return to Flow
+                </EuiButton>
             }
             <RightPanel />
         </>

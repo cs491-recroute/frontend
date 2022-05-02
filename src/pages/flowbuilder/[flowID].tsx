@@ -105,8 +105,9 @@ const FlowBuilderPage: NextPage = () => {
 
 export const getServerSideProps = withPageAuthRequired({
     getServerSideProps: wrapper.getServerSideProps(({ dispatch }) => async context => {
-        const { flowID } = context.query;
+        const { flowID, returnBack } = context.query;
         try {
+            if (returnBack) dispatch(toggleFlowBuilderLeftPanel(returnBack as STAGE_TYPE));
             const { data: flow }: AxiosResponse<Flow> = await gatewayManager.useService(SERVICES.FLOW).addUser(context.req as NextApiRequest, context.res as NextApiResponse).get(`/flow/${flowID}`);
             dispatch(setCurrentFlow(flow));
             return { props: {} };
