@@ -7,6 +7,10 @@
   .list {
     flex-grow: 1;
 
+    & [role=img] {
+      display: none;
+    }
+
     .item {
       display: flex;
     }
