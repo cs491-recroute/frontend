@@ -95,6 +95,8 @@ const ProfilePage: NextPage = () => {
                                     placeholder='Select Date and Hour'
                                     onChange={handleDateChange}
                                     minDate={moment()}
+                                    timeFormat='HH:mm'
+                                    dateFormat='D MMMM YYYY HH:mm'
                                 />
                             </EuiFormRow>
                         </div>}
@@ -205,17 +207,11 @@ const ProfilePage: NextPage = () => {
                                                             key={index}
                                                         >
                                                             <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getDate() + '/' +
-                                                                    new Date(availableTime.startTime).getMonth() + '/' +
-                                                                    new Date(availableTime.startTime).getFullYear()
-                                                                }
+                                                                <p className={styles.tcol1}>{moment(availableTime.startTime).format('D MMMM YYYY')}
                                                                 </p>
                                                             </td>
                                                             <td className={styles.tdata}>
-                                                                <p className={styles.tcol1}>{new Date(availableTime.startTime).getHours() + ':' +
-                                                                    new Date(availableTime.startTime).getMinutes() + ':' +
-                                                                    new Date(availableTime.startTime).getSeconds()
-                                                                }
+                                                                <p className={styles.tcol1}>{moment(availableTime.startTime).format('HH:mm')}
                                                                 </p>
                                                             </td>
                                                             <td className={styles.tdata}>
