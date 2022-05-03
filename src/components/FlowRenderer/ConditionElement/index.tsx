@@ -93,6 +93,8 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
             setAllOperations([]);
         }
         setSelectedOperations([]);
+        setSelectedDropDownOptions([]);
+        setValue('');
     };
 
     const handleComponentOptionSelect = (selectedOpts: EuiComboBoxOptionOption[]) => {
@@ -196,7 +198,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
                 operationErrorMessage: 'Please select operation'
             }));
         }
-        if (!value) {
+        if (!value && selectedDropDownOptions.length === 0) {
             setError(prevState => ({
                 ...prevState,
                 valueError: true,
@@ -262,7 +264,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
                 value: { name: name, componentID: _id, componentType: type, componentOptions: options },
                 disabled: (type === ComponentTypes.datePicker || type === ComponentTypes.upload)
             })));
-            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || ""}]);
+            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || "" }]);
             if (fieldComponent.type) {
                 const arr = FORM_FIELDS[fieldComponent.type];
                 const newOptions = arr.map(e => ({
@@ -301,7 +303,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
                 setValue(condition?.value);
             }
         } else {
-            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || ""}]);
+            setSelectedOperations([{ label: OPERATION_DESCRIPTIONS[(condition?.operation) as keyof typeof OPERATION_DESCRIPTIONS] || "", id: (condition?.operation) || "" }]);
             setValue(condition?.value);
         }
     }, [condition, isOpen]);
