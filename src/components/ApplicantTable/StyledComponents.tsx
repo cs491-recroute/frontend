@@ -20,6 +20,9 @@ export const StyledTableCell = styled(TableCell)(({ theme }) => ({
         minWidth: 150,
         textOverflow: 'clip'
     },
+    [`tr:nth-child(1) &.${tableCellClasses.head}`]: {
+        zIndex: 10
+    },
     [`&.${tableCellClasses.body}:nth-child(1), &.${tableCellClasses.head}:nth-child(1)`]: {
         left: 0
     },
