@@ -59,6 +59,7 @@ const FullName = forwardRef(({ required, titles, placeholders, editMode }: FullN
             error={translate('This field is required')}
         >
             <EuiFieldText
+                fullWidth
                 name="surname"
                 disabled={editMode}
                 required={surnameError}

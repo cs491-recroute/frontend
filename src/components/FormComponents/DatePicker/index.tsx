@@ -24,7 +24,12 @@ const DatePicker = forwardRef(({ required, title, placeholder, editMode }: DateP
         // EuiDatePicker is not available in SSR
         return null;
     }
-    return <EuiFormRow label={title} isInvalid={error.isError} error={error.errorMessage}>
+    return <EuiFormRow 
+        label={title} 
+        isInvalid={error.isError} 
+        error={error.errorMessage} 
+        fullWidth
+    >
         <EuiDatePicker 
             fullWidth 
             disabled={editMode} 
