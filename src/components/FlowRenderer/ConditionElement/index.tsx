@@ -314,7 +314,7 @@ const ConditionElement = ({ stage, condition, mode }: ConditionalElementProps) =
             <div className={styles.conditionBox} title={prettyConditionName} onClick={() => mode === 'edit' && setIsOpen(true)}>
                 {prettyConditionElement}
             </div>
-            {condition && <DeleteForever onClick={handleDelete} className={styles.deleteIcon} />}
+            {condition && mode === 'edit' && <DeleteForever onClick={handleDelete} className={styles.deleteIcon} />}
             {isOpen ?
                 <EuiModal onClose={closeModel} initialFocus='.name' style={{ width: '50vw', height: '50vh', maxWidth: '500px' }}>
                     <EuiModalHeader>
