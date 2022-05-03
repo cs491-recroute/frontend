@@ -127,6 +127,7 @@ const FillingPage: NextPage<FillingPageProps> = ({ stage, error, flowName, reque
                             placeholder={translate('Please enter your email')}
                             onChange={e => setEmail(e.target.value)}
                             onKeyDown={e => e.key === 'Enter' && startForm()}
+                            name="email"
                         />
                         <Button 
                             variant='contained' 

@@ -62,6 +62,7 @@ const Picker = ({ returnBack = false, onSelect, itemType }: PickerOptions) => {
         label: _id,
         name,
         itemID: _id,
+        searchableLabel: name,
         append: <VisibilityIcon className={styles.item} onClick={handlePreview(_id)} />
     })), [templates, handlePreview]);
 
