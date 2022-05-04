@@ -85,14 +85,24 @@ const AdminPanelPage: NextPage = () => {
                         <tbody>
                             <tr>
                                 <td className={styles.tColumn1}>
-                                    {user.company.isLinked ?
-                                        (<h1 className={styles.title2}>Zoom account is linked</h1>) :
-                                        (<EuiButton
-                                            onClick={zoomLinkClick}
-                                        >
-                                            Link Zoom Account
-                                        </EuiButton>)
-                                    }
+                                    <table>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    {user.company.isLinked ? (<h1 className={styles.title2}>Zoom account is linked</h1>) : null}
+                                                </td>
+                                                <td>
+                                                    <EuiButton
+                                                        onClick={zoomLinkClick}
+                                                        disabled={user.company.isLinked}
+                                                    >
+                                                        Link Zoom Account
+                                                    </EuiButton>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <h1 className={styles.title2}>Company API Key : 4f0101c5-91aa-49be-aa31-b809a8371502</h1>
                                 </td>
                                 <td className={styles.tColumn2}>
                                     <table>
