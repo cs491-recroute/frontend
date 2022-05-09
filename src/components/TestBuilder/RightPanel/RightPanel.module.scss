@@ -2,6 +2,7 @@
   padding: 4px 0;
   display: flex;
   height: calc(100% - 120px);
+  overflow: auto;
 
   .title {
     margin-left: 14px;
