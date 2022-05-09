@@ -32,6 +32,14 @@ const TestCasesEditor = forwardRef<{ value: Question['testCases']; }, { defaultV
         setValue(newCases);
     };
 
+    const handleDeleteCase = (index: number) => {
+        if (value) {
+            const newCases = [...value];
+            newCases?.splice(index, 1);
+            setValue(newCases);
+        }
+    }
+
     return (
         <>
             <div className={styles.label}>
@@ -44,26 +52,26 @@ const TestCasesEditor = forwardRef<{ value: Question['testCases']; }, { defaultV
             </div>
             {value?.map((testCase, index) => (
                 <div key={testCase._id} className={styles.singleCase}>
-                    <TextField 
+                    <TextField
                         size='small'
-                        fullWidth 
+                        fullWidth
                         onChange={handleTextChange(index, 'input')}
                         value={testCase.input}
                     />
-                    <TextField 
-                        size='small' 
-                        fullWidth 
+                    <TextField
+                        size='small'
+                        fullWidth
                         onChange={handleTextChange(index, 'output')}
                         value={testCase.output}
                     />
-                    <TextField 
-                        size='small' 
-                        className={styles.pointInput} 
+                    <TextField
+                        size='small'
+                        className={styles.pointInput}
                         onChange={handleTextChange(index, 'points')}
                         value={testCase.points}
                         type='tel'
                     />
-                    <IconButton size='small' color="error"><DeleteForeverIcon/></IconButton>
+                    <IconButton size='small' color="error" onClick={() => { handleDeleteCase(index) }}><DeleteForeverIcon /></IconButton>
                 </div>
             ))}
             <button className={styles.addButton} onClick={handleNewCase} >{translate('Add New Test Case')}</button>
