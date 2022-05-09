@@ -4,7 +4,7 @@ import { useUser } from '@auth0/nextjs-auth0';
 import { NextPage } from 'next';
 import Head from 'next/head';
 import { useAppDispatch, useAppSelector } from '../utils/hooks';
-import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady } from '../redux/slices/flowsSlice';
+import { deleteFlowAsync, fetchFlowsAsync, getFlows, isFlowsReady, updateFlowAsync, updateFlowsAsync } from '../redux/slices/flowsSlice';
 import Link from 'next/link';
 import { EuiButton, EuiButtonEmpty, EuiCheckbox, EuiHorizontalRule, EuiIcon, EuiText, EuiLoadingContent, EuiFieldText, EuiFieldSearch } from '@elastic/eui';
 import { useWithConfirmation } from '../contexts/confirmation';
@@ -14,14 +14,29 @@ import CreateFlowModal, { CreateFlowRef } from '../components/CreateFlowModal';
 import { Paper } from '@mui/material';
 import FlowsShareButton from '../components/FlowsShareButton';
 import classNames from 'classnames';
+import { Flow } from '../types/models';
+import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded';
+import StarRoundedIcon from '@mui/icons-material/StarRounded';
+import Checkbox from '@mui/material/Checkbox';
 
 interface SelectedBoxes {
     [key: string]: boolean
 }
+
+enum FILTERS {
+    all = 0,
+    actives,
+    favorites,
+    archived
+}
+
 const FlowsPage: NextPage = () => {
     const createFlowRef = useRef<CreateFlowRef>(null);
     const [checked, setChecked] = useState({} as SelectedBoxes);
+    const [anyChecked, setAnyChecked] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+    const [filter, setFilter] = useState(FILTERS.all);
+    const [disableArchive, setDisableArchive] = useState(false);
     const { user } = useUser();
     const dispatch = useAppDispatch();
     const flows = useAppSelector(getFlows);
@@ -36,6 +51,13 @@ const FlowsPage: NextPage = () => {
         }
         setChecked(initialObj);
     }, []);
+
+    useEffect(() => {
+        const checkedIDs = Object.entries(checked).filter(([key, value]) => value).map(([key, value]) => { return key });
+        const checkedFlows = flows.filter(f => checkedIDs.includes(f._id));
+        setDisableArchive(!checkedFlows.every(f => !f.active));
+        setAnyChecked(checkedIDs.length > 0);
+    }, [checked]);
 
     const handleDeleteButton = withConfirmation({
         onApprove: (flowID: string) => {
@@ -61,12 +83,61 @@ const FlowsPage: NextPage = () => {
 
     const handleCheckboxClick: ChangeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const id = e.target.id;
-        // setChecked(previousState => {
-        // 	return { ...previousState, id: !checked[id] };
-        // });
-        setChecked({ ...checked, [id]: !checked[id] });
-        console.log(checked);
+        setChecked(previousState => {
+            return { ...previousState, [id]: !checked[id] };
+        });
     };
+
+    const clearCheckboxes = () => {
+        const initialObj = {} as SelectedBoxes;
+        for (const flow of flows) {
+            initialObj[flow._id] = false;
+        }
+        setChecked(initialObj);
+        setDisableArchive(false);
+    };
+
+    const handleStarClick = (e: ChangeEvent<HTMLInputElement>) => {
+        const flowData = {
+            flowID: e.target.id,
+            body: {
+                name: "favorite",
+                value: e.target.checked
+            }
+        }
+        dispatch(updateFlowAsync(flowData));
+    }
+
+    const handleArchive = () => {
+        const flowData = {
+            flowIDs: Object.entries(checked).filter(([key, value]) => value).map(([key, value]) => { return key }),
+            body: {
+                name: "archived",
+                value: filter !== FILTERS.archived
+            }
+        }
+        dispatch(updateFlowsAsync(flowData));
+        clearCheckboxes();
+    }
+
+    const handleFilterChange = (selectedFilter: FILTERS) => {
+        setFilter(selectedFilter);
+        clearCheckboxes();
+    }
+
+    const checkFilters = (flow: Flow) => {
+        switch (filter) {
+            case FILTERS.all:
+                return !flow.archived;
+            case FILTERS.actives:
+                return flow.active;
+            case FILTERS.favorites:
+                return flow.favorite;
+            case FILTERS.archived:
+                return flow.archived;
+        }
+        return true;
+    }
 
     if (!user) return null;
 
@@ -83,42 +154,61 @@ const FlowsPage: NextPage = () => {
                 </EuiButton>
                 <EuiHorizontalRule className={styles.rule}></EuiHorizontalRule>
                 <div className={styles.itemList}>
-                    <EuiButton className={styles.item} fill fullWidth={true}
-                        iconSide="right"
-                        iconType="arrowRight"
+                    <EuiButton className={styles.item} fill={filter === FILTERS.all} fullWidth={true}
+                        color={'text'}
+                        onClick={() => { handleFilterChange(FILTERS.all) }}
                     >
-                        All Flows
+                        {translate('All Flows')}
                     </EuiButton>
-                    <EuiButton className={styles.item} fullWidth={true}>
+                    <EuiButton className={styles.item} fill={filter === FILTERS.actives} fullWidth={true}
+                        color={'text'}
+                        onClick={() => { handleFilterChange(FILTERS.actives) }}
+                    >
                         {translate('Actives')}
                     </EuiButton>
-                    <EuiButton className={styles.item} fullWidth={true}>
+                    <EuiButton className={styles.item} fill={filter === FILTERS.favorites} fullWidth={true}
+                        color={'text'}
+                        onClick={() => { handleFilterChange(FILTERS.favorites) }}
+                    >
                         {translate('Favorites')}
                     </EuiButton>
-                    <EuiButton className={styles.item} fullWidth={true}>
+                    <EuiButton className={styles.item} fill={filter === FILTERS.archived} fullWidth={true}
+                        color={'text'}
+                        onClick={() => { handleFilterChange(FILTERS.archived) }}
+                    >
                         {translate('Archived')}
                     </EuiButton>
                 </div>
 
             </div>
             <div className={styles.rightPanel}>
-                <div className={styles.searchItem}>
-                    <EuiFieldSearch
-                        className={styles.searchBar}
-                        type="text"
-                        placeholder='Search Flow...'
-                        onChange={(event: any) => setSearchTerm(event.target.value)}
-                    />
+                <div className={styles.topBar}>
+                    {anyChecked && <div className={styles.buttonContainer}>
+                        <EuiButton className={styles.button} fullWidth={true}
+                            disabled={disableArchive}
+                            onClick={handleArchive}
+                        >
+                            {(filter === FILTERS.archived) ? translate('Unarchive') : translate('Archive')}
+                        </EuiButton>
+                        <EuiButton className={styles.button} fullWidth={true}
+                            onClick={clearCheckboxes}
+                        >
+                            {translate('Clear')}
+                        </EuiButton>
+                    </div>}
+                    <div />
+                    <div className={styles.searchItem}>
+                        <EuiFieldSearch
+                            type="text"
+                            placeholder='Search Flow...'
+                            onChange={(event: any) => setSearchTerm(event.target.value)}
+                        />
+                    </div>
                 </div>
                 <div className={styles.flowList} data-testid='flowList'>
                     {isReady ? flows.filter(flow => {
-                        if (searchTerm === "") {
-                            //if query is empty
-                            return flow;
-                        } else if (flow.name.toLowerCase().includes(searchTerm.toLowerCase())) {
-                            //returns filtered array
-                            console.log(flow.name.toLowerCase());
-                            return flow;
+                        if (searchTerm === "" || flow.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+                            return checkFilters(flow);
                         }
                     }).map(flow => {
                         return (
@@ -128,7 +218,13 @@ const FlowsPage: NextPage = () => {
                                     checked={checked[flow._id]}
                                     onChange={e => handleCheckboxClick(e)}
                                 />
-                                <EuiIcon type={'starEmpty'} size={'m'} />
+                                <Checkbox
+                                    id={flow._id}
+                                    icon={<StarOutlineRoundedIcon />}
+                                    checkedIcon={<StarRoundedIcon />}
+                                    onChange={handleStarClick}
+                                    checked={flow.favorite}
+                                />
                                 <div className={styles.cardContent}>
                                     <div className={styles.flowTitle}>
                                         <Link href={`flowbuilder/${flow._id}`}>
@@ -157,7 +253,7 @@ const FlowsPage: NextPage = () => {
                                         </a>
                                     </Link>
                                     <EuiButtonEmpty
-                                        className={styles.cardButton}
+                                        className={styles.cardDeleteButton}
                                         data-testid={`${flow.name}-delete`}
                                         onClick={() => handleDeleteButton(flow._id)}
                                     >

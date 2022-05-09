@@ -3,9 +3,22 @@ import type { NextApiHandler } from 'next';
 import { gatewayManager } from '../../../utils/gatewayManager';
 import { SERVICES } from '../../../constants/services';
 
-const getAllFlows: NextApiHandler = async (request, response) => {
-    const { data: flows } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/flows', { params: { applicants: true }});
-    response.json(flows);
+const handler: NextApiHandler = async (request, response) => {
+    switch (request.method) {
+        case 'GET': {
+            const { data: flows } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get('/flows', { params: { applicants: true } });
+            response.status(200).send(flows);
+            break;
+        }
+        case 'PUT': {
+            const { data: flows } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).put('/flows', request.body, { params: { applicants: true, ...request.query } });
+            response.status(200).send(flows);
+            break;
+        }
+        case 'DELETE': {
+            break;
+        }
+    }
 };
 
-export default withApiAuthRequired(getAllFlows);
+export default withApiAuthRequired(handler);

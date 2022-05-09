@@ -4,8 +4,8 @@ import type { Flow } from '../../types/models';
 import type { AppState } from '../store';
 
 export interface FlowsState {
-  flows: Flow[]
-  status: 'idle' | 'loading' | 'failed'
+    flows: Flow[]
+    status: 'idle' | 'loading' | 'failed'
 }
 
 const initialState: FlowsState = {
@@ -21,10 +21,26 @@ export const fetchFlowsAsync = createAsyncThunk(
     }
 );
 
+export const updateFlowsAsync = createAsyncThunk(
+    'flow/updateFlowsFlows',
+    async (flowData: { flowIDs: string[]; body: { name: string; value: any; } }) => {
+        const { data } = await axios.put(`/api/flows`, flowData.body, { params: { flowIDs: flowData.flowIDs } });
+        return data;
+    }
+);
+
 export const createFlowAsync = createAsyncThunk(
     'flow/createFlow',
     async (flowData: { name: string; startDate?: string; endDate?: string; }) => {
         const { data: { flow } } = await axios.post('/api/flows/create', flowData);
+        return flow;
+    }
+);
+
+export const updateFlowAsync = createAsyncThunk(
+    'flow/updateFlowsFlow',
+    async (flowData: { flowID: string; body: { name: string; value: any; } }) => {
+        const { data: { flow } } = await axios.put(`/api/flows/${flowData.flowID}`, flowData.body);
         return flow;
     }
 );
@@ -50,8 +66,15 @@ export const flowsSlice = createSlice({
                 state.status = 'idle';
                 state.flows = action.payload;
             })
+            .addCase(updateFlowsAsync.fulfilled, (state, action) => {
+                state.flows = action.payload;
+            })
             .addCase(createFlowAsync.fulfilled, (state, action) => {
                 state.flows.push(action.payload);
+            })
+            .addCase(updateFlowAsync.fulfilled, (state, action) => {
+                const index = state.flows.findIndex(e => e._id === action.payload._id);
+                state.flows[index] = action.payload;
             })
             .addCase(deleteFlowAsync.fulfilled, (state, action) => {
                 const index = state.flows.map(e => e._id).indexOf(action.payload);

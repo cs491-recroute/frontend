@@ -20,6 +20,8 @@ export type Flow = {
   stages: Stage[];
   conditions: Condition[];
   applicants?: string[];
+  favorite: boolean;
+  archived: boolean;
 } & Basic;
 
 export type Stage = {

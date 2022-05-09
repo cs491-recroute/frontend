@@ -6,14 +6,15 @@ import { gatewayManager } from '../../../utils/gatewayManager';
 const handler: NextApiHandler = async (request, response) => {
     const { fid } = request.query;
 
-    switch(request.method) {
+    switch (request.method) {
         case 'GET': {
-            const { data: flow } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get(`/flow/${fid}`);
+            const { data: flow } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).get(`/flow/${fid}`, { params: { applicants: true } });
             response.status(200).send(flow);
             break;
         }
-        case 'UPDATE': {
-            // TODO: Update flow whose id is fid
+        case 'PUT': {
+            const { data: flow } = await gatewayManager.useService(SERVICES.FLOW).addUser(request, response).put(`/flow/${fid}`, request.body, { params: { applicants: true } });
+            response.status(200).send(flow);
             break;
         }
         case 'DELETE': {
