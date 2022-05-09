@@ -36,7 +36,8 @@ const SaveAsTemplateModal = forwardRef<SaveAsTemplateModalRef, SaveAsTemplateMod
             value: { name: name, categoryID: _id }
         }));
         setOptions(newOptions);
-    }, [categoryOptions]);
+        setQuestionName(question.name);
+    }, [categoryOptions, question]);
 
     const onChange = (selectedOpts: CategoryOption[]) => {
         setSelectedOptions(selectedOpts as CategoryOption[]);
