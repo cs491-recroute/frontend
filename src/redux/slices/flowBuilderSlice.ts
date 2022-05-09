@@ -26,7 +26,7 @@ const initialState: FlowBuilderState = {
         }
     },
     currentFlow: {
-        _id: '', name: '', stages: [], active: false, conditions: []
+        _id: '', name: '', stages: [], active: false, conditions: [], favorite: false, archived: false
     }
 };
 
