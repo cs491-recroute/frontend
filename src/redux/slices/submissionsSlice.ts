@@ -15,7 +15,7 @@ export interface SubmissionsState {
 
 const initialState: SubmissionsState = {
     currentFlow: {
-        _id: '', name: '', stages: [], active: false, conditions: []
+        _id: '', name: '', stages: [], active: false, conditions: [], favorite: false, archived: false
     },
     applicants: [],
     queries: { filters: {} },
