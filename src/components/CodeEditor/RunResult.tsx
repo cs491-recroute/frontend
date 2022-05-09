@@ -11,7 +11,7 @@ const RunResult = ({ result }: Props) => {
     if (!result) return null;
 
     const showMoreButton = (
-        <EuiButton color='danger' size='s' onClick={() => setIsOpen(true)}>
+        <EuiButton color='danger' size='s' onClick={() => setIsOpen(!isOpen)}>
             {translate('Show Details')}
         </EuiButton>
     )
@@ -22,7 +22,7 @@ const RunResult = ({ result }: Props) => {
         if (correctAnswer) {
             return (
                 <EuiText color='success'>
-                    <h3 style={{ display: 'inline'}}>
+                    <h3 style={{ display: 'inline' }}>
                         {translate('Correct Answer')}
                     </h3>
                     {' '}
@@ -31,7 +31,7 @@ const RunResult = ({ result }: Props) => {
             )
         }
 
-        return <EuiText color={'danger'}> 
+        return <EuiText color={'danger'}>
             <h3 style={{ display: 'inline' }}>
                 {translate('Wrong Answer')}
             </h3>
@@ -46,7 +46,7 @@ const RunResult = ({ result }: Props) => {
         </EuiText>
     }
 
-    return <EuiText color={'danger'}> 
+    return <EuiText color={'danger'}>
         <h3 style={{ display: 'inline' }}>
             {translate('Compilation/Runtime Error')}
         </h3>
@@ -56,7 +56,7 @@ const RunResult = ({ result }: Props) => {
             isOpen={isOpen}
             closePopover={() => setIsOpen(false)}
         >
-            <pre style={{ color: '#BD271E'}}>
+            <pre style={{ color: '#BD271E' }}>
                 {result}
             </pre>
         </EuiPopover>
