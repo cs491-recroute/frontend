@@ -3,12 +3,13 @@ import styles from './RightPanelContent.module.scss';
 import { Interviewer, Stage } from '../../../types/models';
 import { useAppDispatch, useAppSelector } from '../../../utils/hooks';
 import { getCurrentFlow, updateInterviewAsync, updateStageAsync } from '../../../redux/slices/flowBuilderSlice';
-import { EuiButton, EuiDatePicker, EuiFormRow, EuiSpacer, EuiSwitch, EuiFieldNumber, EuiSelect, EuiIcon, EuiFieldText } from '@elastic/eui';
+import { EuiButton, EuiDatePicker, EuiFormRow, EuiSpacer, EuiSwitch, EuiFieldNumber, EuiSelect, EuiIcon, EuiFieldText, EuiComboBox } from '@elastic/eui';
 import { translate } from '../../../utils';
 import { STAGE_TYPE } from '../../../types/enums';
 import moment from 'moment';
 import { getInterviewers } from '../../../redux/slices/interviewersSlice';
 import { List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { string } from 'prop-types';
 
 type RightPanelProps = {
     stageType: STAGE_TYPE | false;
@@ -28,26 +29,27 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
     const [testDuration, setTestDuration] = useState(stage?.testDuration);
     const [interviewLengthInMins, setInterviewLengthInMins] = useState(stage?.stageProps.interviewLengthInMins)
     const [interviewers, setInterviewers] = useState(stage?.stageProps.interviewers || []);
-    const [activeInterviewers, setActiveInterviewers] = useState(stage?.stageProps.interviewers);
-    const [interviewerOptions, setInterviewerOptions] = useState([{ key: '', text: '' }])
+    const [interviewerOptions, setInterviewerOptions] = useState([{ label: '' }]);
+    const [shownInterviewers, setShownInterviewers] = useState([{label:''}]);
 
     useEffect(() => {
         setInterviewerOptions(
             allInterviewers?.map(interviewer => {
                 return {
-                    key: interviewer._id,
-                    text: interviewer.name
+                    label: interviewer.name
                 };
             })
         );
-    }, [allInterviewers]);
 
-    useEffect(() => {
-        setActiveInterviewers(
-            allInterviewers.filter(x => interviewers.includes(x._id)).map(interviewer =>
-                interviewer.name
-            )
-        );
+        const name = [];
+        for(let i = 0; i < allInterviewers.length; i++){
+            for(let j = 0; j < interviewers.length; j++){
+                if(interviewers[j] === allInterviewers[i]._id){
+                    name.push({label: allInterviewers[i].name});
+                }
+            }
+        }
+        setShownInterviewers(name);
     }, [allInterviewers, interviewers]);
 
     //for save button feedback
@@ -95,41 +97,23 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
         }
     };
 
-    const handleInterviewerAdd = (value: string) => {
-        // value is interviewer name convert to interview _id first
-        let idNo
-        for (let i = 0; i < allInterviewers.length; i++) {
-            if (value === allInterviewers[i].name) {
-                idNo = allInterviewers[i]._id;
+    const onChange = (selectedOptions: any) => {
+        setShownInterviewers(selectedOptions);
+        console.log("Selected options :\n", selectedOptions);
+        // get ids of selected options
+        const ids = [];
+        for(let i = 0; i < selectedOptions.length; i++){
+            for(let j = 0; j < allInterviewers.length; j++){
+                if(selectedOptions[i].label === allInterviewers[j].name){
+                    ids.push(allInterviewers[j]._id)
+                }
             }
         }
-
-        // if idno is not already added to this interview add it
-        for (let i = 0; i < interviewers.length; i++) {
-            if (idNo === interviewers[i]) {
-                return;
-            }
-        }
-        setInterviewers([...interviewers, idNo])
-    }
-
-    const handleInterviewerDelete = (interviewerName: string) => {
-        // find the interview id with given name
-        let idNo
-        for (let i = 0; i < allInterviewers.length; i++) {
-            if (interviewerName === allInterviewers[i].name) {
-                idNo = allInterviewers[i]._id;
-            }
-        }
-        // remove the id from interviewers array
-        for (let i = 0; i < interviewers.length; i++) {
-            if (idNo === interviewers[i]) {
-                const temp = [...interviewers];
-                temp.splice(i, 1);
-                setInterviewers(temp);
-            }
-        }
-    }
+        console.log("ids :\n", ids);
+        setInterviewers(ids);
+        console.log("interviewers :\n", interviewers);
+        console.log("all interviewers :\n", allInterviewers);
+    };
 
     return (
         <div className={styles.contentContainer}>
@@ -197,24 +181,14 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                     />
                 </EuiFormRow>
                 <EuiFormRow className={styles.rowPadding} label={translate('Interviewers')}>
-                    <EuiSelect
-                        fullWidth
+                    <EuiComboBox
+                        placeholder="Select or create options"
                         options={interviewerOptions}
-                        onChange={({ target: { value } }) => handleInterviewerAdd(value)}
+                        selectedOptions={shownInterviewers}
+                        onChange={onChange}
+                        isClearable={true}
                     />
                 </EuiFormRow>
-                <List>
-                    {activeInterviewers.map((interviewerName: string) => (
-                        <ListItem className={styles.listItem} key={interviewerName} disablePadding>
-                            <ListItemText className={styles.th1} primary={interviewerName} />
-                            <ListItemButton
-                                className={styles.deleteButton}
-                                onClick={() => handleInterviewerDelete(interviewerName)}
-                            >
-                                <EuiIcon type='cross'></EuiIcon></ListItemButton>
-                        </ListItem>
-                    ))}
-                </List>
             </div>}
             <EuiSpacer />
             <EuiFormRow>

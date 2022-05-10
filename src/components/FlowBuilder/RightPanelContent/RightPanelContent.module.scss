@@ -30,13 +30,16 @@
 }
 
 .saveButton {
-    margin-left: auto;
-    margin-right: 15px;
+    right: 15px;
     width: 30%;
+    bottom: 30px;
+    position: absolute;
 }
 
 .th{
-width: 90%;
+    bottom: 30px;
+    position: absolute;
+    width: 60%;
     .feedbackText1 {
         color: green;
     }
