@@ -99,7 +99,7 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
 
     const onChange = (selectedOptions: any) => {
         setShownInterviewers(selectedOptions);
-        console.log("Selected options :\n", selectedOptions);
+        //console.log("Selected options :\n", selectedOptions);
         // get ids of selected options
         const ids = [];
         for(let i = 0; i < selectedOptions.length; i++){
@@ -109,10 +109,10 @@ const RightPanelContent = ({ stageType, _id }: RightPanelProps) => {
                 }
             }
         }
-        console.log("ids :\n", ids);
+        //console.log("ids :\n", ids);
         setInterviewers(ids);
-        console.log("interviewers :\n", interviewers);
-        console.log("all interviewers :\n", allInterviewers);
+        //console.log("interviewers :\n", interviewers);
+        //console.log("all interviewers :\n", allInterviewers);
     };
 
     return (
