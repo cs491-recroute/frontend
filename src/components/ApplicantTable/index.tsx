@@ -47,7 +47,7 @@ const ApplicantTable = () => {
         <TableContainer 
             component={Paper} 
             style={{
-                height: 'calc(100vh - 140px)',
+                height: 'calc(100vh - 165px)',
                 width: 'calc(100vw - 280px)'
             }}
         >
