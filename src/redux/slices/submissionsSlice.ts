@@ -34,7 +34,7 @@ export const fetchSubmissionsAsync = createAsyncThunk(
 
 export const applicantNextStageAsync = createAsyncThunk(
     'submissions/applicantNextStage',
-    async (id: string) => {
+    async (id: string, { dispatch }) => {
         try {
             await axios.get(`/api/submissions/next/${id}`);
             toast(translate('Successful'), {
@@ -42,6 +42,7 @@ export const applicantNextStageAsync = createAsyncThunk(
                 position: 'bottom-right',
                 hideProgressBar: true
             });
+            dispatch(fetchSubmissionsAsync());
             return id;
         } catch (error: any) {
             toast(translate(error?.response?.data || 'Error occured!'), {
@@ -113,39 +114,6 @@ export const submissionsSlice = createSlice({
             })
             .addCase(applicantNextStageAsync.pending, state => {
                 state.loading = true;
-            })
-            .addCase(applicantNextStageAsync.fulfilled, (state, action) => {
-                state.loading = false;
-                const id = action.payload;
-
-                const movedStageIndex = state.applicants.find(e => e.id === id)?.stageIndex;
-                state.metadata.stageCounts = state.metadata.stageCounts.map((info: any) => {
-                    const { stageIndex, completed, count } = info;
-                    if (stageIndex === movedStageIndex && completed) {
-                        return {
-                            ...info,
-                            count: count - 1
-                        }
-                    } else if (stageIndex === movedStageIndex + 1 && !completed) {
-                        return {
-                            ...info,
-                            count: count + 1
-                        }
-                    }
-                    return info;
-                })
-
-                if (state.queries.stageIndex !== undefined) {
-                    state.applicants = state.applicants.filter(e => e.id !== id);
-                } else {
-                    state.applicants = state.applicants.map(e => {
-                        if (e.id === id) {
-                            e.stageIndex = e.stageIndex + 1;
-                            e.stageCompleted = false;
-                        }
-                        return e;
-                    });
-                }
             });
     }
 });
