@@ -2,7 +2,8 @@ import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { translate } from '../../../../utils';
 import { Question } from '../../../../types/models';
 import styles from './OptionsEditor.module.scss';
-import { Radio } from '@mui/material';
+import { Radio, IconButton } from '@mui/material';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
 const OptionsEditor = forwardRef<{ value: Question['options']; }, { defaultValue: Question['options']; }>(({ defaultValue }, ref) => {
     const [value, setValue] = useState(defaultValue);
@@ -35,6 +36,13 @@ const OptionsEditor = forwardRef<{ value: Question['options']; }, { defaultValue
         setValue([...value, newOption]);
     };
 
+    const handleDeleteOption = (index: number) => {
+        if (!value) return;
+        const newOptions = [...value];
+        newOptions.splice(index, 1);
+        setValue(newOptions);
+    }
+
     return (
         <>
             <div className={styles.label}>
@@ -43,6 +51,7 @@ const OptionsEditor = forwardRef<{ value: Question['options']; }, { defaultValue
             {value?.map((option, index) => (
                 <div
                     key={option._id}
+                    className={styles.singleOption}
                 >
                     <Radio
                         onClickCapture={handleRadioClick(index)}
@@ -56,6 +65,8 @@ const OptionsEditor = forwardRef<{ value: Question['options']; }, { defaultValue
                         className={styles.input}
                         onChange={handleDescriptionChange(index)}
                     />
+                    <div style={{ flex: 1 }}/>
+                    <IconButton size='small' color="error" onClick={() => { handleDeleteOption(index) }}><DeleteForeverIcon /></IconButton>
                 </div>
             ))}
             <button className={styles.addButton} onClick={handleNewOption} >{translate('Add Option')}</button>
